@@ -79,7 +79,7 @@ const mockCatalogDB = [
     duration: "03:15",
     trackLabel: "Afinarte Music",
     trackPLine: "2025 Afinarte Music, LLC.",
-    trackArtistNames: "Los Patroncitos",
+    trackArtistName: "Los Patroncitos",
   },
   {
     primaryTitle: "Mi Vida Loca",
@@ -91,54 +91,9 @@ const mockCatalogDB = [
     duration: "02:50",
     trackLabel: "Ranchero Records",
     trackPLine: "2024 Ranchero Records, Inc.",
-    trackArtistNames: "Maria La Reina",
+    trackArtistName: "Maria La Reina",
   },
 ];
-
-
-
-
-function normalizeReleaseRow(data) {
-  const release = {
-    upc: data["UPC"] || "",
-    albumTitle: data["Album Title"] || "",
-    albumArtist: (() => {
-  try {
-    const parsed = JSON.parse(data["Album Artists"]);
-    return Array.isArray(parsed) ? parsed : [String(parsed)];
-  } catch (e) {
-    return data["Album Artist"]
-      ? Array.isArray(data["Album Artist"])
-        ? data["Album Artist"]
-        : [data["Album Artist"]]
-      : [""];
-  }
-})(),
-    distributor: data["Distributor"] || "",
-    releaseDate: data["Digital Release Date"] || "",
-    typeOfRelease: data["Type of Release"] || "",
-    numTracks: data["# Tracks"] || "1",
-  };
-
-  if (data.albumArtists) {
-    try {
-      const parsedAlbumArtists = JSON.parse(data.albumArtists);
-      if (Array.isArray(parsedAlbumArtists)) {
-        release.albumArtist = parsedAlbumArtists;
-      } else {
-        release.albumArtist = [data.albumArtist || ""];
-      }
-    } catch (e) {
-      console.error("Error parsing albumArtists JSON:", e);
-      release.albumArtist = [data.albumArtist || ""];
-    }
-  }
-
-  return release;
-}
-
-
-
 
 function normalizeDuration(raw) {
   if (!raw) return "";
@@ -181,14 +136,11 @@ function normalizeDuration(raw) {
 const COMPOSERS_DB_URL = "https://script.google.com/macros/s/AKfycbzrJdRXwsv_tQrcuQMqEE9WfRN1ZDlqwUXqJ8k7o39eA1t5lXLwiExuZmMpDD_Dmvy4iw/exec";
 const ARTISTS_DB_URL = "https://script.google.com/macros/s/AKfycbzr3Mg2opXIyPXs5KZArgchglEyuZA-I135mYoL9aK2yuJIaHgCZSskdGS_mMiNShyw/exec";
 const CATALOG_DB_URL = "https://script.google.com/macros/s/AKfycbxdta-h0LUQ4bHSRLF_czTFlOyIbs4z2RQjixNgVYEJOeKNp7T2rwJhi9-SZcBs57Q6/exec";
-const PUBLISHERS_DB_URL = "https://script.google.com/macros/s/AKfycbzbKo0E1wih647uiiPQebf6x7Sl-LQTM9khdDhuv0D2lP79bqz69-smUUTUEsrnsuBGmA/exec";
+const PUBLISHERS_DB_URL = "https://script.google.com/macros/s/AKfycbxLn5bYMpKlLtCScFiIWEbEuiMFR4J18ujvo9RyRumD3EQhXG47iYhIrviDE1vJ2fpG/exec";
 
 
 export default function App() {
   const [isLocked, setIsLocked] = useState(false); // Fields are editable initially
-
-
-
 
   const handleEditClick = () => setIsLocked(false);
   const handleNewClick = () => {
@@ -196,7 +148,7 @@ export default function App() {
     setReleaseInfo({
       upc: "",
       albumTitle: "",
-      albumArtist: [""],
+      albumArtist: "",
       numTracks: "1",
       distributor: "Believe",
       releaseDate: "",
@@ -206,53 +158,18 @@ export default function App() {
     setTracks([{ ...createEmptyTrack(), trackNumber: 1 }]);
   };
 
-const handleClearForm = () => {
-  setReleaseInfo({
-    upc: "",
-    albumTitle: "",
-    albumArtist: [""],
-    numTracks: "1",
-    distributor: "Believe",
-    releaseDate: "",
-    typeOfRelease: "",
-    coverArt: null,
-    coverArtPreview: null,
-  });
-
-  setTracks([{ ...createEmptyTrack(), trackNumber: 1 }]);
-
-
-  // Optionally clear UI states
-  setSuggestions([]);
-  setUpcSuggestions([]);
-  setAlbumSuggestions([]);
-  setArtistSuggestions([]);
-};
-
-
-
-
   const [upcSearch, setUpcSearch] = useState("");
   const [tracks, setTracks] = useState([{ ...createEmptyTrack(), collapsed: false }]);
   const [releaseInfo, setReleaseInfo] = useState({
     upc: "",
     albumTitle: "",
-    albumArtist: [""],
+    albumArtist: "",
     numTracks: "1",
     distributor: "Believe",
     releaseDate: "",
     typeOfRelease: "",
     coverArtPreview: null,
   });
-
-const maybeAutofillPLine = (i, label, releaseDate) => {
-  if (!label || !releaseDate) return;
-
-  const releaseYear = new Date(releaseDate).getFullYear();
-  const pLine = `${releaseYear} ${label.trim()}`;
-  handleTrackChange(i, "trackPLine", pLine);
-};
-
 
 
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
@@ -279,26 +196,6 @@ const [artistDB, setArtistDB] = useState([]);
 const [catalogDB, setCatalogDB] = useState([]);
 const [publishersDB, setPublishersDB] = useState([]);
 const [activePrimaryInputIndex, setActivePrimaryInputIndex] = useState(null);
-const [adminSuggestions, setAdminSuggestions] = useState([]);
-const [highlightedAdminIndex, setHighlightedAdminIndex] = useState(0);
-const [activeAdminField, setActiveAdminField] = useState(null); // { trackIndex, composerIndex }
-const [isSubmitting, setIsSubmitting] = useState(false);
-const [publisherData, setPublisherData] = useState([]);
-const [composerData, setComposerData] = useState([]);
-
-
-
-const handleTrackArtistChange = (trackIndex, artistIndex, value) => {
-  const updated = [...tracks];
-  updated[trackIndex].trackArtistNames[artistIndex] = value;
-  setTracks(updated);
-};
-
-const addTrackArtist = (trackIndex) => {
-  const updated = [...tracks];
-  updated[trackIndex].trackArtistNames.push("");
-  setTracks(updated);
-};
 
 
 useEffect(() => {
@@ -340,25 +237,16 @@ useEffect(() => {
 }, [albumSearch, catalogDB]);
 
 
-
-
 useEffect(() => {
-  fetch(PUBLISHERS_DB_URL)
-    .then(res => res.json())
-    .then(data => {
-      console.log("✅ Raw PublishersDB data:", data);
-      const normalized = data.map(p => ({
-        publisher: p.publisher || "",
-        publisherIPI: p.publisheripi || "",
-        publisherPRO: p.publisherpro || "",
-        publisheradmin: p.publisheradmin || "",
-        publisheradminIPI: p.publisheradminipi || "",
-        publisheradminShare: p.publisheradmincollectionshare || "",
-      }));
-      console.log("✅ Normalized PublishersDB:", normalized);
-      setPublishersDB(normalized);  // ← THIS MUST BE CALLED
+  fetch("https://script.google.com/macros/s/AKfycbxLn5bYMpKlLtCScFiIWEbEuiMFR4J18ujvo9RyRumD3EQhXG47iYhIrviDE1vJ2fpG/exec")
+    .then((res) => res.json())
+    .then((data) => {
+     console.log("Raw PublishersDB data:", publishersDB);
+      setPublishersDB(data);
     })
-    .catch(err => console.error("Failed to fetch PublishersDB", err));
+    .catch((err) => {
+      console.error("Failed to fetch PublishersDB", err);
+    });
 }, []);
 
 const handleAlbumSuggestionClick = (albumEntry) => {
@@ -372,23 +260,7 @@ const handleAlbumSuggestionClick = (albumEntry) => {
   setReleaseInfo((prev) => ({
     ...prev,
     albumTitle: main["Album Title"] || "",
-albumArtist: (() => {
-  if (main["Album Artists"]) {
-    try {
-      const parsed = JSON.parse(main["Album Artists"]);
-      return Array.isArray(parsed) ? parsed : [String(parsed)];
-    } catch (e) {
-      console.error("Error parsing Album Artists:", e);
-      return [main["Album Artist"] || ""];
-    }
-  } else {
-    return main["Album Artist"]
-      ? Array.isArray(main["Album Artist"])
-        ? main["Album Artist"]
-        : [main["Album Artist"]]
-      : [""];
-  }
-})(),
+    albumArtist: main["Album Artist"] || "",
     upc: main["UPC"] || "",
     distributor: main["Distributor"] || "",
 releaseDate: main["Digital Release Date"]
@@ -411,106 +283,85 @@ releaseDate: main["Digital Release Date"]
     }
 console.log("🔍 Publisher sample:", publisherData[0]);
 
-const composers = composerData.map((c) => {
-  return {
-    firstName: c["First Name"] || "",
-    middleName: c["Middle Name"] || "",
-    lastName: c["Last Name"] || "",
-    ipi: c["IPI"] || "",
-    pro: c["PRO"] || "",
-    roleCode: c["Role Code"] || "",
-    split: c["Split"] || "",
-    composeraddress: c["Address"] || "",
-    composercity: c["City"] || "",
-    composerstate: c["State"] || "",
-    composerzip: c["Zip"] || "",
-    publisher: c["Publisher"] || "",
-    publisherIPI: c["Publisher IPI"] || "",
-    publisherPRO: c["Publisher PRO"] || "",
-    pubadmin: c["Publisher Admin"] || "",
-    pubadminIPI: c["Publisher Admin IPI"] || "",
-    pubadminShare: c["Publisher Admin Collection Share"] || "",
-    collapsed: true,
-  };
-});
+    const composers = composerData.map((c, idx) => {
+      const pub = publisherData[idx] || {};
+      return {
+        firstName: c["First Name"] || "",
+        middleName: c["Middle Name"] || "",
+        lastName: c["Last Name"] || "",
+        ipi: c["IPI"] || "",
+        pro: c["PRO"] || "",
+        roleCode: c["Role Code"] || "",
+        split: c["Split"] || "",
+        composeraddress: c["Address"] || "",
+        composercity: c["City"] || "",
+        composerstate: c["State"] || "",
+        composerzip: c["Zip"] || "",
+        publisher: pub["Publisher"] || "",
+        publisherIPI: pub["Publisher IPI"] || "",
+        publisherPRO: pub["Publisher PRO"] || "",
+        pubadmin: entry["Publisher Admin"] || "",
+        pubadminIPI: entry["Publisher Admin IPI"] || "",
+        pubadminShare: entry["Publisher Admin Collection Share"] || "",
+      };
+    });
 
-    // ✅ Handle multiple track artists
-let trackArtists = [];
+    return {
+      primaryTitle: entry["Primary Title"] || "",
+      trackArtistName: entry["Track Artist Name"] || "",
+      trackNumber: entry["Track Number"] || "",
+      recordingTitle: entry["Recording Title"] || "",
+      akaTitle: entry["AKA Title"] || "",
+      akaTypeCode: entry["AKA Type Code"] || "",
+      isrc: entry["ISRC"] || "",
+      iswc: entry["ISWC"] || "",
+duration: (() => {
+  const raw = normalizeDuration(entry["Duration"]);
+  if (!raw) return "";
 
-try {
-  const possibleArray = JSON.parse(entry["Track Artist Name"]);
-  if (Array.isArray(possibleArray)) {
-    trackArtists = possibleArray;
-   console.log("✅ Parsed track artist array:", trackArtists);
+  if (typeof raw === "string" && /^\d+:\d{2}$/.test(raw)) {
+    // already in mm:ss format
+    return raw;
   }
-} catch {
-  // Not a JSON array, fall back to gathering from individual fields
-  for (let k = 1; k <= 8; k++) {
-  const key = k === 1 ? "Track Artist Name" : `Track Artist Name ${k}`;
-  const value = entry[key];
-  if (value && value.trim()) {
-    trackArtists.push(value.trim());
+
+  if (typeof raw === "string" && raw.includes("T")) {
+    try {
+      const date = new Date(raw);
+      const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+      const seconds = String(date.getUTCSeconds()).padStart(2, "0");
+      return `${minutes}:${seconds}`;
+    } catch (err) {
+      return "";
+    }
   }
-}
-}
 
-
-
-
-// Default to one empty string if still empty
-if (trackArtists.length === 0) trackArtists.push("");
-
-return {
-  primaryTitle: entry["Primary Title"] || "",
-  trackArtistNames: trackArtists,
-  trackNumber: entry["Track Number"] || "",
-  recordingTitle: entry["Recording Title"] || "",
-  akaTitle: entry["AKA Title"] || "",
-  akaTypeCode: entry["AKA Type Code"] || "",
-  isrc: entry["ISRC"] || "",
-  iswc: entry["ISWC"] || "",
-  duration: normalizeDuration(entry["Duration"]),
-  trackLabel: entry["Track Label"] || "",
-  trackPLine: entry["Track P Line"] || "",
-  composers,
-  collapsed: true,
-};
+  return raw;
+})(),
+      trackLabel: entry["Track Label"] || "",
+      trackPLine: entry["Track P Line"] || "",
+      composers,
+    };
   });
 
   setTracks(newTracks);
   setAlbumSuggestions([]);
   toast.success(`✅ ${newTracks.length} track(s) loaded from album`);
-};
-
-const [publisherSuggestions, setPublisherSuggestions] = useState([]);
+};const [publisherSuggestions, setPublisherSuggestions] = useState([]);
 const [activePublisherField, setActivePublisherField] = useState(null);
 const handlePublisherSuggestionClick = (publisherData, trackIndex, composerIndex) => {
   const updated = [...tracks];
   updated[trackIndex].composers[composerIndex] = {
     ...updated[trackIndex].composers[composerIndex],
     publisher: publisherData.publisher || "",
-    publisherIPI: publisherData.publisheripi || "", // lowercase!
-    publisherPRO: publisherData.publisherpro || "", // lowercase!
-    pubadmin: publisherData.publisheradmin || "",   // match exact key
-    pubadminIPI: publisherData.publisheradminipi || "",
-    pubadminShare: publisherData.publisheradmincollectionshare || ""
+    publisherIPI: publisherData.publisherIPI || "",
+    publisherPRO: publisherData.publisherPRO || "",
+    pubadmin: publisherData.pubadmin || "",
+    pubadminIPI: publisherData.pubadminIPI || "",
+    pubadminShare: publisherData.pubadminShare || "",
   };
   setTracks(updated);
   setPublisherSuggestions([]);
 };
-
-const handleAdminSuggestionClick = (adminData, trackIndex, composerIndex) => {
-  const updated = [...tracks];
-  updated[trackIndex].composers[composerIndex] = {
-    ...updated[trackIndex].composers[composerIndex],
-    pubadmin: adminData.publisheradmin || "",
-    pubadminIPI: adminData.publisheradminipi || "",
-    pubadminShare: adminData.publisheradmincollectionshare || "",
-  };
-  setTracks(updated);
-  setAdminSuggestions([]);
-};
-
 
 const handleUpcSuggestionClick = (entry) => {
   const upc = entry["UPC"];
@@ -526,23 +377,7 @@ const handleUpcSuggestionClick = (entry) => {
   setReleaseInfo((prev) => ({
     ...prev,
     albumTitle: main["Album Title"] || "",
-albumArtist: (() => {
-  if (main["Album Artists"]) {
-    try {
-      const parsed = JSON.parse(main["Album Artists"]);
-      return Array.isArray(parsed) ? parsed : [String(parsed)];
-    } catch (e) {
-      console.error("Error parsing Album Artists:", e);
-      return [main["Album Artist"] || ""];
-    }
-  } else {
-    return main["Album Artist"]
-      ? Array.isArray(main["Album Artist"])
-        ? main["Album Artist"]
-        : [main["Album Artist"]]
-      : [""];
-  }
-})(),
+    albumArtist: main["Album Artist"] || "",
     upc: main["UPC"] || "",
     distributor: main["Distributor"] || "",
 releaseDate: main["Digital Release Date"]
@@ -564,43 +399,32 @@ releaseDate: main["Digital Release Date"]
       console.error("Error parsing composer or publisher data", err);
     }
 
-    const composers = composerData.map((c) => {
-  return {
-    firstName: c["First Name"] || "",
-    middleName: c["Middle Name"] || "",
-    lastName: c["Last Name"] || "",
-    ipi: c["IPI"] || "",
-    pro: c["PRO"] || "",
-    roleCode: c["Role Code"] || "",
-    split: c["Split"] || "",
-    composeraddress: c["Address"] || "",
-    composercity: c["City"] || "",
-    composerstate: c["State"] || "",
-    composerzip: c["Zip"] || "",
-    publisher: c["Publisher"] || "",
-    publisherIPI: c["Publisher IPI"] || "",
-    publisherPRO: c["Publisher PRO"] || "",
-    pubadmin: c["Publisher Admin"] || "",
-    pubadminIPI: c["Publisher Admin IPI"] || "",
-    pubadminShare: c["Publisher Admin Collection Share"] || "",
-    collapsed: true,
-  };
-});
+    const composers = composerData.map((c, idx) => {
+      const pub = publisherData[idx] || {};
+      return {
+        firstName: c["First Name"] || "",
+        middleName: c["Middle Name"] || "",
+        lastName: c["Last Name"] || "",
+        ipi: c["IPI"] || "",
+        pro: c["PRO"] || "",
+        roleCode: c["Role Code"] || "",
+        split: c["Split"] || "",
+        composeraddress: c["Address"] || "",
+        composercity: c["City"] || "",
+        composerstate: c["State"] || "",
+        composerzip: c["Zip"] || "",
+        publisher: pub["Publisher"] || "",
+        publisherIPI: pub["Publisher IPI"] || "",
+        publisherPRO: pub["Publisher PRO"] || "",
+        pubadmin: entry["Publisher Admin"] || "",
+        pubadminIPI: entry["Publisher Admin IPI"] || "",
+        pubadminShare: entry["Publisher Admin Collection Share"] || "",
+      };
+    });
 
     return {
       primaryTitle: entry["Primary Title"] || "",
-trackArtistNames: (() => {
-  const raw = entry["Track Artist Name"];
-  if (!raw) return [""];
-  if (Array.isArray(raw)) return raw;
-
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [String(parsed)];
-  } catch {
-    return [String(raw)];
-  }
-})(),
+      trackArtistName: entry["Track Artist Name"] || "",
       trackNumber: entry["Track Number"] || "",
       recordingTitle: entry["Recording Title"] || "",
       akaTitle: entry["AKA Title"] || "",
@@ -611,7 +435,6 @@ duration: normalizeDuration(entry["Duration"]),
       trackLabel: entry["Track Label"] || "",
       trackPLine: entry["Track P Line"] || "",
       composers,
-      collapsed: true
     };
   });
 
@@ -656,18 +479,7 @@ const handleUpcSuggestionSelect = (entry) => {
     setTracks([
       {
         primaryTitle: entry["Primary Title"] || "",
-trackArtistNames: (() => {
-  const raw = entry["Track Artist Name"];
-  if (!raw) return [""];
-  if (Array.isArray(raw)) return raw;
-
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [String(parsed)];
-  } catch {
-    return [String(raw)];
-  }
-})(),
+        trackArtistName: entry["Track Artist Name"] || "",
         trackNumber: entry["Track Number"] || "",
         recordingTitle: entry["Recording Title"] || "",
         akaTitle: entry["AKA Title"] || "",
@@ -702,20 +514,6 @@ duration: normalizeDuration(entry["Duration"]),
     }
   };
   document.addEventListener("mousedown", handleClickOutside);
-  
-  const handleTrackArtistChange = (trackIndex, artistIndex, value) => {
-    const updated = [...tracks];
-    updated[trackIndex].trackArtistNames[artistIndex] = value;
-    setTracks(updated);
-  };
-
-  const addTrackArtist = (trackIndex) => {
-    const updated = [...tracks];
-    updated[trackIndex].trackArtistNames.push("");
-    setTracks(updated);
-  };
-
-
   return () => {
     document.removeEventListener("mousedown", handleClickOutside);
   };
@@ -816,33 +614,26 @@ useEffect(() => {
     trackAddedRef.current = false; // reset after scroll
   }
 }, [tracks.length]);
-function createEmptyTrack() {
-  return {
-    trackNumber: "",
-    primaryTitle: "",
-    recordingTitle: "",
-    akaTitle: "",
-    akaTypeCode: "",
-    countryRelease: "United States",
-    basisClaim: "Copyright Owner",
-    percentClaim: "",
-    collectionEnd: "",
-    nonUSRights: "Worldwide",
-    genre: "Regional Mexican",
-    recDate: "",
-    audioFile: null,
-    isrc: "",
-    iswc: "",
-    trackLabel: "",
-    duration: "",
-    trackPLine: "",
-    trackArtistNames: [""], // <-- update from single to array
-    typeOfRelease: "",
-    collapsed: true,
-    composers: [createEmptyComposer()],
-    publishers: [],
-  };
-}
+  function createEmptyTrack() {
+    return {
+      trackNumber: "",
+      primaryTitle: "",
+      recordingTitle: "",
+      akaTitle: "",
+      akaTypeCode: "",
+      audioFile: null,
+      isrc: "",
+      iswc: "",
+      trackLabel: "",
+      duration: "",
+      trackPLine: "",
+      trackArtistName: "",
+      typeOfRelease: "",
+      collapsed: true,
+      composers: [createEmptyComposer()],
+      publishers: [],
+    };
+  }
 
   function createEmptyComposer() {
     return {
@@ -856,7 +647,7 @@ function createEmptyTrack() {
       ipi: "",
       split: "",
       pro: "",
-      roleCode: "CA",
+      roleCode: "",
       publisher: "",
       publisherIPI: "",
       publisherPRO: "",
@@ -872,27 +663,9 @@ function createEmptyTrack() {
     setTracks(updated);
   };
 
-
-
-
-
 const handleComposerChange = (trackIndex, composerIndex, field, value) => {
   const updated = [...tracks];
   updated[trackIndex].composers[composerIndex][field] = value;
-
-if (field === "publisheradmin") {
-  console.log("📥 Admin input typed:", value);
-  const input = value.toLowerCase();
-  const matches = publishersDB.filter((p) =>
-    p.publisheradmin?.toLowerCase?.().startsWith(input)
-  );
-  console.log("📚 publishersDB:", publishersDB);
-  console.log("✅ Matched admins:", matches);
-  setAdminSuggestions(matches);
-  setHighlightedAdminIndex(0);
-  setActiveAdminField({ trackIndex, composerIndex });
-}
-
 
   // Composer name suggestions (first/last)
   if (field === "firstName" || field === "lastName") {
@@ -920,16 +693,6 @@ if (field === "publisheradmin") {
           ...match     // fill rest
         };
         setSuggestions([]);
-
-if (field === "pubadmin") {
-  const input = value.toLowerCase();
-  const matches = publishersDB.filter((p) =>
-    p.pubadmin?.toLowerCase?.().startsWith(input)
-  );
-  setAdminSuggestions(matches);
-  setHighlightedAdminIndex(0);
-  setActiveAdminField({ trackIndex, composerIndex });
-}
       }
     }
   }
@@ -937,17 +700,9 @@ if (field === "pubadmin") {
   // Publisher name suggestions
   if (field === "publisher") {
     const input = value.toLowerCase();
-
-
-    // ✅ Add debug logs here
-    console.log("📥 User typed:", input);
-    console.log("📚 publishersDB:", publishersDB);
-
     const matches = publishersDB.filter((p) =>
       p.publisher?.toLowerCase?.().startsWith(input)
     );
-
-    console.log("✅ Matched publishers:", matches); // 👈 This is the key one
     setPublisherSuggestions(matches);
     setHighlightedIndex(0);
     setActivePublisherField({ trackIndex, composerIndex });
@@ -1011,72 +766,43 @@ const handleUpcSearch = () => {
       console.error("Error parsing composer or publisher data", err);
     }
 
-    const composers = composerData.map((c) => {
-  return {
-    firstName: c["First Name"] || "",
-    middleName: c["Middle Name"] || "",
-    lastName: c["Last Name"] || "",
-    ipi: c["IPI"] || "",
-    pro: c["PRO"] || "",
-    roleCode: c["Role Code"] || "",
-    split: c["Split"] || "",
-    composeraddress: c["Address"] || "",
-    composercity: c["City"] || "",
-    composerstate: c["State"] || "",
-    composerzip: c["Zip"] || "",
-    publisher: c["Publisher"] || "",
-    publisherIPI: c["Publisher IPI"] || "",
-    publisherPRO: c["Publisher PRO"] || "",
-    pubadmin: c["Publisher Admin"] || "",
-    pubadminIPI: c["Publisher Admin IPI"] || "",
-    pubadminShare: c["Publisher Admin Collection Share"] || "",
-    collapsed: true,
-  };
-});
+    const composers = composerData.map((c, idx) => {
+      const pub = publisherData[idx] || {};
+      return {
+        firstName: c["First Name"] || "",
+        middleName: c["Middle Name"] || "",
+        lastName: c["Last Name"] || "",
+        ipi: c["IPI"] || "",
+        pro: c["PRO"] || "",
+        roleCode: c["Role Code"] || "",
+        split: c["Split"] || "",
+        composeraddress: c["Address"] || "",
+        composercity: c["City"] || "",
+        composerstate: c["State"] || "",
+        composerzip: c["Zip"] || "",
+        publisher: pub["Publisher"] || "",
+        publisherIPI: pub["Publisher IPI"] || "",
+        publisherPRO: pub["Publisher PRO"] || "",
+        pubadmin: pub["Publisher Admin"] || "",
+        pubadminIPI: pub["Publisher Admin IPI"] || "",
+        pubadminShare: pub["Publisher Admin Collection Share"] || "",
+      };
+    });
 
-    // ✅ Handle multiple track artists
-let trackArtists = [];
-
-try {
-  const possibleArray = JSON.parse(entry["Track Artist Name"]);
-  if (Array.isArray(possibleArray)) {
-    trackArtists = possibleArray;
-  }
-} catch {
-  // Not a JSON array, fall back to gathering from individual fields
-  for (let k = 0; k <= 8; k++) {
-    const key = k === 0 ? "Track Artist Name" : `Track Artist Name ${k}`;
-    const value = entry[key];
-    if (value && value.trim()) {
-      trackArtists.push(value.trim());
-    }
-  }
-}
-
-// Default to one empty string if still empty
-if (trackArtists.length === 0) trackArtists.push("");
-
-return {
-  primaryTitle: entry["Primary Title"] || "",
-  trackArtistNames: trackArtists,
-  trackNumber: entry["Track Number"] || "",
-  recordingTitle: entry["Recording Title"] || "",
-  akaTitle: entry["AKA Title"] || "",
-  akaTypeCode: entry["AKA Type Code"] || "",
-  countryRelease: entry["United States"] || "",
-  basisClaim:  entry["Copyright Owner"] || "",
-  percentClaim: entry["Percent Claim"] || "",
-  collectionEnd: entry["Collection End Date"] || "",
-  nonUSRights: entry["Non US Rights"] || "",
-  genre: entry["Genre"] || "",
-  recDate: entry["Recording Date"] || "",
-  isrc: entry["ISRC"] || "",
-  iswc: entry["ISWC"] || "",
-  duration: normalizeDuration(entry["Duration"]),
-  trackLabel: entry["Track Label"] || "",
-  trackPLine: entry["Track P Line"] || "",
-  composers,
-};
+    return {
+      primaryTitle: entry["Primary Title"] || "",
+      trackArtistName: entry["Track Artist Name"] || "",
+      trackNumber: entry["Track Number"] || "",
+      recordingTitle: entry["Recording Title"] || "",
+      akaTitle: entry["AKA Title"] || "",
+      akaTypeCode: entry["AKA Type Code (MLC)"] || "",
+      isrc: entry["ISRC"] || "",
+      iswc: entry["ISWC"] || "",
+duration: normalizeDuration(entry["Duration"]),
+      trackLabel: entry["Track Label"] || "",
+      trackPLine: entry["Track P Line"] || "",
+      composers,
+    };
   });
 
   setTracks(newTracks);
@@ -1109,92 +835,8 @@ return {
   }
 };
 
-const addAlbumArtist = () => {
-  setReleaseInfo(prev => ({
-    ...prev,
-    albumArtist: [...prev.albumArtist, ""],
-  }));
-};
-
-const handleAlbumArtistChange = (index, value) => {
-  const updated = [...releaseInfo.albumArtist];
-  updated[index] = value;
-  setReleaseInfo(prev => ({
-    ...prev,
-    albumArtist: updated,
-  }));
-};
-
-
-
-
   function renderInput(label, value, onChange, placeholder = "") {
-    
-  const handleTrackArtistChange = (trackIndex, artistIndex, value) => {
-    const updated = [...tracks];
-    updated[trackIndex].trackArtistNames[artistIndex] = value;
-    setTracks(updated);
-  };
-
-  const addTrackArtist = (trackIndex) => {
-    const updated = [...tracks];
-    updated[trackIndex].trackArtistNames.push("");
-    setTracks(updated);
-  };
-
-const handleSubmit = async () => {
-  try {
-    setIsSubmitting(true);
-
-    // Send releaseInfo
-    await fetch(ARTISTS_DB_URL, {
-      method: "POST",
-      body: JSON.stringify(releaseInfo),
-      headers: { "Content-Type": "application/json" },
-    });
-
-    // Send each track
-    for (const track of tracks) {
-      await fetch(CATALOG_DB_URL, {
-        method: "POST",
-        body: JSON.stringify(track),
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    // Send each composer
-    for (const composer of composerData) {
-      await fetch(COMPOSERS_DB_URL, {
-        method: "POST",
-        body: JSON.stringify(composer),
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    // Send each publisher if applicable
-    if (publisherData?.length) {
-      for (const publisher of publisherData) {
-        await fetch(PUBLISHERS_DB_URL, {
-          method: "POST",
-          body: JSON.stringify(publisher),
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-    }
-
-    alert("✅ Data submitted successfully!");
-    handleClearForm(); // Optional: reset form
-  } catch (err) {
-    console.error("❌ Submission error:", err);
-    alert("❌ Submission failed. Check the console.");
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
-
-
-  return (
+    return (
 
       <div className="flex flex-col">
         <label className="text-sm font-medium text-gray-700 mb-1">{label}</label>
@@ -1225,13 +867,11 @@ const handleSubmit = async () => {
 const handleSubmit = async () => {
   const payload = {
     releaseInfo,
-    tracks,
-    composerData,
-    publisherData,
+    tracks
   };
 
   try {
-    const response = await fetch("https://rigoletto.app.n8n.cloud/webhook-test/fd8ebef7-dccb-4b7f-9381-1702ea074949", {
+    const response = await fetch("https://your-n8n.com/webhook/form-submit", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -1249,12 +889,6 @@ const handleSubmit = async () => {
     alert("Something went wrong.");
   }
 };
-
-  
-
-
-
-
 
   return (
 
@@ -1339,115 +973,7 @@ const handleSubmit = async () => {
     </ul>
   )}
 </div>
-
-<div className="flex flex-col">
-  <label className="text-sm font-medium text-gray-700 mb-1">{albumArtistLabel}(s)</label>
-{Array.isArray(releaseInfo.albumArtist) &&
-  releaseInfo.albumArtist.map((artist, idx) => (
-  <React.Fragment key={idx}>
-    <div className="relative flex items-center mb-2">
-      <input
-        type="text"
-        value={artist}
-        placeholder={`Artist ${idx + 1}`}
-        onChange={(e) => {
-          const value = e.target.value;
-          handleAlbumArtistChange(idx, value);
-
-          if (value.length > 0) {
-            const matches = artistDB
-              .map((a) => a["Artist Name"])
-              .filter((name) =>
-                name?.toLowerCase().startsWith(value.toLowerCase())
-              );
-            setArtistSuggestions(matches);
-            setHighlightedArtistIndex(0);
-            setActiveArtistInputIndex(`album-${idx}`);
-          } else {
-            setArtistSuggestions([]);
-            setActiveArtistInputIndex(null);
-          }
-        }}
-        onKeyDown={(e) => {
-          if (artistSuggestions.length > 0) {
-            if (e.key === "ArrowDown") {
-              e.preventDefault();
-              setHighlightedArtistIndex((prev) =>
-                prev < artistSuggestions.length - 1 ? prev + 1 : 0
-              );
-            } else if (e.key === "ArrowUp") {
-              e.preventDefault();
-              setHighlightedArtistIndex((prev) =>
-                prev > 0 ? prev - 1 : artistSuggestions.length - 1
-              );
-            } else if (e.key === "Enter") {
-              e.preventDefault();
-              const selected = artistSuggestions[highlightedArtistIndex];
-              if (selected) {
-                handleAlbumArtistChange(idx, selected);
-                setArtistSuggestions([]);
-                setActiveArtistInputIndex(null);
-              }
-            }
-          }
-        }}
-        onBlur={() => setTimeout(() => setArtistSuggestions([]), 150)}
-        className="p-2 border border-gray-300 rounded-md w-full"
-      />
-
-      {/* Trashcan to remove artist */}
-      {releaseInfo.albumArtist.length > 1 && (
-        <button
-          type="button"
-          onClick={() => {
-            const updated = [...releaseInfo.albumArtist];
-            updated.splice(idx, 1);
-            setReleaseInfo((prev) => ({
-              ...prev,
-              albumArtist: updated,
-            }));
-          }}
-          className="ml-2 text-red-500 hover:text-red-700 text-lg"
-          title="Remove Artist"
-        >
-          🗑️
-        </button>
-      )}
-    </div>
-
-    {/* Suggestions Dropdown */}
-    {activeArtistInputIndex === `album-${idx}` &&
-      artistSuggestions.length > 0 && (
-        <ul className="absolute z-10 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
-          {artistSuggestions.map((name, i) => (
-            <li
-              key={i}
-              className={`p-2 cursor-pointer ${
-                highlightedArtistIndex === i ? "bg-blue-100" : ""
-              }`}
-              onMouseDown={() => {
-                handleAlbumArtistChange(idx, name);
-                setArtistSuggestions([]);
-                setActiveArtistInputIndex(null);
-              }}
-            >
-              {name}
-            </li>
-          ))}
-        </ul>
-      )}
-  </React.Fragment>
-))}
-  <button
-    type="button"
-    className="text-blue-600 hover:text-blue-800 text-sm mt-1 self-start"
-    onClick={addAlbumArtist}
-  >
-    + Add Another Artist
-  </button>
-</div>
-
-
+            {renderInput(albumArtistLabel, releaseInfo.albumArtist, (e) => handleReleaseInfoChange("albumArtist", e.target.value))}
 <div className="flex flex-col">
   <label className="text-sm font-medium text-gray-700 mb-1">Digital Release Date</label>
   <input
@@ -1468,7 +994,6 @@ const handleSubmit = async () => {
       const value = e.target.value;
       handleReleaseInfoChange("albumTitle", value);
       setAlbumSearch(value);
-      setHighlightedAlbumIndex(0); // 👈 reinicia selección al escribir
     }}
     onKeyDown={(e) => {
       if (albumSuggestions.length > 0) {
@@ -1479,9 +1004,7 @@ const handleSubmit = async () => {
           );
         } else if (e.key === "ArrowUp") {
           e.preventDefault();
-          setHighlightedAlbumIndex((prev) =>
-            prev > 0 ? prev - 1 : 0
-          );
+          setHighlightedAlbumIndex((prev) => (prev > 0 ? prev - 1 : 0));
         } else if (e.key === "Enter") {
           e.preventDefault();
           if (highlightedAlbumIndex >= 0) {
@@ -1500,11 +1023,10 @@ const handleSubmit = async () => {
       {albumSuggestions.map((sugg, idx) => (
         <li
           key={idx}
-          className={`p-2 cursor-pointer ${
-            highlightedAlbumIndex === idx ? "bg-blue-100" : "hover:bg-blue-50"
+          className={`p-2 hover:bg-blue-100 cursor-pointer ${
+            highlightedAlbumIndex === idx ? "bg-blue-100" : ""
           }`}
           onMouseDown={() => handleAlbumSuggestionClick(sugg)}
-          onMouseEnter={() => setHighlightedAlbumIndex(idx)} // 👈 esto permite resaltar con el mouse
         >
           {sugg["Album Title"] || "Unknown Album"} — {sugg["Album Artist"] || "Unknown Artist"}
         </li>
@@ -1579,27 +1101,17 @@ const handleSubmit = async () => {
 
   }}
 >
-<div className="flex items-center justify-between w-full">
-  <span>
-    Track {i + 1} Information
-    {tracks[i]?.primaryTitle && (
-      <span className="text-gray-500 italic text-sm ml-2">
-        – “{tracks[i].primaryTitle}”
-      </span>
-    )}
-  </span>
-
+  <span>Track {i + 1} Information</span>
   <span
-    className="text-gray-400 hover:text-red-600 text-xl ml-4 cursor-pointer"
+    className="text-gray-400 hover:text-red-600 text-xl ml-4"
     title="Delete Track"
     onClick={(e) => {
-      e.stopPropagation();
-      removeTrack(i);
+      e.stopPropagation(); // prevent collapse toggle
+      removeTrack(i); // you must define this function above your return
     }}
   >
     🗑️
   </span>
-</div>
 </summary>
 
 
@@ -1607,7 +1119,6 @@ const handleSubmit = async () => {
 
            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
 {/* Primary Title */}
 <div className="relative flex flex-col">
   <label className="text-sm font-medium text-gray-700 mb-1">Primary Title</label>
@@ -1649,40 +1160,11 @@ console.log("🧩 Selected catalog entry:", entry);
 if (entry) {
   // Basic track info
   handleTrackChange(i, "primaryTitle", entry["Primary Title"] || "");
-let parsedTrackArtists = [];
-
-try {
-  if (Array.isArray(entry["Track Artist Name"])) {
-    parsedTrackArtists = entry["Track Artist Name"];
-  } else {
-    parsedTrackArtists = JSON.parse(entry["Track Artist Name"]);
-  }
-} catch {
-  // Fallback to individual fields
-  for (let k = 0; k <= 8; k++) {
-    const key = k === 0 ? "Track Artist Name" : `Track Artist Name ${k}`;
-    const value = entry[key];
-    if (value && value.trim()) {
-      parsedTrackArtists.push(value.trim());
-    }
-  }
-}
-
-if (parsedTrackArtists.length === 0) parsedTrackArtists.push("");
-
-// ✅ Now set it properly
-handleTrackChange(i, "trackArtistNames", parsedTrackArtists);
+  handleTrackChange(i, "trackArtistName", entry["Track Artist Name"] || "");
   handleTrackChange(i, "trackNumber", entry["Track Number"] || "");
   handleTrackChange(i, "recordingTitle", entry["Recording Title"] || "");
   handleTrackChange(i, "akaTitle", entry["AKA Title"] || "");
   handleTrackChange(i, "akaTypeCode", entry["AKA Type Code (MLC)"] || "");
-  handleTrackChange(i, "countryRelease", entry["United States"] || "");
-  handleTrackChange(i, "basisClaim",  entry["Copyright Owner"] || "");
-  handleTrackChange(i, "percentClaim", entry["Percent Claim"] || "");
-  handleTrackChange(i, "collectionEnd", entry["Collection End Date"] || "");
-  handleTrackChange(i, "nonUSRights", entry["Non US Rights"] || "");
-  handleTrackChange(i, "genre", entry["Genre"] || "");
-  handleTrackChange(i, "recDate", entry["Recording Date"] || "");
   handleTrackChange(i, "isrc", entry["ISRC"] || "");
   handleTrackChange(i, "iswc", entry["ISWC"] || "");
   handleTrackChange(i, "duration", normalizeDuration(entry["Duration"]) || "");
@@ -1779,40 +1261,11 @@ toast.success("🎼 Composer & Publisher Info Loaded", {
           }`}
           onMouseDown={() => {
   handleTrackChange(i, "primaryTitle", entry["Primary Title"] || "");
-let parsedTrackArtists = [];
-
-try {
-  if (Array.isArray(entry["Track Artist Name"])) {
-    parsedTrackArtists = entry["Track Artist Name"];
-  } else {
-    parsedTrackArtists = JSON.parse(entry["Track Artist Name"]);
-  }
-} catch {
-  // Fallback to individual fields
-  for (let k = 0; k <= 8; k++) {
-    const key = k === 0 ? "Track Artist Name" : `Track Artist Name ${k}`;
-    const value = entry[key];
-    if (value && value.trim()) {
-      parsedTrackArtists.push(value.trim());
-    }
-  }
-}
-
-if (parsedTrackArtists.length === 0) parsedTrackArtists.push("");
-
-// ✅ Now set it properly
-handleTrackChange(i, "trackArtistNames", parsedTrackArtists);
+  handleTrackChange(i, "trackArtistName", entry["Track Artist Name"] || "");
   handleTrackChange(i, "trackNumber", entry["Track Number"] || "");
   handleTrackChange(i, "recordingTitle", entry["Recording Title"] || "");
   handleTrackChange(i, "akaTitle", entry["AKA Title"] || "");
   handleTrackChange(i, "akaTypeCode", entry["AKA Type Code (MLC)"] || "");
-  handleTrackChange(i, "countryRelease", entry["United States"] || "");
-  handleTrackChange(i, "basisClaim",  entry["Copyright Owner"] || "");
-  handleTrackChange(i, "percentClaim", entry["Percent Claim"] || "");
-  handleTrackChange(i, "collectionEnd", entry["Collection End Date"] || "");
-  handleTrackChange(i, "nonUSRights", entry["Non US Rights"] || "");
-  handleTrackChange(i, "genre", entry["Genre"] || "");
-  handleTrackChange(i, "recDate", entry["Recording Date"] || "");
   handleTrackChange(i, "isrc", entry["ISRC"] || "");
   handleTrackChange(i, "iswc", entry["ISWC"] || "");
   handleTrackChange(i, "duration", normalizeDuration(entry["Duration"]) || "");
@@ -1853,25 +1306,24 @@ if (Array.isArray(composerData)) {
     ? publisherData.find(p => p["Publisher Admin"])
     : {};
 
- const composers = composerData.map((c) => ({
-  firstName: c["First Name"] || "",
-  middleName: c["Middle Name"] || "",
-  lastName: c["Last Name"] || "",
-  ipi: c["IPI"] || "",
-  pro: c["PRO"] || "",
-  roleCode: c["Role Code"] || "",
-  split: c["Split"] || "",
-  composeraddress: c["Address"] || "",
-  composercity: c["City"] || "",
-  composerstate: c["State"] || "",
-  composerzip: c["Zip"] || "",
-  publisher: c["Publisher"] || "",
-  publisherIPI: c["Publisher IPI"] || "",
-  publisherPRO: c["Publisher PRO"] || "",
-  pubadmin: c["Publisher Admin"] || "",
-  pubadminIPI: c["Publisher Admin IPI"] || "",
-  pubadminShare: c["Publisher Admin Collection Share"] || "",
-}));
+  const composers = composerData.map((c) => ({
+    firstName: c["First Name"] || "",
+    middleName: c["Middle Name"] || "",
+    lastName: c["Last Name"] || "",
+    ipi: c["IPI"] || "",
+    pro: c["PRO"] || "",
+    publisher: publisherInfo?.["Publisher"] || "",
+    publisherIPI: publisherInfo?.["Publisher IPI"] || "",
+    publisherPRO: publisherInfo?.["Publisher PRO"] || "",
+    pubadmin: adminInfo?.["Publisher Admin"] || "",
+    pubadminIPI: adminInfo?.["Publisher Admin IPI"] || "",
+    pubadminShare: adminInfo?.["Publisher Admin Collection Share"] || "",
+    composeraddress: c["Address"] || "",
+    composercity: c["City"] || "",
+    composerstate: c["State"] || "",
+    composerzip: c["Zip"] || "",
+    split: c["Split"] || ""
+  }));
 
   const updated = [...tracks];
   updated[i].composers = composers;
@@ -1884,9 +1336,7 @@ if (Array.isArray(composerData)) {
   setHighlightedTrackIndex(-1);
 }}
         >
-          {entry["Primary Title"]} – {Array.isArray(entry["Track Artist Name"])
-      ? entry["Track Artist Name"].join(", ")
-      : entry["Track Artist Name"] || "Unknown Artist"}
+          {entry["Primary Title"]}
         </li>
       ))}
     </ul>
@@ -1895,118 +1345,76 @@ if (Array.isArray(composerData)) {
 
 
 
-{/* Track Artist(s) with Search */}
-<div className="flex flex-col mb-4">
-  <label className="text-sm font-medium text-gray-700 mb-1">
-    Track Artist(s)
-  </label>
-
-  {track.trackArtistNames.map((artist, artistIndex) => (
-  <React.Fragment key={artistIndex}>
-    <div className="relative flex items-center mb-2">
-      <input
-        type="text"
-        disabled={isLocked}
-        value={artist}
-        placeholder={`Artist ${artistIndex + 1}`}
-        onChange={(e) => {
-          const value = e.target.value;
-          handleTrackArtistChange(i, artistIndex, value);
-
-          if (value.length > 0) {
-            const matches = artistDB
-              .map((a) => a["Artist Name"])
-              .filter((name) =>
-                name?.toLowerCase().startsWith(value.toLowerCase())
-              );
-            setArtistSuggestions(matches);
-            setHighlightedArtistIndex(0);
-            setActiveArtistInputIndex(`${i}-${artistIndex}`);
-          } else {
-            setArtistSuggestions([]);
-            setActiveArtistInputIndex(null);
-          }
+{/* Track Artist Name */}
+<div className="relative flex flex-col">
+  <label className="text-sm font-medium text-gray-700 mb-1">Track Artist Name</label>
+  <input
+   disabled={isLocked}type="text"
+  value={track.trackArtistName || ""}
+  onChange={(e) => {
+    const value = e.target.value;
+    handleTrackChange(i, "trackArtistName", value);
+    if (value.length >= 1) {
+      const matches = artistDB
+        .map((a) => a["Artist Name"])
+        .filter((name) =>
+          name?.toLowerCase().startsWith(value.toLowerCase())
+        );
+      setArtistSuggestions(matches);
+      setHighlightedArtistIndex(0);
+      setActiveArtistInputIndex(i);
+    } else {
+      setArtistSuggestions([]);
+      setActiveArtistInputIndex(null);
+    }
+  }}
+  onKeyDown={(e) => {
+    if (artistSuggestions.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setHighlightedArtistIndex((prev) =>
+          prev < artistSuggestions.length - 1 ? prev + 1 : 0
+        );
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setHighlightedArtistIndex((prev) =>
+          prev > 0 ? prev - 1 : artistSuggestions.length - 1
+        );
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (highlightedArtistIndex >= 0) {
+          const selected = artistSuggestions[highlightedArtistIndex];
+          handleTrackChange(i, "trackArtistName", selected);
+          setArtistSuggestions([]);
+          setActiveArtistInputIndex(null);
+        }
+      }
+    }
+  }}
+  onBlur={() => setTimeout(() => setArtistSuggestions([]), 150)}
+  placeholder="Start typing artist name"
+  className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+/>
+  {activeArtistInputIndex === i && artistSuggestions.length > 0 && (
+  <ul className="absolute z-10 mt-10 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+    {artistSuggestions.map((name, idx) => (
+      <li
+        key={idx}
+        className={`p-2 cursor-pointer ${
+          idx === highlightedArtistIndex ? "bg-blue-100" : ""
+        }`}
+        onMouseDown={() => {
+          handleTrackChange(i, "trackArtistName", name);
+          setArtistSuggestions([]);
+          setActiveArtistInputIndex(null);
         }}
-        onKeyDown={(e) => {
-          if (artistSuggestions.length > 0) {
-            if (e.key === "ArrowDown") {
-              e.preventDefault();
-              setHighlightedArtistIndex((prev) =>
-                prev < artistSuggestions.length - 1 ? prev + 1 : 0
-              );
-            } else if (e.key === "ArrowUp") {
-              e.preventDefault();
-              setHighlightedArtistIndex((prev) =>
-                prev > 0 ? prev - 1 : artistSuggestions.length - 1
-              );
-            } else if (e.key === "Enter") {
-              e.preventDefault();
-              const selected = artistSuggestions[highlightedArtistIndex];
-              if (selected) {
-                handleTrackArtistChange(i, artistIndex, selected);
-                setArtistSuggestions([]);
-                setActiveArtistInputIndex(null);
-              }
-            }
-          }
-        }}
-        onBlur={() => setTimeout(() => setArtistSuggestions([]), 150)}
-        className="p-2 border border-gray-300 rounded-md w-full"
-      />
-
-      {/* Remove button */}
-      {track.trackArtistNames.length > 1 && (
-        <button
-          type="button"
-          onClick={() => {
-            const updated = [...track.trackArtistNames];
-            updated.splice(artistIndex, 1);
-            const updatedTracks = [...tracks];
-            updatedTracks[i].trackArtistNames = updated;
-            setTracks(updatedTracks);
-          }}
-          className="ml-2 text-red-500 hover:text-red-700 text-lg"
-          title="Remove Artist"
-        >
-          🗑️
-        </button>
-      )}
-    </div>
-
-    {/* Suggestions Dropdown */}
-    {activeArtistInputIndex === `${i}-${artistIndex}` &&
-      artistSuggestions.length > 0 && (
-        <ul className="absolute z-10 mt-1 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
-          {artistSuggestions.map((name, idx) => (
-            <li
-              key={idx}
-              className={`p-2 cursor-pointer ${
-                idx === highlightedArtistIndex ? "bg-blue-100" : ""
-              }`}
-              onMouseDown={() => {
-                handleTrackArtistChange(i, artistIndex, name);
-                setArtistSuggestions([]);
-                setActiveArtistInputIndex(null);
-              }}
-            >
-              {name}
-            </li>
-          ))}
-        </ul>
-      )}
-  </React.Fragment>
-))}
-
-  <button
-    type="button"
-    onClick={() => addTrackArtist(i)}
-    className="text-blue-600 hover:text-blue-800 text-sm mt-1 self-start"
-  >
-    + Add Another Artist
-  </button>
+      >
+        {name}
+      </li>
+    ))}
+  </ul>
+)}
 </div>
-
-
 
 
   {/* Other Fields */}
@@ -2063,49 +1471,10 @@ if (Array.isArray(composerData)) {
   </div>
 
   {renderInput("Track number", track.trackNumber, (e) => handleTrackChange(i, "trackNumber", e.target.value))}
-
-<div className="flex flex-col">
-  <label className="text-sm font-medium text-gray-700 mb-1">Duration</label>
-  <input
-    disabled={isLocked}
-    type="text"
-    value={track.duration || ""}
-    onChange={(e) => {
-      const raw = e.target.value.replace(/\D/g, "").slice(0, 4); // only digits
-      handleTrackChange(i, "duration", raw); // store unformatted
-    }}
-    onBlur={(e) => {
-      const raw = e.target.value.replace(/\D/g, "").slice(0, 4);
-      let formatted = "";
-
-      if (raw.length >= 3) {
-        const minutes = raw.slice(0, raw.length - 2).padStart(2, "0");
-        const seconds = raw.slice(-2);
-        formatted = `${minutes}:${seconds}`;
-      } else if (raw.length > 0) {
-        formatted = `00:${raw.padStart(2, "0")}`;
-      }
-
-      handleTrackChange(i, "duration", formatted);
-    }}
-    placeholder="mm:ss"
-    className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-  />
-</div>
-{renderInput("Track label", track.trackLabel, (e) => {
-  const label = e.target.value;
-  handleTrackChange(i, "trackLabel", label);
-  maybeAutofillPLine(i, label, releaseInfo.releaseDate);
-})}
+  {renderInput("Duration", track.duration, (e) => handleTrackChange(i, "duration", e.target.value))}
+  {renderInput("Track label", track.trackLabel, (e) => handleTrackChange(i, "trackLabel", e.target.value))}
   {renderInput("Track P Line", track.trackPLine, (e) => handleTrackChange(i, "trackPLine", e.target.value))}
   {renderInput("AKA Type Code (MLC)", track.akaTypeCode, (e) => handleTrackChange(i, "akaTypeCode", e.target.value))}
-  {renderInput("Country of Release", track.countryRelease, (e) => handleTrackChange(i, "countryRelease", e.target.value))}
-  {renderInput("Basis of Claim", track.basisClaim, (e) => handleTrackChange(i, "basisClaim", e.target.value))}
-  {renderInput("Percentage Claimed", track.percentClaim, (e) => handleTrackChange(i, "percentClaim", e.target.value))}
-  {renderInput("Collection Rights End Date", track.collectionEnd, (e) => handleTrackChange(i, "collectionEnd", e.target.value))}
-  {renderInput("Non-US Collection Rights", track.nonUSRights, (e) => handleTrackChange(i, "nonUSRights", e.target.value))}
-  {renderInput("Genre", track.genre, (e) => handleTrackChange(i, "genre", e.target.value))}
-  {renderInput("Recording Date", track.recDate, (e) => handleTrackChange(i, "recDate", e.target.value))}
 
   {/* Audio Upload */}
   <div className="flex flex-col">
@@ -2129,11 +1498,7 @@ const removeComposer = (trackIndex, composerIndex) => {
   updated[trackIndex].composers.splice(composerIndex, 1);
   setTracks(updated);
 };
-                
-
-
-
-  return (
+                return (
                   <div key={key} ref={(el) => (composerRefs.current[key] = el)} className="mb-6 pb-4 border-b border-gray-300">
                     <div className="flex items-center justify-between mb-2">
   <h4 className="font-semibold text-blue-600">Composer {j + 1}</h4>
@@ -2216,7 +1581,7 @@ const removeComposer = (trackIndex, composerIndex) => {
         setActiveInput(null);
       }}
     >
-      {sugg.firstName} {sugg.middleName} {sugg.lastName}
+      {sugg.firstName} {sugg.lastName}
     </li>
   ))}
 </ul>
@@ -2291,7 +1656,7 @@ const removeComposer = (trackIndex, composerIndex) => {
             setSuggestions([]);
           }}
         >
-           {sugg.firstName} {sugg.middleName} {sugg.lastName}
+          {sugg.firstName} {sugg.lastName}
         </li>
       ))}
     </ul>
@@ -2377,68 +1742,10 @@ const removeComposer = (trackIndex, composerIndex) => {
 
 
                       {renderInput("Publisher IPI/CAE#", composer.publisherIPI, (e) => handleComposerChange(i, j, "publisherIPI", e.target.value))}
-
-                      
-<div className="flex flex-col relative">
-  <label className="text-sm font-medium text-gray-700 mb-1">Publisher Admin</label>
-  <input
-    disabled={isLocked}
-    type="text"
-    value={composer.pubadmin || ""}
-    onChange={(e) => handleComposerChange(i, j, "pubadmin", e.target.value)}
-    onKeyDown={(e) => {
-      if (adminSuggestions.length > 0) {
-        if (e.key === "ArrowDown") {
-          e.preventDefault();
-          setHighlightedAdminIndex((prev) =>
-            prev < adminSuggestions.length - 1 ? prev + 1 : prev
-          );
-        } else if (e.key === "ArrowUp") {
-          e.preventDefault();
-          setHighlightedAdminIndex((prev) => (prev > 0 ? prev - 1 : 0));
-        } else if (e.key === "Enter") {
-          e.preventDefault();
-          if (highlightedAdminIndex >= 0) {
-            handleAdminSuggestionClick(
-              adminSuggestions[highlightedAdminIndex],
-              i,
-              j
-            );
-          }
-        }
-      }
-    }}
-    onBlur={() => setTimeout(() => setAdminSuggestions([]), 200)}
-    onFocus={() => {
-      setActiveAdminField({ trackIndex: i, composerIndex: j });
-    }}
-    className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-  />
-
-  {activeAdminField?.trackIndex === i &&
-    activeAdminField?.composerIndex === j &&
-    adminSuggestions.length > 0 && (
-      <div className="absolute top-full left-0 w-full z-10 bg-white border border-gray-300 rounded-md shadow-md max-h-48 overflow-y-auto">
-        {adminSuggestions.map((s, idx) => (
-          <div
-            key={idx}
-            onMouseDown={() => handleAdminSuggestionClick(s, i, j)}
-            className={`px-3 py-2 cursor-pointer ${
-              idx === highlightedAdminIndex ? "bg-blue-100" : "hover:bg-blue-50"
-            }`}
-          >
-            {s.publisheradmin}
-          </div>
-        ))}
-      </div>
-    )}
-</div>
-
-                      {renderInput("Pub Admin IPI", composer.pubadminIPI, (e) => handleComposerChange(i, j, "pubadminIPI", e.target.value))}
                       {renderInput("Publisher PRO", composer.publisherPRO, (e) => handleComposerChange(i, j, "publisherPRO", e.target.value))}
+                      {renderInput("Pub Admin Name", composer.pubadmin, (e) => handleComposerChange(i, j, "pubadmin", e.target.value))}
+                      {renderInput("Pub Admin IPI", composer.pubadminIPI, (e) => handleComposerChange(i, j, "pubadminIPI", e.target.value))}
                       {renderInput("Pub Admin Collection Share", composer.pubadminShare, (e) => handleComposerChange(i, j, "pubadminShare", e.target.value))}
-                      
-                      
                     </div>
                   </div>
 
@@ -2459,19 +1766,11 @@ const removeComposer = (trackIndex, composerIndex) => {
           </div>
         ) : null}
       </div>
-<div className="text-center mt-10 space-x-4">
-  <button
-    type="button"
-    onClick={handleClearForm}
-    className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-3 rounded-md shadow text-md font-semibold"
-  >
-    Clear Form
-  </button>
-
+<div className="text-center mt-10">
   <button
     type="button"
     onClick={handleSubmit}
-    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md shadow text-md font-semibold"
+    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md shadow text-lg font-semibold"
   >
     Submit
   </button>
