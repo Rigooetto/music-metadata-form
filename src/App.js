@@ -1,11 +1,99 @@
-import React, { useState, useRef, useEffect } from "react";
+ import React, { useState, useRef, useEffect } from "react";
 import { Toaster, toast } from 'react-hot-toast';
 
+// 🗂️ Simulated local Composer database
+const mockComposersDB = [
+  {
+    firstName: "José",
+    middleName: "Luis",
+    lastName: "Pérez",
+    ipi: "123456789",
+    split: "50",
+    pro: "BMI",
+    roleCode: "C",
+    publisher: "Afinarte Publishing",
+    publisherIPI: "987654321",
+    publisherPRO: "BMI",
+    pubadmin: "Songs of Afinarte",
+    pubadminIPI: "456789123",
+    pubadminShare: "50",
+  },
+  {
+    firstName: "Maria",
+    middleName: "",
+    lastName: "Lopez",
+    ipi: "111222333",
+    split: "100",
+    pro: "ASCAP",
+    roleCode: "CA",
+    publisher: "Melodies Inc",
+    publisherIPI: "999888777",
+    publisherPRO: "ASCAP",
+    pubadmin: "Melodies Admin",
+    pubadminIPI: "222333444",
+    pubadminShare: "100",
+  },
 
+];
+const mockArtistsDB = [
+  {
+    name: "El Fantasma",
+    label: "Afinarte Music",
+  },
+  {
+    name: "Los Dos Carnales",
+    label: "Afinarte Music",
+  },
+  {
+    name: "La Zenda Norteña",
+    label: "Z Records",
+  },
+];
+const mockPublishersDB = [
+  {
+    name: "Afinarte Publishing",
+    ipi: "987654321",
+    pro: "BMI",
+    admin: "Songs of Afinarte",
+    adminIPI: "456789123",
+    adminShare: "50",
+  },
+  {
+    name: "Melodies Inc",
+    ipi: "999888777",
+    pro: "ASCAP",
+    admin: "Melodies Admin",
+    adminIPI: "222333444",
+    adminShare: "100",
+  },
+];
 
-
-
-
+const mockCatalogDB = [
+  {
+    primaryTitle: "El Corrido del Jefe",
+    recordingTitle: "El Corrido del Jefe",
+    akaTitle: "El Jefe",
+    akaTypeCode: "AKA",
+    isrc: "US-ABC-23-12345",
+    iswc: "T-123456789-0",
+    duration: "03:15",
+    trackLabel: "Afinarte Music",
+    trackPLine: "2025 Afinarte Music, LLC.",
+    trackArtistNames: "Los Patroncitos",
+  },
+  {
+    primaryTitle: "Mi Vida Loca",
+    recordingTitle: "Mi Vida Loca",
+    akaTitle: "Vida Loca",
+    akaTypeCode: "ALT",
+    isrc: "US-XYZ-24-67890",
+    iswc: "T-987654321-0",
+    duration: "02:50",
+    trackLabel: "Ranchero Records",
+    trackPLine: "2024 Ranchero Records, Inc.",
+    trackArtistNames: "Maria La Reina",
+  },
+];
 
 function normalizeReleaseRow(data) {
   const release = {
@@ -46,9 +134,6 @@ function normalizeReleaseRow(data) {
   return release;
 }
 
-
-
-
 function normalizeDuration(raw) {
   if (!raw) return "";
 
@@ -62,12 +147,12 @@ function normalizeDuration(raw) {
     const totalSeconds = Math.round(raw * 86400); // 24 * 60 * 60
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
-    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    return ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")};
   }
 
   // 🧠 Si es un número entero como 676 (lo tomamos como minutos)
   if (typeof raw === "number") {
-    return `${String(raw).padStart(2, "0")}:00`;
+    return ${String(raw).padStart(2, "0")}:00;
   }
 
   // 🧠 Si es una fecha tipo "1899-12-30T03:16:00.000Z"
@@ -76,7 +161,7 @@ function normalizeDuration(raw) {
       const date = new Date(raw);
       const minutes = date.getUTCHours() * 60 + date.getUTCMinutes();
       const seconds = date.getUTCSeconds();
-      return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+      return ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")};
     } catch (err) {
       console.warn("❌ Invalid duration datetime:", raw);
       return "";
@@ -86,18 +171,13 @@ function normalizeDuration(raw) {
   return raw;
 }
 
-
 const COMPOSERS_DB_URL = "https://script.google.com/macros/s/AKfycbzrJdRXwsv_tQrcuQMqEE9WfRN1ZDlqwUXqJ8k7o39eA1t5lXLwiExuZmMpDD_Dmvy4iw/exec";
 const ARTISTS_DB_URL = "https://script.google.com/macros/s/AKfycbzr3Mg2opXIyPXs5KZArgchglEyuZA-I135mYoL9aK2yuJIaHgCZSskdGS_mMiNShyw/exec";
 const CATALOG_DB_URL = "https://script.google.com/macros/s/AKfycbxdta-h0LUQ4bHSRLF_czTFlOyIbs4z2RQjixNgVYEJOeKNp7T2rwJhi9-SZcBs57Q6/exec";
 const PUBLISHERS_DB_URL = "https://script.google.com/macros/s/AKfycbzbKo0E1wih647uiiPQebf6x7Sl-LQTM9khdDhuv0D2lP79bqz69-smUUTUEsrnsuBGmA/exec";
 
-
 export default function App() {
   const [isLocked, setIsLocked] = useState(false); // Fields are editable initially
-
-
-
 
   const handleEditClick = () => setIsLocked(false);
   const handleNewClick = () => {
@@ -130,16 +210,12 @@ const handleClearForm = () => {
 
   setTracks([{ ...createEmptyTrack(), trackNumber: 1 }]);
 
-
   // Optionally clear UI states
   setSuggestions([]);
   setUpcSuggestions([]);
   setAlbumSuggestions([]);
   setArtistSuggestions([]);
 };
-
-
-
 
   const [upcSearch, setUpcSearch] = useState("");
   const [tracks, setTracks] = useState([{ ...createEmptyTrack(), collapsed: false }]);
@@ -159,11 +235,9 @@ const maybeAutofillPLine = (i, label, releaseDate) => {
   if (!label || !releaseDate) return;
 
   const releaseYear = new Date(releaseDate).getFullYear();
-  const pLine = `${releaseYear} ${label.trim()}`;
+  const pLine = ${releaseYear} ${label.trim()};
   handleTrackChange(i, "trackPLine", pLine);
 };
-
-
 
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [composersDB, setComposerDB] = useState([]);
@@ -196,8 +270,6 @@ const [isSubmitting, setIsSubmitting] = useState(false);
 const [publisherData, setPublisherData] = useState([]);
 const [composerData, setComposerData] = useState([]);
 
-
-
 const handleTrackArtistChange = (trackIndex, artistIndex, value) => {
   const updated = [...tracks];
   updated[trackIndex].trackArtistNames[artistIndex] = value;
@@ -209,7 +281,6 @@ const addTrackArtist = (trackIndex) => {
   updated[trackIndex].trackArtistNames.push("");
   setTracks(updated);
 };
-
 
 useEffect(() => {
   if (!albumSearch.trim()) {
@@ -226,14 +297,12 @@ useEffect(() => {
   setAlbumSuggestions(uniqueAlbums);
 }, [albumSearch, catalogDB]);
 
-
 useEffect(() => {
   if (catalogDB?.length) {
     console.log("🔍 Sample catalog entry:", catalogDB[0]);
     console.log("🔑 Keys in entry:", Object.keys(catalogDB[0]));
   }
 }, [catalogDB]);
-
 
 useEffect(() => {
   if (albumSearch.trim() === "") {
@@ -248,9 +317,6 @@ useEffect(() => {
   const uniqueResults = [...new Map(results.map(item => [item["UPC"], item])).values()];
   setAlbumSuggestions(uniqueResults);
 }, [albumSearch, catalogDB]);
-
-
-
 
 useEffect(() => {
   fetch(PUBLISHERS_DB_URL)
@@ -309,36 +375,17 @@ releaseDate: main["Digital Release Date"]
   }));
 
   // Load tracks
-const newTracks = matches.map((entry) => {
-  let composerData = [];
-  let publisherData = [];
+  const newTracks = matches.map((entry) => {
+    let composerData = [];
+    let publisherData = [];
 
-  // 🎯 Wrap each parser in its own try-catch for better debugging
-  try {
-    if (typeof entry.Composers === "string") {
-      composerData = JSON.parse(entry.Composers);
-    } else {
-      composerData = entry.Composers || [];
+    try {
+      composerData = typeof entry.Composers === "string" ? JSON.parse(entry.Composers) : entry.Composers || [];
+      publisherData = typeof entry.Publishers === "string" ? JSON.parse(entry.Publishers) : entry.Publishers || [];
+    } catch (err) {
+      console.error("Error parsing composer or publisher data", err);
     }
-  } catch (err) {
-    console.error("❌ Error parsing Composers JSON for entry:", entry["Primary Title"], "\nRaw:", entry.Composers, "\nError:", err);
-    composerData = [];
-  }
-
-  try {
-    if (typeof entry.Publishers === "string") {
-      publisherData = JSON.parse(entry.Publishers);
-    } else {
-      publisherData = entry.Publishers || [];
-    }
-  } catch (err) {
-    console.error("❌ Error parsing Publishers JSON for entry:", entry["Primary Title"], "\nRaw:", entry.Publishers, "\nError:", err);
-    publisherData = [];
-  }
-
-  console.log("🔍 Parsed publisher sample for", entry["Primary Title"] || "unknown", ":", publisherData?.[0] || "No publisher");
-
-
+console.log("🔍 Publisher sample:", publisherData[0]);
 
 const composers = composerData.map((c) => {
   return {
@@ -375,16 +422,13 @@ try {
 } catch {
   // Not a JSON array, fall back to gathering from individual fields
   for (let k = 1; k <= 8; k++) {
-  const key = k === 1 ? "Track Artist Name" : `Track Artist Name ${k}`;
+  const key = k === 1 ? "Track Artist Name" : Track Artist Name ${k};
   const value = entry[key];
   if (value && value.trim()) {
     trackArtists.push(value.trim());
   }
 }
 }
-
-
-
 
 // Default to one empty string if still empty
 if (trackArtists.length === 0) trackArtists.push("");
@@ -417,7 +461,7 @@ return {
 
   setTracks(newTracks);
   setAlbumSuggestions([]);
-  toast.success(`✅ ${newTracks.length} track(s) loaded from album`);
+  toast.success(✅ ${newTracks.length} track(s) loaded from album);
 };
 
 const [publisherSuggestions, setPublisherSuggestions] = useState([]);
@@ -448,7 +492,6 @@ const handleAdminSuggestionClick = (adminData, trackIndex, composerIndex) => {
   setTracks(updated);
   setAdminSuggestions([]);
 };
-
 
 const handleUpcSuggestionClick = (entry) => {
   const upc = entry["UPC"];
@@ -565,7 +608,7 @@ trackArtistNames: (() => {
   setTracks(newTracks);
   setUpcSuggestions([]);
   setHighlightedUpcIndex(-1);
-  toast.success(`🎵 Loaded ${newTracks.length} track(s) from UPC`);
+  toast.success(🎵 Loaded ${newTracks.length} track(s) from UPC);
 };
 
 const handleUpcSuggestionSelect = (entry) => {
@@ -637,7 +680,7 @@ trackArtistNames: (() => {
       },
     ]);
 
-    toast.success(`✅ Track loaded for UPC ${entry["UPC"]}`);
+    toast.success(✅ Track loaded for UPC ${entry["UPC"]});
     setUpcSuggestions([]);
     setHighlightedUpcIndex(-1);
   } catch (err) {
@@ -645,7 +688,6 @@ trackArtistNames: (() => {
     toast.error("Error loading UPC track");
   }
 };
-
 
   const trackRefs = useRef([]);
   const composerRefs = useRef({});
@@ -670,7 +712,6 @@ trackArtistNames: (() => {
     updated[trackIndex].trackArtistNames.push("");
     setTracks(updated);
   };
-
 
   return () => {
     document.removeEventListener("mousedown", handleClickOutside);
@@ -831,10 +872,6 @@ function createEmptyTrack() {
     setTracks(updated);
   };
 
-
-
-
-
 const handleComposerChange = (trackIndex, composerIndex, field, value) => {
   const updated = [...tracks];
   updated[trackIndex].composers[composerIndex][field] = value;
@@ -851,7 +888,6 @@ if (field === "publisheradmin") {
   setHighlightedAdminIndex(0);
   setActiveAdminField({ trackIndex, composerIndex });
 }
-
 
   // Composer name suggestions (first/last)
   if (field === "firstName" || field === "lastName") {
@@ -897,7 +933,6 @@ if (field === "pubadmin") {
   if (field === "publisher") {
     const input = value.toLowerCase();
 
-
     // ✅ Add debug logs here
     console.log("📥 User typed:", input);
     console.log("📚 publishersDB:", publishersDB);
@@ -921,7 +956,7 @@ if (field === "pubadmin") {
     setTracks(updated);
 
     setTimeout(() => {
-      const newComposerKey = `${trackIndex}-${updated[trackIndex].composers.length - 1}`;
+      const newComposerKey = ${trackIndex}-${updated[trackIndex].composers.length - 1};
       if (composerRefs.current[newComposerKey]) {
         composerRefs.current[newComposerKey].scrollIntoView({ behavior: "smooth", block: "start" });
       }
@@ -1004,7 +1039,7 @@ try {
 } catch {
   // Not a JSON array, fall back to gathering from individual fields
   for (let k = 0; k <= 8; k++) {
-    const key = k === 0 ? "Track Artist Name" : `Track Artist Name ${k}`;
+    const key = k === 0 ? "Track Artist Name" : Track Artist Name ${k};
     const value = entry[key];
     if (value && value.trim()) {
       trackArtists.push(value.trim());
@@ -1042,7 +1077,7 @@ return {
   });
 
   setTracks(newTracks);
-  toast.success(`✅ ${newTracks.length} track(s) loaded for UPC`);
+  toast.success(✅ ${newTracks.length} track(s) loaded for UPC);
 };
 
   const handleReleaseInfoChange = (field, value) => {
@@ -1087,9 +1122,6 @@ const handleAlbumArtistChange = (index, value) => {
   }));
 };
 
-
-
-
   function renderInput(label, value, onChange, placeholder = "") {
     
   const handleTrackArtistChange = (trackIndex, artistIndex, value) => {
@@ -1108,34 +1140,14 @@ const handleSubmit = async () => {
   try {
     setIsSubmitting(true);
 
-    const payload = {
-      releaseInfo,
-      tracks,
-      composers: composerData,
-      publishers: publisherData,
-    };
-
-    // 🔍 Debug
-    console.log("📦 Payload to webhook:", JSON.stringify(payload, null, 2));
-
-    // 🚀 Send to your main webhook (n8n)
-    const response = await fetch("https://rigoletto.app.n8n.cloud/webhook/fd8ebef7-dccb-4b7f-9381-1702ea074949", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      alert("❌ Webhook submission failed.");
-    }
-
-    // Optionally still save to your Google Sheet endpoints
+    // Send releaseInfo
     await fetch(ARTISTS_DB_URL, {
       method: "POST",
       body: JSON.stringify(releaseInfo),
       headers: { "Content-Type": "application/json" },
     });
 
+    // Send each track
     for (const track of tracks) {
       await fetch(CATALOG_DB_URL, {
         method: "POST",
@@ -1144,6 +1156,7 @@ const handleSubmit = async () => {
       });
     }
 
+    // Send each composer
     for (const composer of composerData) {
       await fetch(COMPOSERS_DB_URL, {
         method: "POST",
@@ -1152,6 +1165,7 @@ const handleSubmit = async () => {
       });
     }
 
+    // Send each publisher if applicable
     if (publisherData?.length) {
       for (const publisher of publisherData) {
         await fetch(PUBLISHERS_DB_URL, {
@@ -1163,23 +1177,74 @@ const handleSubmit = async () => {
     }
 
     alert("✅ Data submitted successfully!");
-    handleClearForm();
-  } catch (error) {
-    console.error("❌ Error submitting form:", error);
-    alert("❌ Something went wrong.");
+    handleClearForm(); // Optional: reset form
+  } catch (err) {
+    console.error("❌ Submission error:", err);
+    alert("❌ Submission failed. Check the console.");
   } finally {
     setIsSubmitting(false);
   }
 };
 
-  
-
-
-
-
-
   return (
 
+      <div className="flex flex-col">
+        <label className="text-sm font-medium text-gray-700 mb-1">{label}</label>
+        <input
+           disabled={isLocked}type="text"
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
+      </div>
+    );
+  }
+
+  const albumTitleLabel =
+    releaseInfo.typeOfRelease === "EP"
+      ? "EP Title"
+      : releaseInfo.typeOfRelease === "Single"
+      ? "Single Title"
+      : "Album Title";
+
+  const albumArtistLabel =
+    releaseInfo.typeOfRelease === "EP"
+      ? "EP Artist"
+      : releaseInfo.typeOfRelease === "Single"
+      ? "Single Artist"
+      : "Album Artist";
+const handleSubmit = async () => {
+  const payload = {
+    releaseInfo,
+    tracks,
+    composerData,
+    publisherData,
+  };
+
+  try {
+    const response = await fetch("https://rigoletto.app.n8n.cloud/webhook/fd8ebef7-dccb-4b7f-9381-1702ea074949", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (response.ok) {
+      alert("Form submitted successfully!");
+    } else {
+      alert("Submission failed.");
+    }
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    alert("Something went wrong.");
+  }
+};
+
+  
+
+  return (
 
     <div className="bg-gray-50 min-h-screen p-6">
       <div className="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-8">
@@ -1250,9 +1315,9 @@ const handleSubmit = async () => {
       {upcSuggestions.map((sugg, idx) => (
         <li
           key={idx}
-          className={`p-2 hover:bg-blue-100 cursor-pointer ${
+          className={p-2 hover:bg-blue-100 cursor-pointer ${
             highlightedUpcIndex === idx ? "bg-blue-100" : ""
-          }`}
+          }}
           onMouseDown={() => handleUpcSuggestionClick(sugg)}
         >
           {sugg["UPC"]} — {sugg["Album Title"] || "Sin título"}
@@ -1271,7 +1336,7 @@ const handleSubmit = async () => {
       <input
         type="text"
         value={artist}
-        placeholder={`Artist ${idx + 1}`}
+        placeholder={Artist ${idx + 1}}
         onChange={(e) => {
           const value = e.target.value;
           handleAlbumArtistChange(idx, value);
@@ -1284,7 +1349,7 @@ const handleSubmit = async () => {
               );
             setArtistSuggestions(matches);
             setHighlightedArtistIndex(0);
-            setActiveArtistInputIndex(`album-${idx}`);
+            setActiveArtistInputIndex(album-${idx});
           } else {
             setArtistSuggestions([]);
             setActiveArtistInputIndex(null);
@@ -1338,15 +1403,15 @@ const handleSubmit = async () => {
     </div>
 
     {/* Suggestions Dropdown */}
-    {activeArtistInputIndex === `album-${idx}` &&
+    {activeArtistInputIndex === album-${idx} &&
       artistSuggestions.length > 0 && (
         <ul className="absolute z-10 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
           {artistSuggestions.map((name, i) => (
             <li
               key={i}
-              className={`p-2 cursor-pointer ${
+              className={p-2 cursor-pointer ${
                 highlightedArtistIndex === i ? "bg-blue-100" : ""
-              }`}
+              }}
               onMouseDown={() => {
                 handleAlbumArtistChange(idx, name);
                 setArtistSuggestions([]);
@@ -1368,7 +1433,6 @@ const handleSubmit = async () => {
     + Add Another Artist
   </button>
 </div>
-
 
 <div className="flex flex-col">
   <label className="text-sm font-medium text-gray-700 mb-1">Digital Release Date</label>
@@ -1422,9 +1486,9 @@ const handleSubmit = async () => {
       {albumSuggestions.map((sugg, idx) => (
         <li
           key={idx}
-          className={`p-2 cursor-pointer ${
+          className={p-2 cursor-pointer ${
             highlightedAlbumIndex === idx ? "bg-blue-100" : "hover:bg-blue-50"
-          }`}
+          }}
           onMouseDown={() => handleAlbumSuggestionClick(sugg)}
           onMouseEnter={() => setHighlightedAlbumIndex(idx)} // 👈 esto permite resaltar con el mouse
         >
@@ -1453,9 +1517,6 @@ const handleSubmit = async () => {
       className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
     />
   </div>
-
-
-
 
            <div className="flex flex-col">
   <label className="text-sm font-medium text-gray-700 mb-1">Distributor</label>
@@ -1497,8 +1558,6 @@ const handleSubmit = async () => {
     updated[i].collapsed = !updated[i].collapsed;
     setTracks(updated);
 
-
-
   }}
 >
 <div className="flex items-center justify-between w-full">
@@ -1523,9 +1582,6 @@ const handleSubmit = async () => {
   </span>
 </div>
 </summary>
-
-
-
 
            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1582,7 +1638,7 @@ try {
 } catch {
   // Fallback to individual fields
   for (let k = 0; k <= 8; k++) {
-    const key = k === 0 ? "Track Artist Name" : `Track Artist Name ${k}`;
+    const key = k === 0 ? "Track Artist Name" : Track Artist Name ${k};
     const value = entry[key];
     if (value && value.trim()) {
       parsedTrackArtists.push(value.trim());
@@ -1613,9 +1669,6 @@ handleTrackChange(i, "trackArtistNames", parsedTrackArtists);
   handleTrackChange(i, "duration", normalizeDuration(entry["Duration"]) || "");
   handleTrackChange(i, "trackLabel", entry["Track Label"] || "");
   handleTrackChange(i, "trackPLine", entry["Track P Line"] || "");
-
-
-
 
   // 🎯 Parse composerData
   let composerData = entry.Composers;
@@ -1699,9 +1752,9 @@ toast.success("🎼 Composer & Publisher Info Loaded", {
       {trackSuggestions.map((entry, idx) => (
         <li
           key={idx}
-          className={`p-2 cursor-pointer ${
+          className={p-2 cursor-pointer ${
             idx === highlightedTrackIndex ? "bg-blue-100" : "hover:bg-blue-50"
-          }`}
+          }}
           onMouseDown={() => {
   handleTrackChange(i, "primaryTitle", entry["Primary Title"] || "");
 let parsedTrackArtists = [];
@@ -1715,7 +1768,7 @@ try {
 } catch {
   // Fallback to individual fields
   for (let k = 0; k <= 8; k++) {
-    const key = k === 0 ? "Track Artist Name" : `Track Artist Name ${k}`;
+    const key = k === 0 ? "Track Artist Name" : Track Artist Name ${k};
     const value = entry[key];
     if (value && value.trim()) {
       parsedTrackArtists.push(value.trim());
@@ -1821,8 +1874,6 @@ if (Array.isArray(composerData)) {
   )}
 </div>
 
-
-
 {/* Track Artist(s) with Search */}
 <div className="flex flex-col mb-4">
   <label className="text-sm font-medium text-gray-700 mb-1">
@@ -1836,7 +1887,7 @@ if (Array.isArray(composerData)) {
         type="text"
         disabled={isLocked}
         value={artist}
-        placeholder={`Artist ${artistIndex + 1}`}
+        placeholder={Artist ${artistIndex + 1}}
         onChange={(e) => {
           const value = e.target.value;
           handleTrackArtistChange(i, artistIndex, value);
@@ -1849,7 +1900,7 @@ if (Array.isArray(composerData)) {
               );
             setArtistSuggestions(matches);
             setHighlightedArtistIndex(0);
-            setActiveArtistInputIndex(`${i}-${artistIndex}`);
+            setActiveArtistInputIndex(${i}-${artistIndex});
           } else {
             setArtistSuggestions([]);
             setActiveArtistInputIndex(null);
@@ -1902,15 +1953,15 @@ if (Array.isArray(composerData)) {
     </div>
 
     {/* Suggestions Dropdown */}
-    {activeArtistInputIndex === `${i}-${artistIndex}` &&
+    {activeArtistInputIndex === ${i}-${artistIndex} &&
       artistSuggestions.length > 0 && (
         <ul className="absolute z-10 mt-1 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
           {artistSuggestions.map((name, idx) => (
             <li
               key={idx}
-              className={`p-2 cursor-pointer ${
+              className={p-2 cursor-pointer ${
                 idx === highlightedArtistIndex ? "bg-blue-100" : ""
-              }`}
+              }}
               onMouseDown={() => {
                 handleTrackArtistChange(i, artistIndex, name);
                 setArtistSuggestions([]);
@@ -1933,9 +1984,6 @@ if (Array.isArray(composerData)) {
     + Add Another Artist
   </button>
 </div>
-
-
-
 
   {/* Other Fields */}
   {renderInput("Recording Title", track.recordingTitle, (e) => handleTrackChange(i, "recordingTitle", e.target.value))}
@@ -2009,9 +2057,9 @@ if (Array.isArray(composerData)) {
       if (raw.length >= 3) {
         const minutes = raw.slice(0, raw.length - 2).padStart(2, "0");
         const seconds = raw.slice(-2);
-        formatted = `${minutes}:${seconds}`;
+        formatted = ${minutes}:${seconds};
       } else if (raw.length > 0) {
-        formatted = `00:${raw.padStart(2, "0")}`;
+        formatted = 00:${raw.padStart(2, "0")};
       }
 
       handleTrackChange(i, "duration", formatted);
@@ -2034,25 +2082,19 @@ if (Array.isArray(composerData)) {
   {renderInput("Non-US Collection Rights", track.nonUSRights, (e) => handleTrackChange(i, "nonUSRights", e.target.value))}
   {renderInput("Genre", track.genre, (e) => handleTrackChange(i, "genre", e.target.value))}
 
-
-
-
-
 <div className="flex flex-col">
   <label className="text-sm font-medium text-gray-700 mb-1">Recording Date</label>
   <input
     type="date"
     disabled={isLocked}
     value={track.recDate || ""}
-    onChange={(e) => handleTrackChange(i, "recDate", e.target.value)}
+    onChange={(e) => handleTrackChange("recDate", e.target.value, index)}
     className="p-2 h-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
   />
 </div>
   {renderInput("Recording Engineer", track.recEng, (e) => handleTrackChange(i, "recEng", e.target.value))}
   {renderInput("Producer", track.producer, (e) => handleTrackChange(i, "producer", e.target.value))}
   {renderInput("Executive Producer", track.execProducer, (e) => handleTrackChange(i, "execProducer", e.target.value))}
-
-
 
   {/* Audio Upload */}
   <div className="flex flex-col">
@@ -2070,15 +2112,13 @@ if (Array.isArray(composerData)) {
             <div className="mt-6 border-t pt-4">
               <h3 className="text-lg font-semibold text-gray-700 mb-4">Composers</h3>
               {track.composers.map((composer, j) => {
-                const key = `${i}-${j}`;
+                const key = ${i}-${j};
 const removeComposer = (trackIndex, composerIndex) => {
   const updated = [...tracks];
   updated[trackIndex].composers.splice(composerIndex, 1);
   setTracks(updated);
 };
                 
-
-
 
   return (
                   <div key={key} ref={(el) => (composerRefs.current[key] = el)} className="mb-6 pb-4 border-b border-gray-300">
@@ -2149,9 +2189,9 @@ const removeComposer = (trackIndex, composerIndex) => {
   {suggestions.map((sugg, idx) => (
     <li
       key={idx}
-      className={`p-2 cursor-pointer hover:bg-blue-100 ${
+      className={p-2 cursor-pointer hover:bg-blue-100 ${
         idx === highlightedIndex ? "bg-blue-100 font-medium" : ""
-      }`}
+      }}
       onMouseDown={() => {
         const updated = [...tracks];
         updated[i].composers[j] = {
@@ -2225,9 +2265,9 @@ const removeComposer = (trackIndex, composerIndex) => {
       {suggestions.map((sugg, idx) => (
         <li
           key={idx}
-          className={`p-2 hover:bg-blue-100 cursor-pointer ${
+          className={p-2 hover:bg-blue-100 cursor-pointer ${
             highlightedIndex === idx ? "bg-blue-100" : ""
-          }`}
+          }}
           onMouseDown={() => {
             const updated = [...tracks];
             updated[i].composers[j] = {
@@ -2246,7 +2286,6 @@ const removeComposer = (trackIndex, composerIndex) => {
 
 </div>                     
 
-
                       
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -2262,9 +2301,6 @@ const removeComposer = (trackIndex, composerIndex) => {
                       {renderInput("Composer PRO", composer.pro, (e) => handleComposerChange(i, j, "pro", e.target.value))}
                       {renderInput("Composer Share %", composer.split, (e) => handleComposerChange(i, j, "split", e.target.value))}
                       {renderInput("Writer Role Code (MLC)", composer.roleCode, (e) => handleComposerChange(i, j, "roleCode", e.target.value))}
-
-
-
 
 <div className="flex flex-col relative">
   <label className="text-sm font-medium text-gray-700 mb-1">Publisher</label>
@@ -2308,9 +2344,9 @@ const removeComposer = (trackIndex, composerIndex) => {
         <div
           key={idx}
           onMouseDown={() => handlePublisherSuggestionClick(s, i, j)}
-          className={`px-3 py-2 cursor-pointer ${
+          className={px-3 py-2 cursor-pointer ${
             idx === highlightedIndex ? "bg-blue-100" : "hover:bg-blue-50"
-          }`}
+          }}
         >
           {s.publisher}
         </div>
@@ -2318,10 +2354,6 @@ const removeComposer = (trackIndex, composerIndex) => {
     </div>
 )}
 </div>
-
-
-
-
 
                       {renderInput("Publisher IPI/CAE#", composer.publisherIPI, (e) => handleComposerChange(i, j, "publisherIPI", e.target.value))}
 
@@ -2370,9 +2402,9 @@ const removeComposer = (trackIndex, composerIndex) => {
           <div
             key={idx}
             onMouseDown={() => handleAdminSuggestionClick(s, i, j)}
-            className={`px-3 py-2 cursor-pointer ${
+            className={px-3 py-2 cursor-pointer ${
               idx === highlightedAdminIndex ? "bg-blue-100" : "hover:bg-blue-50"
-            }`}
+            }}
           >
             {s.publisheradmin}
           </div>
