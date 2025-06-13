@@ -2121,9 +2121,10 @@ if (Array.isArray(composerData)) {
 <div className="flex flex-col">
   <label className="text-sm font-medium text-gray-700 mb-1">Recording Date</label>
   <input
-     disabled={isLocked}type="date"
+    type="date"
+    disabled={isLocked}
     value={track.recDate || ""}
-    onChange={(e) => handleTrackChange("recDate", e.target.value)}
+    onChange={(e) => handleTrackChange("recDate", e.target.value, index)}
     className="p-2 h-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
   />
 </div>
