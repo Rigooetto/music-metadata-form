@@ -400,17 +400,36 @@ releaseDate: main["Digital Release Date"]
   }));
 
   // Load tracks
-  const newTracks = matches.map((entry) => {
-    let composerData = [];
-    let publisherData = [];
+const newTracks = matches.map((entry) => {
+  let composerData = [];
+  let publisherData = [];
 
-    try {
-      composerData = typeof entry.Composers === "string" ? JSON.parse(entry.Composers) : entry.Composers || [];
-      publisherData = typeof entry.Publishers === "string" ? JSON.parse(entry.Publishers) : entry.Publishers || [];
-    } catch (err) {
-      console.error("Error parsing composer or publisher data", err);
+  // 🎯 Wrap each parser in its own try-catch for better debugging
+  try {
+    if (typeof entry.Composers === "string") {
+      composerData = JSON.parse(entry.Composers);
+    } else {
+      composerData = entry.Composers || [];
     }
-console.log("🔍 Publisher sample:", publisherData[0]);
+  } catch (err) {
+    console.error("❌ Error parsing Composers JSON for entry:", entry["Primary Title"], "\nRaw:", entry.Composers, "\nError:", err);
+    composerData = [];
+  }
+
+  try {
+    if (typeof entry.Publishers === "string") {
+      publisherData = JSON.parse(entry.Publishers);
+    } else {
+      publisherData = entry.Publishers || [];
+    }
+  } catch (err) {
+    console.error("❌ Error parsing Publishers JSON for entry:", entry["Primary Title"], "\nRaw:", entry.Publishers, "\nError:", err);
+    publisherData = [];
+  }
+
+  console.log("🔍 Parsed publisher sample for", entry["Primary Title"] || "unknown", ":", publisherData?.[0] || "No publisher");
+
+
 
 const composers = composerData.map((c) => {
   return {
