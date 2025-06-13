@@ -1685,11 +1685,23 @@ handleTrackChange(i, "trackArtistNames", parsedTrackArtists);
 let publisherData = entry.Publishers;
 if (typeof publisherData === "string") {
   try {
-    publisherData = JSON.parse(publisherData);
-  } catch (err) {
-    console.error("❌ Failed to parse publisherData:", err);
-    publisherData = [];
+let publisherData = [];
+
+try {
+  const raw = entry.Publishers;
+
+  if (typeof raw === "string" && raw.trim().startsWith("[")) {
+    publisherData = JSON.parse(raw);
+  } else if (Array.isArray(raw)) {
+    publisherData = raw;
+  } else {
+    console.warn(`⚠️ No valid publisher data for "${entry["Primary Title"]}"`);
+    publisherData = []; // fallback empty
   }
+} catch (err) {
+  console.error(`❌ Error parsing Publishers JSON for entry: "${entry["Primary Title"]}"\nRaw:\n${entry.Publishers}\nError:`, err.message);
+  publisherData = [];
+}
 }
   // ✅ Merge composer and publisher into one per composer slot
   if (Array.isArray(composerData)) {
@@ -1800,14 +1812,23 @@ handleTrackChange(i, "trackArtistNames", parsedTrackArtists);
   handleTrackChange(i, "trackLabel", entry["Track Label"] || "");
   handleTrackChange(i, "trackPLine", entry["Track P Line"] || "");
 
-let publisherData = entry.Publishers;
-if (typeof publisherData === "string") {
-  try {
-    publisherData = JSON.parse(publisherData);
-  } catch (err) {
-    console.error("❌ Failed to parse publisherData:", err);
-    publisherData = [];
+let publisherData = [];
+
+try {
+  const raw = entry.Publishers;
+
+  if (typeof raw === "string" && raw.trim().startsWith("[")) {
+    publisherData = JSON.parse(raw);
+  } else if (Array.isArray(raw)) {
+    publisherData = raw;
+  } else {
+    console.warn(`⚠️ No valid publisher data for "${entry["Primary Title"]}"`);
+    publisherData = []; // fallback empty
   }
+} catch (err) {
+  console.error(`❌ Error parsing Publishers JSON for entry: "${entry["Primary Title"]}"\nRaw:\n${entry.Publishers}\nError:`, err.message);
+  publisherData = [];
+}
 }
 // Log full entry to debug
 console.log("Selected catalog entry:", entry);
