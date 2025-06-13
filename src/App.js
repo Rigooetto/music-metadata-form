@@ -836,7 +836,7 @@ function createEmptyTrack() {
     audioFile: null,
     isrc: "",
     iswc: "",
-    trackLabel: "Afinarte Music",
+    trackLabel: "",
     duration: "",
     trackPLine: "",
     trackArtistNames: [""], // <-- update from single to array
