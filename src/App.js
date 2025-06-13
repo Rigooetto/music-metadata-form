@@ -1187,6 +1187,8 @@ const handleSubmit = async () => {
       headers: { "Content-Type": "application/json" },
     });
 
+console.log("📦 Payload to webhook:", JSON.stringify(payload, null, 2));
+    
     // Send each track
     for (const track of tracks) {
       await fetch(CATALOG_DB_URL, {
