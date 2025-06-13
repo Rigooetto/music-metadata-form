@@ -826,7 +826,7 @@ function createEmptyTrack() {
     countryRelease: "United States",
     basisClaim: "Copyright Owner",
     percentClaim: "",
-    collectionEnd: "",
+    collectionEnd: "12/31/3000",
     nonUSRights: "Worldwide",
     genre: "Regional Mexican",
     recDate: "",
@@ -836,7 +836,7 @@ function createEmptyTrack() {
     audioFile: null,
     isrc: "",
     iswc: "",
-    trackLabel: "",
+    trackLabel: "Afinarte Music",
     duration: "",
     trackPLine: "",
     trackArtistNames: [""], // <-- update from single to array
