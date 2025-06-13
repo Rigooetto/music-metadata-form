@@ -2120,7 +2120,7 @@ if (Array.isArray(composerData)) {
   {renderInput("Recording Date", track.recDate, (e) => handleTrackChange(i, "recDate", e.target.value))}
   {renderInput("Recording Engineer", track.recEng, (e) => handleTrackChange(i, "recEng", e.target.value))}
   {renderInput("Producer", track.producer, (e) => handleTrackChange(i, "producer", e.target.value))}
-  {renderInput("Execcutive Producer", track.execProducer, (e) => handleTrackChange(i, "execProducer", e.target.value))}
+  {renderInput("Executive Producer", track.execProducer, (e) => handleTrackChange(i, "execProducer", e.target.value))}
 
 
 
