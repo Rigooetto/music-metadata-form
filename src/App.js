@@ -1067,7 +1067,7 @@ return {
   recordingTitle: entry["Recording Title"] || "",
   akaTitle: entry["AKA Title"] || "",
   akaTypeCode: entry["AKA Type Code"] || "",
-  countryRelease: entry["United States"] || "",
+  countryRelease: entry["Country of Release"] || "",
   basisClaim:  entry["Copyright Owner"] || "",
   percentClaim: entry["Percent Claim"] || "",
   collectionEnd: entry["Collection End Date"] || "",
@@ -1683,7 +1683,7 @@ handleTrackChange(i, "trackArtistNames", parsedTrackArtists);
   handleTrackChange(i, "recordingTitle", entry["Recording Title"] || "");
   handleTrackChange(i, "akaTitle", entry["AKA Title"] || "");
   handleTrackChange(i, "akaTypeCode", entry["AKA Type Code (MLC)"] || "");
-  handleTrackChange(i, "countryRelease", entry["United States"] || "");
+  handleTrackChange(i, "countryRelease", entry["Country of Release"] || "");
   handleTrackChange(i, "basisClaim",  entry["Copyright Owner"] || "");
   handleTrackChange(i, "percentClaim", entry["Percent Claim"] || "");
   handleTrackChange(i, "collectionEnd", entry["Collection End Date"] || "");
@@ -1816,7 +1816,7 @@ handleTrackChange(i, "trackArtistNames", parsedTrackArtists);
   handleTrackChange(i, "recordingTitle", entry["Recording Title"] || "");
   handleTrackChange(i, "akaTitle", entry["AKA Title"] || "");
   handleTrackChange(i, "akaTypeCode", entry["AKA Type Code (MLC)"] || "");
-  handleTrackChange(i, "countryRelease", entry["United States"] || "");
+  handleTrackChange(i, "countryRelease", entry["Country of Release"] || "");
   handleTrackChange(i, "basisClaim",  entry["Copyright Owner"] || "");
   handleTrackChange(i, "percentClaim", entry["Percent Claim"] || "");
   handleTrackChange(i, "collectionEnd", entry["Collection End Date"] || "");
