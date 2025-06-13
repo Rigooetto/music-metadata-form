@@ -1115,17 +1115,27 @@ const handleSubmit = async () => {
       publishers: publisherData,
     };
 
-    // Log full payload
+    // 🔍 Debug
     console.log("📦 Payload to webhook:", JSON.stringify(payload, null, 2));
 
-    // 🔁 Send release info
+    // 🚀 Send to your main webhook (n8n)
+    const response = await fetch("https://rigoletto.app.n8n.cloud/webhook/fd8ebef7-dccb-4b7f-9381-1702ea074949", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      alert("❌ Webhook submission failed.");
+    }
+
+    // Optionally still save to your Google Sheet endpoints
     await fetch(ARTISTS_DB_URL, {
       method: "POST",
       body: JSON.stringify(releaseInfo),
       headers: { "Content-Type": "application/json" },
     });
 
-    // 🔁 Send each track
     for (const track of tracks) {
       await fetch(CATALOG_DB_URL, {
         method: "POST",
@@ -1134,7 +1144,6 @@ const handleSubmit = async () => {
       });
     }
 
-    // 🔁 Send composers
     for (const composer of composerData) {
       await fetch(COMPOSERS_DB_URL, {
         method: "POST",
@@ -1143,7 +1152,6 @@ const handleSubmit = async () => {
       });
     }
 
-    // 🔁 Send publishers
     if (publisherData?.length) {
       for (const publisher of publisherData) {
         await fetch(PUBLISHERS_DB_URL, {
@@ -1156,68 +1164,11 @@ const handleSubmit = async () => {
 
     alert("✅ Data submitted successfully!");
     handleClearForm();
-  } catch (err) {
-    console.error("❌ Submission error:", err);
-    alert("❌ Submission failed. Check the console.");
+  } catch (error) {
+    console.error("❌ Error submitting form:", error);
+    alert("❌ Something went wrong.");
   } finally {
     setIsSubmitting(false);
-  }
-};
-
-
-  return (
-
-      <div className="flex flex-col">
-        <label className="text-sm font-medium text-gray-700 mb-1">{label}</label>
-        <input
-           disabled={isLocked}type="text"
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder}
-          className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
-      </div>
-    );
-  }
-
-  const albumTitleLabel =
-    releaseInfo.typeOfRelease === "EP"
-      ? "EP Title"
-      : releaseInfo.typeOfRelease === "Single"
-      ? "Single Title"
-      : "Album Title";
-
-  const albumArtistLabel =
-    releaseInfo.typeOfRelease === "EP"
-      ? "EP Artist"
-      : releaseInfo.typeOfRelease === "Single"
-      ? "Single Artist"
-      : "Album Artist";
-const handleSubmit = async () => {
-  const payload = {
-    releaseInfo,
-    tracks,
-    composerData,
-    publisherData,
-  };
-
-  try {
-    const response = await fetch("https://rigoletto.app.n8n.cloud/webhook/fd8ebef7-dccb-4b7f-9381-1702ea074949", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (response.ok) {
-      alert("Form submitted successfully!");
-    } else {
-      alert("Submission failed.");
-    }
-  } catch (error) {
-    console.error("Error submitting form:", error);
-    alert("Something went wrong.");
   }
 };
 
