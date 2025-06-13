@@ -1108,16 +1108,24 @@ const handleSubmit = async () => {
   try {
     setIsSubmitting(true);
 
-    // Send releaseInfo
+    const payload = {
+      releaseInfo,
+      tracks,
+      composers: composerData,
+      publishers: publisherData,
+    };
+
+    // Log full payload
+    console.log("📦 Payload to webhook:", JSON.stringify(payload, null, 2));
+
+    // 🔁 Send release info
     await fetch(ARTISTS_DB_URL, {
       method: "POST",
       body: JSON.stringify(releaseInfo),
       headers: { "Content-Type": "application/json" },
     });
 
-console.log("📦 Payload to webhook:", JSON.stringify(payload, null, 2));
-    
-    // Send each track
+    // 🔁 Send each track
     for (const track of tracks) {
       await fetch(CATALOG_DB_URL, {
         method: "POST",
@@ -1126,7 +1134,7 @@ console.log("📦 Payload to webhook:", JSON.stringify(payload, null, 2));
       });
     }
 
-    // Send each composer
+    // 🔁 Send composers
     for (const composer of composerData) {
       await fetch(COMPOSERS_DB_URL, {
         method: "POST",
@@ -1135,7 +1143,7 @@ console.log("📦 Payload to webhook:", JSON.stringify(payload, null, 2));
       });
     }
 
-    // Send each publisher if applicable
+    // 🔁 Send publishers
     if (publisherData?.length) {
       for (const publisher of publisherData) {
         await fetch(PUBLISHERS_DB_URL, {
@@ -1147,7 +1155,7 @@ console.log("📦 Payload to webhook:", JSON.stringify(payload, null, 2));
     }
 
     alert("✅ Data submitted successfully!");
-    handleClearForm(); // Optional: reset form
+    handleClearForm();
   } catch (err) {
     console.error("❌ Submission error:", err);
     alert("❌ Submission failed. Check the console.");
@@ -1155,7 +1163,6 @@ console.log("📦 Payload to webhook:", JSON.stringify(payload, null, 2));
     setIsSubmitting(false);
   }
 };
-
 
 
   return (
