@@ -830,6 +830,9 @@ function createEmptyTrack() {
     nonUSRights: "Worldwide",
     genre: "Regional Mexican",
     recDate: "",
+    recEng: "",
+    producer: "",
+    execProducer:"",
     audioFile: null,
     isrc: "",
     iswc: "",
@@ -1070,6 +1073,9 @@ return {
   nonUSRights: entry["Non US Rights"] || "",
   genre: entry["Genre"] || "",
   recDate: entry["Recording Date"] || "",
+  recEng: entry["Recording Engineer"] || "",
+  producer: entry["Producer"] || "",
+  execProducer: entry["Executive Producer"] || "",  
   isrc: entry["ISRC"] || "",
   iswc: entry["ISWC"] || "",
   duration: normalizeDuration(entry["Duration"]),
@@ -1682,6 +1688,9 @@ handleTrackChange(i, "trackArtistNames", parsedTrackArtists);
   handleTrackChange(i, "collectionEnd", entry["Collection End Date"] || "");
   handleTrackChange(i, "nonUSRights", entry["Non US Rights"] || "");
   handleTrackChange(i, "genre", entry["Genre"] || "");
+  handleTrackChange(i, "recEng", entry["Recording Engineer"] || "");
+  handleTrackChange(i, "producer", entry["Producer"] || "");
+  handleTrackChange(i, "execProducer", entry["Executive Producer"] || "");    
   handleTrackChange(i, "recDate", entry["Recording Date"] || "");
   handleTrackChange(i, "isrc", entry["ISRC"] || "");
   handleTrackChange(i, "iswc", entry["ISWC"] || "");
@@ -1813,6 +1822,9 @@ handleTrackChange(i, "trackArtistNames", parsedTrackArtists);
   handleTrackChange(i, "nonUSRights", entry["Non US Rights"] || "");
   handleTrackChange(i, "genre", entry["Genre"] || "");
   handleTrackChange(i, "recDate", entry["Recording Date"] || "");
+  handleTrackChange(i, "recEng", entry["Recording Engineer"] || "");
+  handleTrackChange(i, "producer", entry["Producer"] || "");
+  handleTrackChange(i, "execProducer", entry["Executive Producer"] || "");  
   handleTrackChange(i, "isrc", entry["ISRC"] || "");
   handleTrackChange(i, "iswc", entry["ISWC"] || "");
   handleTrackChange(i, "duration", normalizeDuration(entry["Duration"]) || "");
@@ -2106,6 +2118,11 @@ if (Array.isArray(composerData)) {
   {renderInput("Non-US Collection Rights", track.nonUSRights, (e) => handleTrackChange(i, "nonUSRights", e.target.value))}
   {renderInput("Genre", track.genre, (e) => handleTrackChange(i, "genre", e.target.value))}
   {renderInput("Recording Date", track.recDate, (e) => handleTrackChange(i, "recDate", e.target.value))}
+  {renderInput("Recording Engineer", track.recEng, (e) => handleTrackChange(i, "recEng", e.target.value))}
+  {renderInput("Producer", track.producer, (e) => handleTrackChange(i, "producer", e.target.value))}
+  {renderInput("Execcutive Producer", track.execProducer, (e) => handleTrackChange(i, "execProducer", e.target.value))}
+
+
 
   {/* Audio Upload */}
   <div className="flex flex-col">
