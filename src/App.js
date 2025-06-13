@@ -241,6 +241,7 @@ const handleClearForm = () => {
     numTracks: "1",
     distributor: "Believe",
     releaseDate: "",
+    recDate: "",
     typeOfRelease: "",
     coverArtPreview: null,
   });
