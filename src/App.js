@@ -836,7 +836,7 @@ function createEmptyTrack() {
     audioFile: null,
     isrc: "",
     iswc: "",
-    trackLabel: "Afinarte Music",
+    trackLabel: "",
     duration: "",
     trackPLine: "",
     trackArtistNames: [""], // <-- update from single to array
@@ -2117,7 +2117,16 @@ if (Array.isArray(composerData)) {
   {renderInput("Collection Rights End Date", track.collectionEnd, (e) => handleTrackChange(i, "collectionEnd", e.target.value))}
   {renderInput("Non-US Collection Rights", track.nonUSRights, (e) => handleTrackChange(i, "nonUSRights", e.target.value))}
   {renderInput("Genre", track.genre, (e) => handleTrackChange(i, "genre", e.target.value))}
-  {renderInput("Recording Date", track.recDate, (e) => handleTrackChange(i, "recDate", e.target.value))}
+
+<div className="flex flex-col">
+  <label className="text-sm font-medium text-gray-700 mb-1">Recording Date</label>
+  <input
+     disabled={isLocked}type="date"
+    value={track.recDate || ""}
+    onChange={(e) => handleTrackChange("recDate", e.target.value)}
+    className="p-2 h-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+  />
+</div>
   {renderInput("Recording Engineer", track.recEng, (e) => handleTrackChange(i, "recEng", e.target.value))}
   {renderInput("Producer", track.producer, (e) => handleTrackChange(i, "producer", e.target.value))}
   {renderInput("Executive Producer", track.execProducer, (e) => handleTrackChange(i, "execProducer", e.target.value))}
