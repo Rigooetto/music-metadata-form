@@ -2144,7 +2144,21 @@ if (Array.isArray(composerData)) {
   {renderInput("Percentage Claimed", track.percentClaim, (e) => handleTrackChange(i, "percentClaim", e.target.value))}
   {renderInput("Collection Rights End Date", track.collectionEnd, (e) => handleTrackChange(i, "collectionEnd", e.target.value))}
   {renderInput("Non-US Collection Rights", track.nonUSRights, (e) => handleTrackChange(i, "nonUSRights", e.target.value))}
-  {renderInput("Genre", track.genre, (e) => handleTrackChange(i, "genre", e.target.value))}
+
+           <div className="flex flex-col">
+  <label className="text-sm font-medium text-gray-700 mb-1">Genre</label>
+  <input
+     disabled={isLocked}type="text"
+    value={track.genre || ""}
+    onChange={(e) => handleReleaseInfoChange("genre", e.target.value)}
+    placeholder="Enter Genre"
+    className="p-2 h-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+  />
+
+  </div>
+
+
+
 
 <div className="flex flex-col">
   <label className="text-sm font-medium text-gray-700 mb-1">Recording Date</label>
