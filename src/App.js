@@ -1231,7 +1231,7 @@ const handleSubmit = async () => {
   };
 
   try {
-    const response = await fetch("https://rigoletto.app.n8n.cloud/webhook-test/fd8ebef7-dccb-4b7f-9381-1702ea074949", {
+    const response = await fetch("https://rigoletto.app.n8n.cloud/webhook/fd8ebef7-dccb-4b7f-9381-1702ea074949", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
