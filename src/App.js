@@ -375,17 +375,34 @@ releaseDate: main["Digital Release Date"]
   }));
 
   // Load tracks
-  const newTracks = matches.map((entry) => {
-    let composerData = [];
-    let publisherData = [];
+const newTracks = matches.map((entry) => {
+  let composerData = [];
+  let publisherData = [];
 
-    try {
-      composerData = typeof entry.Composers === "string" ? JSON.parse(entry.Composers) : entry.Composers || [];
-      publisherData = typeof entry.Publishers === "string" ? JSON.parse(entry.Publishers) : entry.Publishers || [];
-    } catch (err) {
-      console.error("Error parsing composer or publisher data", err);
+  try {
+    const rawComposers = entry.Composers;
+    const rawPublishers = entry.Publishers;
+
+    if (typeof rawComposers === "string" && rawComposers.trim().startsWith("[")) {
+      composerData = JSON.parse(rawComposers);
+    } else if (Array.isArray(rawComposers)) {
+      composerData = rawComposers;
+    } else {
+      composerData = [];
     }
-console.log("🔍 Publisher sample:", publisherData[0]);
+
+    if (typeof rawPublishers === "string" && rawPublishers.trim().startsWith("[")) {
+      publisherData = JSON.parse(rawPublishers);
+    } else if (Array.isArray(rawPublishers)) {
+      publisherData = rawPublishers;
+    } else {
+      publisherData = [];
+    }
+  } catch (err) {
+    console.error(`❌ Error parsing composer or publisher data for "${entry["Primary Title"]}"`, err);
+  }
+
+  console.log("🔍 Publisher sample:", publisherData[0]);
 
 const composers = composerData.map((c) => {
   return {
