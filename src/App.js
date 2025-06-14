@@ -412,7 +412,6 @@ export default function App() {
             </div>
           </div>
         </section>
-
         {/* --- Track and Composer Forms --- */}
         {tracks.map((track, idx) => (
           <details key={idx} open={!track.collapsed} className="mb-6 border rounded-xl p-4 bg-gray-50">
