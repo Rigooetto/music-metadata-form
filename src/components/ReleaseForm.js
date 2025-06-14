@@ -1,10 +1,44 @@
 import React, { useState } from "react";
+import React, { useState } from "react";
+
+export default function ReleaseForm({ releaseInfo, onChange, artistDB, isLocked, catalogDB }) {
+  const [upcSuggestions, setUpcSuggestions] = useState([]);
+  const [showUpcDropdown, setShowUpcDropdown] = useState(false);
+
 
 export default function ReleaseForm({ releaseInfo, onChange, artistDB, isLocked }) {
   const [artistSuggestions, setArtistSuggestions] = useState([]);
   const [activeArtistInputIndex, setActiveArtistInputIndex] = useState(null);
   const [highlightedArtistIndex, setHighlightedArtistIndex] = useState(0);
 
+  // UPC search and auto-suggest
+  const handleUpcChange = (e) => {
+    const value = e.target.value.replace(/\D/g, "");
+    onChange("upc", value);
+
+    if (value.length > 4 && catalogDB && catalogDB.length) {
+      const matches = catalogDB
+        .filter(row => row.UPC && String(row.UPC).startsWith(value));
+      setUpcSuggestions(matches.slice(0, 10)); // show up to 10 matches
+      setShowUpcDropdown(true);
+    } else {
+      setUpcSuggestions([]);
+      setShowUpcDropdown(false);
+    }
+  };
+
+  const handleUpcSelect = (item) => {
+    // Populate the form with fields from the selected catalog item
+    onChange("upc", item.UPC || "");
+    onChange("albumTitle", item["Album Title"] || "");
+    onChange("albumArtist", [item["Album Artist"] || ""]);
+    onChange("distributor", item["Distributor"] || "");
+    onChange("releaseDate", item["Digital Release Date"]?.split("T")[0] || "");
+    // Add more fields as needed
+    setUpcSuggestions([]);
+    setShowUpcDropdown(false);
+  };
+  
   const handleAlbumArtistChange = (index, value) => {
     const updated = [...releaseInfo.albumArtist];
     updated[index] = value;
@@ -48,20 +82,38 @@ export default function ReleaseForm({ releaseInfo, onChange, artistDB, isLocked 
         </div>
 
         {/* UPC */}
-        <div className="relative flex flex-col">
-          <label className="text-sm font-medium text-gray-700 mb-1">UPC</label>
-          <input
-            disabled={isLocked}
-            type="text"
-            value={releaseInfo.upc || ""}
-            onChange={e => {
-              const value = e.target.value.replace(/\D/g, "");
-              onChange("upc", value);
-            }}
-            placeholder="Enter UPC"
-            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-        </div>
+       <div className="relative flex flex-col">
+  <label className="text-sm font-medium text-gray-700 mb-1">UPC</label>
+  <input
+    disabled={isLocked}
+    type="text"
+    value={releaseInfo.upc || ""}
+    onChange={handleUpcChange}
+    placeholder="Enter UPC"
+    className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    onFocus={() => (upcSuggestions.length > 0 ? setShowUpcDropdown(true) : null)}
+    onBlur={() => setTimeout(() => setShowUpcDropdown(false), 150)}
+  />
+  {showUpcDropdown && upcSuggestions.length > 0 && (
+    <ul className="absolute z-10 left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg max-h-56 overflow-auto">
+      {upcSuggestions.map((item, idx) => (
+        <li
+          key={idx}
+          className="p-2 cursor-pointer hover:bg-blue-100"
+          onMouseDown={() => handleUpcSelect(item)}
+        >
+          <span className="font-mono">{item.UPC}</span>
+          {item["Album Title"] && (
+            <span> — <span className="italic">{item["Album Title"]}</span></span>
+          )}
+          {item["Album Artist"] && (
+            <span className="text-gray-500"> ({item["Album Artist"]})</span>
+          )}
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
 
         {/* Album Artists */}
         <div className="flex flex-col md:col-span-2">
