@@ -214,6 +214,7 @@ const handleClearForm = () => {
     numTracks: "1",
     distributor: "Believe",
     releaseDate: "",
+    recDate: "",
     typeOfRelease: "",
     coverArt: null,
     coverArtPreview: null,
@@ -241,6 +242,7 @@ const handleClearForm = () => {
     numTracks: "1",
     distributor: "Believe",
     releaseDate: "",
+    recDate: "",
     typeOfRelease: "",
     coverArtPreview: null,
   });
