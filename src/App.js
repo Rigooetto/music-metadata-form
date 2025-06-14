@@ -311,7 +311,7 @@ useEffect(() => {
 
 const results = catalogDB.filter(entry => {
   const title = entry["Album Title"];
-  return typeof title === "string" && title.toLowerCase().includes(albumSearch.toLowerCase());
+  return title?.toString().toLowerCase().includes(albumSearch.toLowerCase());
 });
 
   // Deduplicate by UPC
