@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Toaster, toast } from 'react-hot-toast';
-import ReleaseForm from "./components/ReleaseForm";
+import ReleaseForm from "./components/ReleaseForm.js";
 import TrackList from "./components/TrackList";
 import {
   fetchComposers,
