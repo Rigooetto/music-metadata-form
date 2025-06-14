@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-At the top of the file, add this line:
+console.log(">>> ReleaseForm.js loaded!");
 
 export default function ReleaseForm({ releaseInfo, onChange, artistDB, isLocked, catalogDB }) {
   const [upcSuggestions, setUpcSuggestions] = useState([]);
