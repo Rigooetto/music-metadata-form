@@ -61,6 +61,8 @@ export default function ReleaseForm({ releaseInfo, onChange, artistDB, isLocked 
     onChange("albumArtist", [...releaseInfo.albumArtist, ""]);
   };
 
+console.log("catalogDB in ReleaseForm:", catalogDB);
+  
   return (
     <section className="mb-10 border-b pb-6">
       <h2 className="text-xl font-semibold mb-4 text-gray-800">Release Information</h2>
