@@ -117,7 +117,7 @@ function normalizeReleaseRow(data) {
     distributor: data["Distributor"] || "",
     releaseDate: data["Digital Release Date"] || "",
     typeOfRelease: data["Type of Release"] || "",
-    numTracks: data["# Tracks"] || "1",
+    numTracks: data["# Tracks"] || "",
   };
 
   if (data.albumArtists) {
@@ -197,7 +197,7 @@ export default function App() {
       upc: "",
       albumTitle: "",
       albumArtist: [""],
-      numTracks: "1",
+      numTracks: "",
       distributor: "Believe",
       releaseDate: "",
       typeOfRelease: "",
@@ -239,7 +239,7 @@ const handleClearForm = () => {
     upc: "",
     albumTitle: "",
     albumArtist: [""],
-    numTracks: "1",
+    numTracks: "",
     distributor: "Believe",
     releaseDate: "",
     recDate: "",
