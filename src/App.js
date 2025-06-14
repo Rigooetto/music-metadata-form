@@ -315,30 +315,39 @@ const newTracks = matches.map((entry) => {
   let publisherData = [];
 
   // 🎯 Wrap each parser in its own try-catch for better debugging
-try {
-  const rawComposers = entry.Composers;
-  const rawPublishers = entry.Publishers;
+function isLikelyValidJsonArray(str) {
+  return (
+    typeof str === "string" &&
+    str.trim().startsWith("[") &&
+    str.trim().endsWith("]") &&
+    str.trim().length > 4
+  );
+}
 
-  if (
-    typeof rawComposers === "string" &&
-    rawComposers.trim().startsWith("[") &&
-    rawComposers.trim().endsWith("]") &&
-    rawComposers.trim().length > 4
-  ) {
-    composerData = JSON.parse(rawComposers);
+let rawComposers = entry.Composers;
+let rawPublishers = entry.Publishers;
+
+try {
+  if (isLikelyValidJsonArray(rawComposers)) {
+    try {
+      composerData = JSON.parse(rawComposers);
+    } catch {
+      console.warn("⚠️ Composer JSON failed to parse:", rawComposers);
+      composerData = [];
+    }
   } else if (Array.isArray(rawComposers)) {
     composerData = rawComposers;
   } else {
     composerData = [];
   }
 
-  if (
-    typeof rawPublishers === "string" &&
-    rawPublishers.trim().startsWith("[") &&
-    rawPublishers.trim().endsWith("]") &&
-    rawPublishers.trim().length > 4
-  ) {
-    publisherData = JSON.parse(rawPublishers);
+  if (isLikelyValidJsonArray(rawPublishers)) {
+    try {
+      publisherData = JSON.parse(rawPublishers);
+    } catch {
+      console.warn("⚠️ Publisher JSON failed to parse:", rawPublishers);
+      publisherData = [];
+    }
   } else if (Array.isArray(rawPublishers)) {
     publisherData = rawPublishers;
   } else {
@@ -347,10 +356,10 @@ try {
 
 } catch (err) {
   console.error(
-    "❌ Error parsing composer or publisher data for entry:",
+    "❌ Uncaught error parsing composer or publisher data for entry:",
     entry["Primary Title"],
-    "\nComposers raw:", entry.Composers,
-    "\nPublishers raw:", entry.Publishers,
+    "\nComposers:", rawComposers,
+    "\nPublishers:", rawPublishers,
     "\nError:", err
   );
   composerData = [];
@@ -519,30 +528,39 @@ const newTracks = matches.map((entry) => {
   let composerData = [];
   let publisherData = [];
 
-  try {
-  const rawComposers = entry.Composers;
-  const rawPublishers = entry.Publishers;
+  function isLikelyValidJsonArray(str) {
+  return (
+    typeof str === "string" &&
+    str.trim().startsWith("[") &&
+    str.trim().endsWith("]") &&
+    str.trim().length > 4
+  );
+}
 
-  if (
-    typeof rawComposers === "string" &&
-    rawComposers.trim().startsWith("[") &&
-    rawComposers.trim().endsWith("]") &&
-    rawComposers.trim().length > 4
-  ) {
-    composerData = JSON.parse(rawComposers);
+let rawComposers = entry.Composers;
+let rawPublishers = entry.Publishers;
+
+try {
+  if (isLikelyValidJsonArray(rawComposers)) {
+    try {
+      composerData = JSON.parse(rawComposers);
+    } catch {
+      console.warn("⚠️ Composer JSON failed to parse:", rawComposers);
+      composerData = [];
+    }
   } else if (Array.isArray(rawComposers)) {
     composerData = rawComposers;
   } else {
     composerData = [];
   }
 
-  if (
-    typeof rawPublishers === "string" &&
-    rawPublishers.trim().startsWith("[") &&
-    rawPublishers.trim().endsWith("]") &&
-    rawPublishers.trim().length > 4
-  ) {
-    publisherData = JSON.parse(rawPublishers);
+  if (isLikelyValidJsonArray(rawPublishers)) {
+    try {
+      publisherData = JSON.parse(rawPublishers);
+    } catch {
+      console.warn("⚠️ Publisher JSON failed to parse:", rawPublishers);
+      publisherData = [];
+    }
   } else if (Array.isArray(rawPublishers)) {
     publisherData = rawPublishers;
   } else {
@@ -551,10 +569,10 @@ const newTracks = matches.map((entry) => {
 
 } catch (err) {
   console.error(
-    "❌ Error parsing composer or publisher data for entry:",
+    "❌ Uncaught error parsing composer or publisher data for entry:",
     entry["Primary Title"],
-    "\nComposers raw:", entry.Composers,
-    "\nPublishers raw:", entry.Publishers,
+    "\nComposers:", rawComposers,
+    "\nPublishers:", rawPublishers,
     "\nError:", err
   );
   composerData = [];
@@ -1030,30 +1048,39 @@ const handleUpcSearch = () => {
   let composerData = [];
   let publisherData = [];
 
- try {
-  const rawComposers = entry.Composers;
-  const rawPublishers = entry.Publishers;
+ function isLikelyValidJsonArray(str) {
+  return (
+    typeof str === "string" &&
+    str.trim().startsWith("[") &&
+    str.trim().endsWith("]") &&
+    str.trim().length > 4
+  );
+}
 
-  if (
-    typeof rawComposers === "string" &&
-    rawComposers.trim().startsWith("[") &&
-    rawComposers.trim().endsWith("]") &&
-    rawComposers.trim().length > 4
-  ) {
-    composerData = JSON.parse(rawComposers);
+let rawComposers = entry.Composers;
+let rawPublishers = entry.Publishers;
+
+try {
+  if (isLikelyValidJsonArray(rawComposers)) {
+    try {
+      composerData = JSON.parse(rawComposers);
+    } catch {
+      console.warn("⚠️ Composer JSON failed to parse:", rawComposers);
+      composerData = [];
+    }
   } else if (Array.isArray(rawComposers)) {
     composerData = rawComposers;
   } else {
     composerData = [];
   }
 
-  if (
-    typeof rawPublishers === "string" &&
-    rawPublishers.trim().startsWith("[") &&
-    rawPublishers.trim().endsWith("]") &&
-    rawPublishers.trim().length > 4
-  ) {
-    publisherData = JSON.parse(rawPublishers);
+  if (isLikelyValidJsonArray(rawPublishers)) {
+    try {
+      publisherData = JSON.parse(rawPublishers);
+    } catch {
+      console.warn("⚠️ Publisher JSON failed to parse:", rawPublishers);
+      publisherData = [];
+    }
   } else if (Array.isArray(rawPublishers)) {
     publisherData = rawPublishers;
   } else {
@@ -1062,10 +1089,10 @@ const handleUpcSearch = () => {
 
 } catch (err) {
   console.error(
-    "❌ Error parsing composer or publisher data for entry:",
+    "❌ Uncaught error parsing composer or publisher data for entry:",
     entry["Primary Title"],
-    "\nComposers raw:", entry.Composers,
-    "\nPublishers raw:", entry.Publishers,
+    "\nComposers:", rawComposers,
+    "\nPublishers:", rawPublishers,
     "\nError:", err
   );
   composerData = [];
