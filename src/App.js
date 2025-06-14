@@ -2069,7 +2069,22 @@ if (Array.isArray(composerData)) {
       />
 
       {/* Remove button */}
-   
+      {track.trackArtistNames.length > 1 && (
+        <button
+          type="button"
+          onClick={() => {
+            const updated = [...track.trackArtistNames];
+            updated.splice(artistIndex, 1);
+            const updatedTracks = [...tracks];
+            updatedTracks[i].trackArtistNames = updated;
+            setTracks(updatedTracks);
+          }}
+          className="ml-2 text-red-500 hover:text-red-700 text-lg"
+          title="Remove Artist"
+        >
+          🗑️
+        </button>
+      )}
     </div>
 
     {/* Suggestions Dropdown */}
