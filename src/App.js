@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Toaster, toast } from "react-hot-toast";
+import React, { useState, useRef, useEffect } from "react";
+import { Toaster, toast } from 'react-hot-toast';
 
-// ====== DB URLs (replace with your own if needed) ======
+// --- Constants (URLs for your Google Sheets backends) ---
 const COMPOSERS_DB_URL = "https://script.google.com/macros/s/AKfycbzrJdRXwsv_tQrcuQMqEE9WfRN1ZDlqwUXqJ8k7o39eA1t5lXLwiExuZmMpDD_Dmvy4iw/exec";
 const ARTISTS_DB_URL   = "https://script.google.com/macros/s/AKfycbzr3Mg2opXIyPXs5KZArgchglEyuZA-I135mYoL9aK2yuJIaHgCZSskdGS_mMiNShyw/exec";
 const CATALOG_DB_URL   = "https://script.google.com/macros/s/AKfycbxdta-h0LUQ4bHSRLF_czTFlOyIbs4z2RQjixNgVYEJOeKNp7T2rwJhi9-SZcBs57Q6/exec";
-const PUBLISHERS_DB_URL= "https://script.google.com/macros/s/AKfycbzbKo0E1wih647uiiPQebf6x7Sl-LQTM9khdDhuv0D2lP79bqz69-smUUTUEsrnsuBGmA/exec";
+const PUBLISHERS_DB_URL = "https://script.google.com/macros/s/AKfycbzbKo0E1wih647uiiPQebf6x7Sl-LQTM9khdDhuv0D2lP79bqz69-smUUTUEsrnsuBGmA/exec";
 
-// ====== Utility functions ======
+// --- Utility functions ---
 function normalizeDuration(raw) {
   if (!raw) return "";
   if (typeof raw === "string" && /^\d+:\d{2}$/.test(raw)) return raw;
@@ -86,16 +86,16 @@ function createEmptyTrack() {
   };
 }
 
-// ====== Main App Component ======
+// --- Main App ---
 export default function App() {
-  // -- Data DBs
+  // --- DBs, suggestions, and state ---
   const [composersDB, setComposersDB] = useState([]);
   const [artistDB, setArtistDB] = useState([]);
   const [catalogDB, setCatalogDB] = useState([]);
   const [publishersDB, setPublishersDB] = useState([]);
+  const [isLocked, setIsLocked] = useState(false); // Edit lock
 
-  // -- UI State
-  const [isLocked, setIsLocked] = useState(false);
+  // --- Release and tracks state ---
   const [releaseInfo, setReleaseInfo] = useState({
     upc: "",
     albumTitle: "",
@@ -109,6 +109,8 @@ export default function App() {
     coverArtPreview: null,
   });
   const [tracks, setTracks] = useState([{ ...createEmptyTrack(), trackNumber: 1 }]);
+
+  // --- Suggestions and dropdowns ---
   const [albumSearch, setAlbumSearch] = useState("");
   const [albumSuggestions, setAlbumSuggestions] = useState([]);
   const [highlightedAlbumIndex, setHighlightedAlbumIndex] = useState(-1);
@@ -116,7 +118,7 @@ export default function App() {
   const [activeArtistInputIndex, setActiveArtistInputIndex] = useState(null);
   const [highlightedArtistIndex, setHighlightedArtistIndex] = useState(-1);
 
-  // -- Fetch DBs on mount
+  // --- Fetch all DBs on mount ---
   useEffect(() => {
     fetch(COMPOSERS_DB_URL).then(r => r.json()).then(setComposersDB);
     fetch(ARTISTS_DB_URL).then(r => r.json()).then(setArtistDB);
@@ -124,7 +126,7 @@ export default function App() {
     fetch(PUBLISHERS_DB_URL).then(r => r.json()).then(setPublishersDB);
   }, []);
 
-  // -- Album suggestion logic
+  // --- Album suggestion logic ---
   useEffect(() => {
     if (!albumSearch.trim()) {
       setAlbumSuggestions([]);
@@ -133,27 +135,23 @@ export default function App() {
     const results = catalogDB.filter(entry =>
       entry["Album Title"]?.toLowerCase().includes(albumSearch.toLowerCase())
     );
-    // Deduplicate by UPC
     const uniqueAlbums = [...new Map(results.map(item => [item["UPC"], item])).values()];
     setAlbumSuggestions(uniqueAlbums);
   }, [albumSearch, catalogDB]);
 
-  // -- Handlers
+  // --- Handlers ---
   const handleReleaseInfoChange = (field, value) => {
     if (field === "albumTitle") setAlbumSearch(value);
     setReleaseInfo(prev => ({ ...prev, [field]: value }));
   };
-
   const handleAlbumArtistChange = (index, value) => {
     const updated = [...releaseInfo.albumArtist];
     updated[index] = value;
     setReleaseInfo(prev => ({ ...prev, albumArtist: updated }));
   };
-
   const addAlbumArtist = () => {
     setReleaseInfo(prev => ({ ...prev, albumArtist: [...prev.albumArtist, ""] }));
   };
-
   const handleAlbumSuggestionClick = (albumEntry) => {
     setReleaseInfo(prev => ({
       ...prev,
@@ -174,54 +172,46 @@ export default function App() {
     toast.success("Album loaded!");
   };
 
-  // -- Track/Composer Handlers
+  // --- Track and composer logic ---
   const handleTrackChange = (idx, field, value) => {
     const updated = [...tracks];
     updated[idx][field] = value;
     setTracks(updated);
   };
-
   const handleTrackArtistChange = (trackIdx, artistIdx, value) => {
     const updated = [...tracks];
     updated[trackIdx].trackArtistNames[artistIdx] = value;
     setTracks(updated);
   };
-
   const addTrackArtist = (trackIdx) => {
     const updated = [...tracks];
     updated[trackIdx].trackArtistNames.push("");
     setTracks(updated);
   };
-
   const addTrack = () => {
     setTracks([...tracks.map(t => ({ ...t, collapsed: true })), { ...createEmptyTrack(), collapsed: false }]);
     setReleaseInfo(prev => ({ ...prev, numTracks: (parseInt(prev.numTracks || "1", 10) + 1).toString() }));
   };
-
   const removeTrack = (idx) => {
     const updated = tracks.filter((_, i) => i !== idx);
     setTracks(updated);
     setReleaseInfo(prev => ({ ...prev, numTracks: updated.length.toString() }));
   };
-
   const addComposer = (trackIdx) => {
     const updated = [...tracks];
     updated[trackIdx].composers.push(createEmptyComposer());
     setTracks(updated);
   };
-
   const handleComposerChange = (trackIdx, composerIdx, field, value) => {
     const updated = [...tracks];
     updated[trackIdx].composers[composerIdx][field] = value;
     setTracks(updated);
   };
-
   const removeComposer = (trackIdx, composerIdx) => {
     const updated = [...tracks];
     updated[trackIdx].composers.splice(composerIdx, 1);
     setTracks(updated);
   };
-
   const handleClearForm = () => {
     setReleaseInfo({
       upc: "",
@@ -244,11 +234,10 @@ export default function App() {
     setHighlightedAlbumIndex(-1);
   };
 
-  // -- Submit (POST to webhook, adjust as needed)
+  // --- Submit (POST to webhook, adjust as needed) ---
   const handleSubmit = async () => {
     try {
       const payload = { releaseInfo, tracks };
-      // TODO: replace with your webhook URL
       await fetch("https://rigoletto.app.n8n.cloud/webhook/fd8ebef7-dccb-4b7f-9381-1702ea074949", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -262,13 +251,13 @@ export default function App() {
     }
   };
 
-  // ====== Render ======
+  // --- Render ---
   return (
     <div className="bg-gray-50 min-h-screen p-6">
       <Toaster />
       <div className="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-8">
         <h1 className="text-3xl font-bold mb-8 text-center text-blue-700">Music Catalog Data Entry</h1>
-        {/* Release Info Section */}
+        {/* --- Release Info Section --- */}
         <section className="mb-10 border-b pb-6">
           <h2 className="text-xl font-semibold mb-4 text-gray-800">Release Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -375,7 +364,6 @@ export default function App() {
                 onChange={e => {
                   const value = e.target.value.replace(/\D/g, "");
                   setReleaseInfo(prev => ({ ...prev, numTracks: value }));
-                  // Auto-add/remove tracks if needed
                   let count = Math.max(1, parseInt(value || "1", 10));
                   let updated = [...tracks];
                   while (updated.length < count) updated.push(createEmptyTrack());
@@ -425,7 +413,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* Tracks */}
+        {/* --- Track and Composer Forms --- */}
         {tracks.map((track, idx) => (
           <details key={idx} open={!track.collapsed} className="mb-6 border rounded-xl p-4 bg-gray-50">
             <summary className="cursor-pointer font-semibold text-blue-700 mb-4 flex items-center justify-between">
@@ -458,7 +446,6 @@ export default function App() {
                   className="p-2 border border-gray-300 rounded-md"
                 />
               </div>
-              {/* Add more fields as needed */}
             </div>
             {/* Track Artists */}
             <div className="mt-4">
