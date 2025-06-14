@@ -13,6 +13,7 @@ export default function ReleaseForm({ releaseInfo, onChange, artistDB, isLocked 
 
   // UPC search and auto-suggest
   const handleUpcChange = (e) => {
+    console.log("handleUpcChange fired!");
     const value = e.target.value.replace(/\D/g, "");
     onChange("upc", value);
 
