@@ -142,7 +142,7 @@ const handleClearForm = () => {
 
 
   const [upcSearch, setUpcSearch] = useState("");
-  const [tracks, setTracks] = useState([{ ...(), collapsed: false }]);
+  const [tracks, setTracks] = useState([{ ...createEmptyTrack(), collapsed: false }]);
   const [releaseInfo, setReleaseInfo] = useState({
     upc: "",
     albumTitle: "",
@@ -439,8 +439,8 @@ return {
   trackPLine: entry["Track P Line"] || "",
   countryRelease: entry["Country of Release"] || "",
   basisClaim:  entry["Basis of Claim"] || "",
-  percentClaim: entry["Percentage of Claim"] || "",
-  collectionEnd: entry["Collection Rights End Claim"] || "",
+  percentClaim: entry["Percent of Claim"] || "",
+  collectionEnd: entry["Collection End Date"] || "",
   nonUSRights: entry["Non-US Collection Rights"] || "",
   genre: entry["Genre"] || "",
   recEng: entry["Recording Engineer"] || "",
@@ -632,8 +632,8 @@ console.warn("🧪 Checking raw Publishers:", rawPublishers);
     trackPLine: entry["Track P Line"] || "",
     countryRelease: entry["Country of Release"] || "",
     basisClaim: entry["Basis of Claim"] || "",
-    percentClaim: entry["Percentage of Claim"] || "",
-    collectionEnd: entry["Collection Rights End Claim"] || "",
+    percentClaim: entry["Percent of Claim"] || "",
+    collectionEnd: entry["Collection End Date"] || "",
     nonUSRights: entry["Non-US Collection Rights"] || "",
     genre: entry["Genre"] || "",
     recEng: entry["Recording Engineer"] || "",
@@ -707,8 +707,8 @@ trackArtistNames: (() => {
         trackPLine: entry["Track P Line"] || "",
         countryRelease: entry["Country of Release"] || "",
         basisClaim:  entry["Basis of Claim"] || "",
-        percentClaim: entry["Percentage of Claim"] || "",
-        collectionEnd: entry["Collection Rights End Claim"] || "",
+        percentClaim: entry["Percent of Claim"] || "",
+        collectionEnd: entry["Collection End Date"] || "",
         nonUSRights: entry["Non-US Collection Rights"] || "",
         genre: entry["Genre"] || "",
         recEng: entry["Recording Engineer"] || "",
@@ -860,12 +860,12 @@ function createEmptyTrack() {
     recordingTitle: "",
     akaTitle: "",
     akaTypeCode: "",
-    countryRelease: "",
-    basisClaim: "",
+    countryRelease: "United States",
+    basisClaim: "Copyright Owner",
     percentClaim: "",
-    collectionEnd: "",
-    nonUSRights: "",
-    genre: "",
+    collectionEnd: "12/31/3000",
+    nonUSRights: "Worldwide",
+    genre: "Regional Mexican",
     recDate: "",
     recEng: "",
     producer: "",
@@ -1161,8 +1161,8 @@ console.warn("🧪 Checking raw Publishers:", rawPublishers);
     akaTypeCode: entry["AKA Type Code"] || "",
     countryRelease: entry["Country of Release"] || "",
     basisClaim: entry["Basis of Claim"] || "",
-    percentClaim: entry["Percentage of Claim"] || "",
-    collectionEnd: entry["Collection Rights End Claim"] || "",
+    percentClaim: entry["Percent of Claim"] || "",
+    collectionEnd: entry["Collection End Date"] || "",
     nonUSRights: entry["Non-US Collection Rights"] || "",
     genre: entry["Genre"] || "",
     recDate: entry["Recording Date"] || "",
@@ -1786,8 +1786,8 @@ handleTrackChange(i, "trackArtistNames", parsedTrackArtists);
   handleTrackChange(i, "akaTypeCode", entry["AKA Type Code (MLC)"] || "");
   handleTrackChange(i, "countryRelease", entry["Country of Release"] || "");
   handleTrackChange(i, "basisClaim",  entry["Basis of Claim"] || "");
-  handleTrackChange(i, "percentClaim", entry["Percentage of Claim"] || "");
-  handleTrackChange(i, "collectionEnd", entry["Collection Rights End Claim"] || "");
+  handleTrackChange(i, "percentClaim", entry["Percent of Claim"] || "");
+  handleTrackChange(i, "collectionEnd", entry["Collection End Date"] || "");
   handleTrackChange(i, "nonUSRights", entry["Non-US Collection Rights"] || "");
   handleTrackChange(i, "genre", entry["Genre"] || "");
   handleTrackChange(i, "recEng", entry["Recording Engineer"] || "");
@@ -1919,8 +1919,8 @@ handleTrackChange(i, "trackArtistNames", parsedTrackArtists);
   handleTrackChange(i, "akaTypeCode", entry["AKA Type Code (MLC)"] || "");
   handleTrackChange(i, "countryRelease", entry["Country of Release"] || "");
   handleTrackChange(i, "basisClaim",  entry["Basis of Claim"] || "");
-  handleTrackChange(i, "percentClaim", entry["Percentage of Claim"] || "");
-  handleTrackChange(i, "collectionEnd", entry["Collection Rights End Claim"] || "");
+  handleTrackChange(i, "percentClaim", entry["Percent of Claim"] || "");
+  handleTrackChange(i, "collectionEnd", entry["Collection End Date"] || "");
   handleTrackChange(i, "nonUSRights", entry["Non-US Collection Rights"] || "");
   handleTrackChange(i, "genre", entry["Genre"] || "");
   handleTrackChange(i, "recDate", entry["Recording Date"] || "");
@@ -2216,7 +2216,7 @@ if (Array.isArray(composerData)) {
   {renderInput("Country of Release", track.countryRelease, (e) => handleTrackChange(i, "countryRelease", e.target.value))}
   {renderInput("Basis of Claim", track.basisClaim, (e) => handleTrackChange(i, "basisClaim", e.target.value))}
   {renderInput("Percentage Claimed", track.percentClaim, (e) => handleTrackChange(i, "percentClaim", e.target.value))}
-  {renderInput("Collection Rights End Claim", track.collectionEnd, (e) => handleTrackChange(i, "collectionEnd", e.target.value))}
+  {renderInput("Collection Rights End Date", track.collectionEnd, (e) => handleTrackChange(i, "collectionEnd", e.target.value))}
   {renderInput("Non-US Collection Rights", track.nonUSRights, (e) => handleTrackChange(i, "nonUSRights", e.target.value))}
   {renderInput("Genre", track.genre, (e) => handleTrackChange(i, "genre", e.target.value))}
 
