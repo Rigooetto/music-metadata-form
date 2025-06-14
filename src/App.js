@@ -334,9 +334,10 @@ useEffect(() => {
     return;
   }
 
-  const results = catalogDB.filter(entry =>
-    entry["Album Title"]?.toLowerCase().includes(albumSearch.toLowerCase())
-  );
+const results = catalogDB.filter(entry => {
+  const title = entry["Album Title"];
+  return title?.toString().toLowerCase().includes(albumSearch.toLowerCase());
+});
 
   const uniqueResults = [...new Map(results.map(item => [item["UPC"], item])).values()];
   setAlbumSuggestions(uniqueResults);
