@@ -142,7 +142,7 @@ const handleClearForm = () => {
 
 
   const [upcSearch, setUpcSearch] = useState("");
-  const [tracks, setTracks] = useState([{ ...createEmptyTrack(), collapsed: false }]);
+  const [tracks, setTracks] = useState([{ ...(), collapsed: false }]);
   const [releaseInfo, setReleaseInfo] = useState({
     upc: "",
     albumTitle: "",
