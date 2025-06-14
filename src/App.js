@@ -314,23 +314,21 @@ const newTracks = matches.map((entry) => {
   let publisherData = [];
 
   // 🎯 Wrap each parser in its own try-catch for better debugging
-  try {
-    if (typeof entry.Composers === "string") {
-      composerData = JSON.parse(entry.Composers);
-    } else {
-      composerData = entry.Composers || [];
-    }
-  } catch (err) {
-    console.error("❌ Error parsing Composers JSON for entry:", entry["Primary Title"], "\nRaw:", entry.Composers, "\nError:", err);
-    composerData = [];
-  }
+    try {
+    const rawComposers = entry.Composers;
+    const rawPublishers = entry.Publishers;
 
-  try {
-    if (typeof entry.Publishers === "string") {
-      publisherData = JSON.parse(entry.Publishers);
-    } else {
-      publisherData = entry.Publishers || [];
+    if (typeof rawComposers === "string" && rawComposers.trim().startsWith("[") && rawComposers.trim().endsWith("]")) {
+      composerData = JSON.parse(rawComposers);
+    } else if (Array.isArray(rawComposers)) {
+      composerData = rawComposers;
     }
+
+    if (typeof rawPublishers === "string" && rawPublishers.trim().startsWith("[") && rawPublishers.trim().endsWith("]")) {
+      publisherData = JSON.parse(rawPublishers);
+    } else if (Array.isArray(rawPublishers)) {
+      publisherData = rawPublishers;
+    
   } catch (err) {
     console.error("❌ Error parsing Publishers JSON for entry:", entry["Primary Title"], "\nRaw:", entry.Publishers, "\nError:", err);
     publisherData = [];
@@ -495,9 +493,21 @@ releaseDate: main["Digital Release Date"]
     let composerData = [];
     let publisherData = [];
 
-    try {
-      composerData = typeof entry.Composers === "string" ? JSON.parse(entry.Composers) : entry.Composers || [];
-      publisherData = typeof entry.Publishers === "string" ? JSON.parse(entry.Publishers) : entry.Publishers || [];
+      try {
+    const rawComposers = entry.Composers;
+    const rawPublishers = entry.Publishers;
+
+    if (typeof rawComposers === "string" && rawComposers.trim().startsWith("[") && rawComposers.trim().endsWith("]")) {
+      composerData = JSON.parse(rawComposers);
+    } else if (Array.isArray(rawComposers)) {
+      composerData = rawComposers;
+    }
+
+    if (typeof rawPublishers === "string" && rawPublishers.trim().startsWith("[") && rawPublishers.trim().endsWith("]")) {
+      publisherData = JSON.parse(rawPublishers);
+    } else if (Array.isArray(rawPublishers)) {
+      publisherData = rawPublishers;
+    
     } catch (err) {
       console.error("Error parsing composer or publisher data", err);
     }
@@ -969,9 +979,21 @@ const handleUpcSearch = () => {
     let composerData = [];
     let publisherData = [];
 
-    try {
-      composerData = typeof entry.Composers === "string" ? JSON.parse(entry.Composers) : entry.Composers || [];
-      publisherData = typeof entry.Publishers === "string" ? JSON.parse(entry.Publishers) : entry.Publishers || [];
+      try {
+    const rawComposers = entry.Composers;
+    const rawPublishers = entry.Publishers;
+
+    if (typeof rawComposers === "string" && rawComposers.trim().startsWith("[") && rawComposers.trim().endsWith("]")) {
+      composerData = JSON.parse(rawComposers);
+    } else if (Array.isArray(rawComposers)) {
+      composerData = rawComposers;
+    }
+
+    if (typeof rawPublishers === "string" && rawPublishers.trim().startsWith("[") && rawPublishers.trim().endsWith("]")) {
+      publisherData = JSON.parse(rawPublishers);
+    } else if (Array.isArray(rawPublishers)) {
+      publisherData = rawPublishers;
+    
     } catch (err) {
       console.error("Error parsing composer or publisher data", err);
     }
