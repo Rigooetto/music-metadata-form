@@ -309,9 +309,10 @@ useEffect(() => {
     return;
   }
 
-  const results = catalogDB.filter(entry =>
-    entry["Album Title"]?.toLowerCase().includes(albumSearch.toLowerCase())
-  );
+const results = catalogDB.filter(entry => {
+  const title = entry["Album Title"];
+  return typeof title === "string" && title.toLowerCase().includes(albumSearch.toLowerCase());
+});
 
   // Deduplicate by UPC
   const uniqueAlbums = [...new Map(results.map(item => [item["UPC"], item])).values()];
