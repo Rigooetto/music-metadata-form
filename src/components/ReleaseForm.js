@@ -90,7 +90,7 @@ console.log("handleUpcChange called, value:", e.target.value);
         </div>
 
         {/* UPC */}
-       <div className="relative flex flex-col">
+      <div className="relative flex flex-col">
   <label className="text-sm font-medium text-gray-700 mb-1">UPC</label>
   <input
     disabled={isLocked}
@@ -102,7 +102,11 @@ console.log("handleUpcChange called, value:", e.target.value);
     onFocus={() => (upcSuggestions.length > 0 ? setShowUpcDropdown(true) : null)}
     onBlur={() => setTimeout(() => setShowUpcDropdown(false), 150)}
   />
-console.log("showUpcDropdown:", showUpcDropdown, "upcSuggestions:", upcSuggestions);
+  {/* You can put this log here using a curly brace block */}
+  {(() => {
+    console.log("showUpcDropdown:", showUpcDropdown, "upcSuggestions:", upcSuggestions);
+    return null;
+  })()}
   {showUpcDropdown && upcSuggestions.length > 0 && (
     <ul className="absolute z-10 left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg max-h-56 overflow-auto">
       {upcSuggestions.map((item, idx) => (
