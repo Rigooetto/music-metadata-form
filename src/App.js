@@ -34,13 +34,25 @@ export default function App() {
   const [publishersDB, setPublishersDB] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Data loading
-  useEffect(() => {
-    fetchComposers().then(setComposersDB);
-    fetchArtists().then(setArtistDB);
-    fetchCatalog().then(setCatalogDB);
-    fetchPublishers().then(setPublishersDB);
-  }, []);
+// Data loading
+useEffect(() => {
+  fetchComposers().then(data => {
+    setComposersDB(data);
+    console.log("Composers DB:", data);
+  });
+  fetchArtists().then(data => {
+    setArtistDB(data);
+    console.log("Artists DB:", data);
+  });
+  fetchCatalog().then(data => {
+    setCatalogDB(data);
+    console.log("Catalog DB:", data);
+  });
+  fetchPublishers().then(data => {
+    setPublishersDB(data);
+    console.log("Publishers DB:", data);
+  });
+}, []);
 
   // Form actions
   const handleReleaseInfoChange = (field, value) => {
