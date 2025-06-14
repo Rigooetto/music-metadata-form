@@ -143,6 +143,9 @@ useEffect(() => {
           onChange={handleReleaseInfoChange}
           artistDB={artistDB}
           isLocked={isLocked}
+          catalogDB={catalogDB}
+          composersDB={composersDB}
+          publishersDB={publishersDB}
         />
         <TrackList
           tracks={tracks}
