@@ -1,8 +1,99 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Toaster, toast } from 'react-hot-toast';
 
+// 🗂️ Simulated local Composer database
+const mockComposersDB = [
+  {
+    firstName: "José",
+    middleName: "Luis",
+    lastName: "Pérez",
+    ipi: "123456789",
+    split: "50",
+    pro: "BMI",
+    roleCode: "C",
+    publisher: "Afinarte Publishing",
+    publisherIPI: "987654321",
+    publisherPRO: "BMI",
+    pubadmin: "Songs of Afinarte",
+    pubadminIPI: "456789123",
+    pubadminShare: "50",
+  },
+  {
+    firstName: "Maria",
+    middleName: "",
+    lastName: "Lopez",
+    ipi: "111222333",
+    split: "100",
+    pro: "ASCAP",
+    roleCode: "CA",
+    publisher: "Melodies Inc",
+    publisherIPI: "999888777",
+    publisherPRO: "ASCAP",
+    pubadmin: "Melodies Admin",
+    pubadminIPI: "222333444",
+    pubadminShare: "100",
+  },
 
+];
+const mockArtistsDB = [
+  {
+    name: "El Fantasma",
+    label: "Afinarte Music",
+  },
+  {
+    name: "Los Dos Carnales",
+    label: "Afinarte Music",
+  },
+  {
+    name: "La Zenda Norteña",
+    label: "Z Records",
+  },
+];
+const mockPublishersDB = [
+  {
+    name: "Afinarte Publishing",
+    ipi: "987654321",
+    pro: "BMI",
+    admin: "Songs of Afinarte",
+    adminIPI: "456789123",
+    adminShare: "50",
+  },
+  {
+    name: "Melodies Inc",
+    ipi: "999888777",
+    pro: "ASCAP",
+    admin: "Melodies Admin",
+    adminIPI: "222333444",
+    adminShare: "100",
+  },
+];
 
+const mockCatalogDB = [
+  {
+    primaryTitle: "El Corrido del Jefe",
+    recordingTitle: "El Corrido del Jefe",
+    akaTitle: "El Jefe",
+    akaTypeCode: "AKA",
+    isrc: "US-ABC-23-12345",
+    iswc: "T-123456789-0",
+    duration: "03:15",
+    trackLabel: "Afinarte Music",
+    trackPLine: "2025 Afinarte Music, LLC.",
+    trackArtistNames: "Los Patroncitos",
+  },
+  {
+    primaryTitle: "Mi Vida Loca",
+    recordingTitle: "Mi Vida Loca",
+    akaTitle: "Vida Loca",
+    akaTypeCode: "ALT",
+    isrc: "US-XYZ-24-67890",
+    iswc: "T-987654321-0",
+    duration: "02:50",
+    trackLabel: "Ranchero Records",
+    trackPLine: "2024 Ranchero Records, Inc.",
+    trackArtistNames: "Maria La Reina",
+  },
+];
 
 
 
@@ -150,7 +241,6 @@ const handleClearForm = () => {
     numTracks: "1",
     distributor: "Believe",
     releaseDate: "",
-    recDate: "",
     typeOfRelease: "",
     coverArtPreview: null,
   });
@@ -309,36 +399,17 @@ releaseDate: main["Digital Release Date"]
   }));
 
   // Load tracks
-const newTracks = matches.map((entry) => {
-  let composerData = [];
-  let publisherData = [];
+  const newTracks = matches.map((entry) => {
+    let composerData = [];
+    let publisherData = [];
 
-  // 🎯 Wrap each parser in its own try-catch for better debugging
-  try {
-    if (typeof entry.Composers === "string") {
-      composerData = JSON.parse(entry.Composers);
-    } else {
-      composerData = entry.Composers || [];
+    try {
+      composerData = typeof entry.Composers === "string" ? JSON.parse(entry.Composers) : entry.Composers || [];
+      publisherData = typeof entry.Publishers === "string" ? JSON.parse(entry.Publishers) : entry.Publishers || [];
+    } catch (err) {
+      console.error("Error parsing composer or publisher data", err);
     }
-  } catch (err) {
-    console.error("❌ Error parsing Composers JSON for entry:", entry["Primary Title"], "\nRaw:", entry.Composers, "\nError:", err);
-    composerData = [];
-  }
-
-  try {
-    if (typeof entry.Publishers === "string") {
-      publisherData = JSON.parse(entry.Publishers);
-    } else {
-      publisherData = entry.Publishers || [];
-    }
-  } catch (err) {
-    console.error("❌ Error parsing Publishers JSON for entry:", entry["Primary Title"], "\nRaw:", entry.Publishers, "\nError:", err);
-    publisherData = [];
-  }
-
-  console.log("🔍 Parsed publisher sample for", entry["Primary Title"] || "unknown", ":", publisherData?.[0] || "No publisher");
-
-
+console.log("🔍 Publisher sample:", publisherData[0]);
 
 const composers = composerData.map((c) => {
   return {
@@ -401,15 +472,6 @@ return {
   duration: normalizeDuration(entry["Duration"]),
   trackLabel: entry["Track Label"] || "",
   trackPLine: entry["Track P Line"] || "",
-  countryRelease: entry["Country of Release"] || "",
-  basisClaim:  entry["Basis of Claim"] || "",
-  percentClaim: entry["Percent of Claim"] || "",
-  collectionEnd: entry["Collection End Date"] || "",
-  nonUSRights: entry["Non-US Collection Rights"] || "",
-  genre: entry["Genre"] || "",
-  recEng: entry["Recording Engineer"] || "",
-  producer: entry["Producer"] || "",
-  execProducer: entry["Executive Producer"] || "", 
   composers,
   collapsed: true,
 };
@@ -545,18 +607,9 @@ trackArtistNames: (() => {
       akaTypeCode: entry["AKA Type Code"] || "",
       isrc: entry["ISRC"] || "",
       iswc: entry["ISWC"] || "",
-      duration: normalizeDuration(entry["Duration"]),
+duration: normalizeDuration(entry["Duration"]),
       trackLabel: entry["Track Label"] || "",
       trackPLine: entry["Track P Line"] || "",
-      countryRelease: entry["Country of Release"] || "",
-      basisClaim:  entry["Basis of Claim"] || "",
-      percentClaim: entry["Percent of Claim"] || "",
-      collectionEnd: entry["Collection End Date"] || "",
-      nonUSRights: entry["Non-US Collection Rights"] || "",
-      genre: entry["Genre"] || "",      
-      recEng: entry["Recording Engineer"] || "",
-      producer: entry["Producer"] || "",
-      execProducer: entry["Executive Producer"] || "", 
       composers,
       collapsed: true
     };
@@ -621,18 +674,9 @@ trackArtistNames: (() => {
         akaTypeCode: entry["AKA Type Code (MLC)"] || "",
         isrc: entry["ISRC"] || "",
         iswc: entry["ISWC"] || "",
-        duration: normalizeDuration(entry["Duration"]),
+duration: normalizeDuration(entry["Duration"]),
         trackLabel: entry["Track Label"] || "",
         trackPLine: entry["Track P Line"] || "",
-        countryRelease: entry["Country of Release"] || "",
-        basisClaim:  entry["Basis of Claim"] || "",
-        percentClaim: entry["Percent of Claim"] || "",
-        collectionEnd: entry["Collection End Date"] || "",
-        nonUSRights: entry["Non-US Collection Rights"] || "",
-        genre: entry["Genre"] || "",
-        recEng: entry["Recording Engineer"] || "",
-        producer: entry["Producer"] || "",
-        execProducer: entry["Executive Producer"] || "", 
         composers,
       },
     ]);
@@ -1022,11 +1066,11 @@ return {
   recordingTitle: entry["Recording Title"] || "",
   akaTitle: entry["AKA Title"] || "",
   akaTypeCode: entry["AKA Type Code"] || "",
-  countryRelease: entry["Country of Release"] || "",
-  basisClaim:  entry["Basis of Claim"] || "",
-  percentClaim: entry["Percent of Claim"] || "",
+  countryRelease: entry["United States"] || "",
+  basisClaim:  entry["Copyright Owner"] || "",
+  percentClaim: entry["Percent Claim"] || "",
   collectionEnd: entry["Collection End Date"] || "",
-  nonUSRights: entry["Non-US Collection Rights"] || "",
+  nonUSRights: entry["Non US Rights"] || "",
   genre: entry["Genre"] || "",
   recDate: entry["Recording Date"] || "",
   recEng: entry["Recording Engineer"] || "",
@@ -1108,24 +1152,14 @@ const handleSubmit = async () => {
   try {
     setIsSubmitting(true);
 
-    const payload = {
-      releaseInfo,
-      tracks,
-      composers: composerData,
-      publishers: publisherData,
-    };
-
-    // Log full payload
-    console.log("📦 Payload to webhook:", JSON.stringify(payload, null, 2));
-
-    // 🔁 Send release info
+    // Send releaseInfo
     await fetch(ARTISTS_DB_URL, {
       method: "POST",
       body: JSON.stringify(releaseInfo),
       headers: { "Content-Type": "application/json" },
     });
 
-    // 🔁 Send each track
+    // Send each track
     for (const track of tracks) {
       await fetch(CATALOG_DB_URL, {
         method: "POST",
@@ -1134,7 +1168,7 @@ const handleSubmit = async () => {
       });
     }
 
-    // 🔁 Send composers
+    // Send each composer
     for (const composer of composerData) {
       await fetch(COMPOSERS_DB_URL, {
         method: "POST",
@@ -1143,7 +1177,7 @@ const handleSubmit = async () => {
       });
     }
 
-    // 🔁 Send publishers
+    // Send each publisher if applicable
     if (publisherData?.length) {
       for (const publisher of publisherData) {
         await fetch(PUBLISHERS_DB_URL, {
@@ -1155,7 +1189,7 @@ const handleSubmit = async () => {
     }
 
     alert("✅ Data submitted successfully!");
-    handleClearForm();
+    handleClearForm(); // Optional: reset form
   } catch (err) {
     console.error("❌ Submission error:", err);
     alert("❌ Submission failed. Check the console.");
@@ -1163,6 +1197,7 @@ const handleSubmit = async () => {
     setIsSubmitting(false);
   }
 };
+
 
 
   return (
@@ -1647,11 +1682,11 @@ handleTrackChange(i, "trackArtistNames", parsedTrackArtists);
   handleTrackChange(i, "recordingTitle", entry["Recording Title"] || "");
   handleTrackChange(i, "akaTitle", entry["AKA Title"] || "");
   handleTrackChange(i, "akaTypeCode", entry["AKA Type Code (MLC)"] || "");
-  handleTrackChange(i, "countryRelease", entry["Country of Release"] || "");
-  handleTrackChange(i, "basisClaim",  entry["Basis of Claim"] || "");
-  handleTrackChange(i, "percentClaim", entry["Percent of Claim"] || "");
+  handleTrackChange(i, "countryRelease", entry["United States"] || "");
+  handleTrackChange(i, "basisClaim",  entry["Copyright Owner"] || "");
+  handleTrackChange(i, "percentClaim", entry["Percent Claim"] || "");
   handleTrackChange(i, "collectionEnd", entry["Collection End Date"] || "");
-  handleTrackChange(i, "nonUSRights", entry["Non-US Collection Rights"] || "");
+  handleTrackChange(i, "nonUSRights", entry["Non US Rights"] || "");
   handleTrackChange(i, "genre", entry["Genre"] || "");
   handleTrackChange(i, "recEng", entry["Recording Engineer"] || "");
   handleTrackChange(i, "producer", entry["Producer"] || "");
@@ -1780,11 +1815,11 @@ handleTrackChange(i, "trackArtistNames", parsedTrackArtists);
   handleTrackChange(i, "recordingTitle", entry["Recording Title"] || "");
   handleTrackChange(i, "akaTitle", entry["AKA Title"] || "");
   handleTrackChange(i, "akaTypeCode", entry["AKA Type Code (MLC)"] || "");
-  handleTrackChange(i, "countryRelease", entry["Country of Release"] || "");
-  handleTrackChange(i, "basisClaim",  entry["Basis of Claim"] || "");
-  handleTrackChange(i, "percentClaim", entry["Percent of Claim"] || "");
+  handleTrackChange(i, "countryRelease", entry["United States"] || "");
+  handleTrackChange(i, "basisClaim",  entry["Copyright Owner"] || "");
+  handleTrackChange(i, "percentClaim", entry["Percent Claim"] || "");
   handleTrackChange(i, "collectionEnd", entry["Collection End Date"] || "");
-  handleTrackChange(i, "nonUSRights", entry["Non-US Collection Rights"] || "");
+  handleTrackChange(i, "nonUSRights", entry["Non US Rights"] || "");
   handleTrackChange(i, "genre", entry["Genre"] || "");
   handleTrackChange(i, "recDate", entry["Recording Date"] || "");
   handleTrackChange(i, "recEng", entry["Recording Engineer"] || "");
@@ -2083,17 +2118,12 @@ if (Array.isArray(composerData)) {
   {renderInput("Non-US Collection Rights", track.nonUSRights, (e) => handleTrackChange(i, "nonUSRights", e.target.value))}
   {renderInput("Genre", track.genre, (e) => handleTrackChange(i, "genre", e.target.value))}
 
-
-
-
-
 <div className="flex flex-col">
   <label className="text-sm font-medium text-gray-700 mb-1">Recording Date</label>
   <input
-    type="date"
-    disabled={isLocked}
+     disabled={isLocked}type="date"
     value={track.recDate || ""}
-    onChange={(e) => handleTrackChange(i, "recDate", e.target.value)}
+    onChange={(e) => handleTrackChange("recDate", e.target.value)}
     className="p-2 h-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
   />
 </div>
