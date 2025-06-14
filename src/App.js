@@ -309,12 +309,13 @@ releaseDate: main["Digital Release Date"]
   }));
 
   // Load tracks
+// Load tracks
 const newTracks = matches.map((entry) => {
   let composerData = [];
   let publisherData = [];
 
   // 🎯 Wrap each parser in its own try-catch for better debugging
-    try {
+  try {
     const rawComposers = entry.Composers;
     const rawPublishers = entry.Publishers;
 
@@ -328,18 +329,22 @@ const newTracks = matches.map((entry) => {
       publisherData = JSON.parse(rawPublishers);
     } else if (Array.isArray(rawPublishers)) {
       publisherData = rawPublishers;
-    
+    }
   } catch (err) {
-    console.error("❌ Error parsing Publishers JSON for entry:", entry["Primary Title"], "\nRaw:", entry.Publishers, "\nError:", err);
+    console.error(
+      "❌ Error parsing Publishers JSON for entry:",
+      entry["Primary Title"],
+      "\nRaw:",
+      entry.Publishers,
+      "\nError:",
+      err
+    );
     publisherData = [];
   }
 
   console.log("🔍 Parsed publisher sample for", entry["Primary Title"] || "unknown", ":", publisherData?.[0] || "No publisher");
 
-
-
-const composers = composerData.map((c) => {
-  return {
+  const composers = composerData.map((c) => ({
     firstName: c["First Name"] || "",
     middleName: c["Middle Name"] || "",
     lastName: c["Last Name"] || "",
@@ -358,6 +363,13 @@ const composers = composerData.map((c) => {
     pubadminIPI: c["Publisher Admin IPI"] || "",
     pubadminShare: c["Publisher Admin Collection Share"] || "",
     collapsed: true,
+  }));
+
+  // Return the full track entry (including parsed data)
+  return {
+    ...entry,
+    Composers: composers,
+    Publishers: publisherData,
   };
 });
 
@@ -489,31 +501,39 @@ releaseDate: main["Digital Release Date"]
   }));
 
   // ✅ Procesar tracks como ya lo tenías
-  const newTracks = matches.map((entry) => {
-    let composerData = [];
-    let publisherData = [];
+const newTracks = matches.map((entry) => {
+  let composerData = [];
+  let publisherData = [];
 
-      try {
+  try {
     const rawComposers = entry.Composers;
     const rawPublishers = entry.Publishers;
 
-    if (typeof rawComposers === "string" && rawComposers.trim().startsWith("[") && rawComposers.trim().endsWith("]")) {
+    if (
+      typeof rawComposers === "string" &&
+      rawComposers.trim().startsWith("[") &&
+      rawComposers.trim().endsWith("]")
+    ) {
       composerData = JSON.parse(rawComposers);
     } else if (Array.isArray(rawComposers)) {
       composerData = rawComposers;
     }
 
-    if (typeof rawPublishers === "string" && rawPublishers.trim().startsWith("[") && rawPublishers.trim().endsWith("]")) {
+    if (
+      typeof rawPublishers === "string" &&
+      rawPublishers.trim().startsWith("[") &&
+      rawPublishers.trim().endsWith("]")
+    ) {
       publisherData = JSON.parse(rawPublishers);
     } else if (Array.isArray(rawPublishers)) {
       publisherData = rawPublishers;
-    
-    } catch (err) {
-      console.error("Error parsing composer or publisher data", err);
     }
 
-    const composers = composerData.map((c) => {
-  return {
+  } catch (err) {
+    console.error("Error parsing composer or publisher data", err);
+  }
+
+  const composers = composerData.map((c) => ({
     firstName: c["First Name"] || "",
     middleName: c["Middle Name"] || "",
     lastName: c["Last Name"] || "",
@@ -532,51 +552,49 @@ releaseDate: main["Digital Release Date"]
     pubadminIPI: c["Publisher Admin IPI"] || "",
     pubadminShare: c["Publisher Admin Collection Share"] || "",
     collapsed: true,
+  }));
+
+  return {
+    primaryTitle: entry["Primary Title"] || "",
+    trackArtistNames: (() => {
+      const raw = entry["Track Artist Name"];
+      if (!raw) return [""];
+      if (Array.isArray(raw)) return raw;
+
+      try {
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [String(parsed)];
+      } catch {
+        return [String(raw)];
+      }
+    })(),
+    trackNumber: entry["Track Number"] || "",
+    recordingTitle: entry["Recording Title"] || "",
+    akaTitle: entry["AKA Title"] || "",
+    akaTypeCode: entry["AKA Type Code"] || "",
+    isrc: entry["ISRC"] || "",
+    iswc: entry["ISWC"] || "",
+    duration: normalizeDuration(entry["Duration"]),
+    trackLabel: entry["Track Label"] || "",
+    trackPLine: entry["Track P Line"] || "",
+    countryRelease: entry["Country of Release"] || "",
+    basisClaim: entry["Basis of Claim"] || "",
+    percentClaim: entry["Percent of Claim"] || "",
+    collectionEnd: entry["Collection End Date"] || "",
+    nonUSRights: entry["Non-US Collection Rights"] || "",
+    genre: entry["Genre"] || "",
+    recEng: entry["Recording Engineer"] || "",
+    producer: entry["Producer"] || "",
+    execProducer: entry["Executive Producer"] || "",
+    composers,
+    collapsed: true,
   };
 });
 
-    return {
-      primaryTitle: entry["Primary Title"] || "",
-trackArtistNames: (() => {
-  const raw = entry["Track Artist Name"];
-  if (!raw) return [""];
-  if (Array.isArray(raw)) return raw;
-
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [String(parsed)];
-  } catch {
-    return [String(raw)];
-  }
-})(),
-      trackNumber: entry["Track Number"] || "",
-      recordingTitle: entry["Recording Title"] || "",
-      akaTitle: entry["AKA Title"] || "",
-      akaTypeCode: entry["AKA Type Code"] || "",
-      isrc: entry["ISRC"] || "",
-      iswc: entry["ISWC"] || "",
-      duration: normalizeDuration(entry["Duration"]),
-      trackLabel: entry["Track Label"] || "",
-      trackPLine: entry["Track P Line"] || "",
-      countryRelease: entry["Country of Release"] || "",
-      basisClaim:  entry["Basis of Claim"] || "",
-      percentClaim: entry["Percent of Claim"] || "",
-      collectionEnd: entry["Collection End Date"] || "",
-      nonUSRights: entry["Non-US Collection Rights"] || "",
-      genre: entry["Genre"] || "",      
-      recEng: entry["Recording Engineer"] || "",
-      producer: entry["Producer"] || "",
-      execProducer: entry["Executive Producer"] || "", 
-      composers,
-      collapsed: true
-    };
-  });
-
-  setTracks(newTracks);
-  setUpcSuggestions([]);
-  setHighlightedUpcIndex(-1);
-  toast.success(`🎵 Loaded ${newTracks.length} track(s) from UPC`);
-};
+setTracks(newTracks);
+setUpcSuggestions([]);
+setHighlightedUpcIndex(-1);
+toast.success(`🎵 Loaded ${newTracks.length} track(s) from UPC`);
 
 const handleUpcSuggestionSelect = (entry) => {
   try {
@@ -976,30 +994,46 @@ const handleUpcSearch = () => {
   }
 
   const newTracks = matches.map((entry) => {
-    let composerData = [];
-    let publisherData = [];
+  let composerData = [];
+  let publisherData = [];
 
-      try {
+  try {
     const rawComposers = entry.Composers;
     const rawPublishers = entry.Publishers;
 
-    if (typeof rawComposers === "string" && rawComposers.trim().startsWith("[") && rawComposers.trim().endsWith("]")) {
+    if (
+      typeof rawComposers === "string" &&
+      rawComposers.trim().startsWith("[") &&
+      rawComposers.trim().endsWith("]")
+    ) {
       composerData = JSON.parse(rawComposers);
     } else if (Array.isArray(rawComposers)) {
       composerData = rawComposers;
     }
 
-    if (typeof rawPublishers === "string" && rawPublishers.trim().startsWith("[") && rawPublishers.trim().endsWith("]")) {
+    if (
+      typeof rawPublishers === "string" &&
+      rawPublishers.trim().startsWith("[") &&
+      rawPublishers.trim().endsWith("]")
+    ) {
       publisherData = JSON.parse(rawPublishers);
     } else if (Array.isArray(rawPublishers)) {
       publisherData = rawPublishers;
-    
-    } catch (err) {
-      console.error("Error parsing composer or publisher data", err);
     }
+  } catch (err) {
+    console.error(
+      "Error parsing composer or publisher data for:",
+      entry["Primary Title"],
+      "\nComposers:",
+      entry.Composers,
+      "\nPublishers:",
+      entry.Publishers,
+      "\nError:",
+      err
+    );
+  }
 
-    const composers = composerData.map((c) => {
-  return {
+  const composers = composerData.map((c) => ({
     firstName: c["First Name"] || "",
     middleName: c["Middle Name"] || "",
     lastName: c["Last Name"] || "",
@@ -1018,59 +1052,57 @@ const handleUpcSearch = () => {
     pubadminIPI: c["Publisher Admin IPI"] || "",
     pubadminShare: c["Publisher Admin Collection Share"] || "",
     collapsed: true,
+  }));
+
+  // ✅ Handle multiple track artists
+  let trackArtists = [];
+
+  try {
+    const possibleArray = JSON.parse(entry["Track Artist Name"]);
+    if (Array.isArray(possibleArray)) {
+      trackArtists = possibleArray;
+    }
+  } catch {
+    // Not a JSON array, fall back to gathering from individual fields
+    for (let k = 0; k <= 8; k++) {
+      const key = k === 0 ? "Track Artist Name" : `Track Artist Name ${k}`;
+      const value = entry[key];
+      if (value && value.trim()) {
+        trackArtists.push(value.trim());
+      }
+    }
+  }
+
+  if (trackArtists.length === 0) trackArtists.push("");
+
+  return {
+    primaryTitle: entry["Primary Title"] || "",
+    trackArtistNames: trackArtists,
+    trackNumber: entry["Track Number"] || "",
+    recordingTitle: entry["Recording Title"] || "",
+    akaTitle: entry["AKA Title"] || "",
+    akaTypeCode: entry["AKA Type Code"] || "",
+    countryRelease: entry["Country of Release"] || "",
+    basisClaim: entry["Basis of Claim"] || "",
+    percentClaim: entry["Percent of Claim"] || "",
+    collectionEnd: entry["Collection End Date"] || "",
+    nonUSRights: entry["Non-US Collection Rights"] || "",
+    genre: entry["Genre"] || "",
+    recDate: entry["Recording Date"] || "",
+    recEng: entry["Recording Engineer"] || "",
+    producer: entry["Producer"] || "",
+    execProducer: entry["Executive Producer"] || "",
+    isrc: entry["ISRC"] || "",
+    iswc: entry["ISWC"] || "",
+    duration: normalizeDuration(entry["Duration"]),
+    trackLabel: entry["Track Label"] || "",
+    trackPLine: entry["Track P Line"] || "",
+    composers,
   };
 });
 
-    // ✅ Handle multiple track artists
-let trackArtists = [];
-
-try {
-  const possibleArray = JSON.parse(entry["Track Artist Name"]);
-  if (Array.isArray(possibleArray)) {
-    trackArtists = possibleArray;
-  }
-} catch {
-  // Not a JSON array, fall back to gathering from individual fields
-  for (let k = 0; k <= 8; k++) {
-    const key = k === 0 ? "Track Artist Name" : `Track Artist Name ${k}`;
-    const value = entry[key];
-    if (value && value.trim()) {
-      trackArtists.push(value.trim());
-    }
-  }
-}
-
-// Default to one empty string if still empty
-if (trackArtists.length === 0) trackArtists.push("");
-
-return {
-  primaryTitle: entry["Primary Title"] || "",
-  trackArtistNames: trackArtists,
-  trackNumber: entry["Track Number"] || "",
-  recordingTitle: entry["Recording Title"] || "",
-  akaTitle: entry["AKA Title"] || "",
-  akaTypeCode: entry["AKA Type Code"] || "",
-  countryRelease: entry["Country of Release"] || "",
-  basisClaim:  entry["Basis of Claim"] || "",
-  percentClaim: entry["Percent of Claim"] || "",
-  collectionEnd: entry["Collection End Date"] || "",
-  nonUSRights: entry["Non-US Collection Rights"] || "",
-  genre: entry["Genre"] || "",
-  recDate: entry["Recording Date"] || "",
-  recEng: entry["Recording Engineer"] || "",
-  producer: entry["Producer"] || "",
-  execProducer: entry["Executive Producer"] || "",  
-  isrc: entry["ISRC"] || "",
-  iswc: entry["ISWC"] || "",
-  duration: normalizeDuration(entry["Duration"]),
-  trackLabel: entry["Track Label"] || "",
-  trackPLine: entry["Track P Line"] || "",
-  composers,
-};
-  });
-
-  setTracks(newTracks);
-  toast.success(`✅ ${newTracks.length} track(s) loaded for UPC`);
+setTracks(newTracks);
+toast.success(`✅ ${newTracks.length} track(s) loaded for UPC`);
 };
 
   const handleReleaseInfoChange = (field, value) => {
