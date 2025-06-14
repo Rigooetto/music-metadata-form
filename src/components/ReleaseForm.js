@@ -19,9 +19,11 @@ export default function ReleaseForm({ releaseInfo, onChange, artistDB, isLocked 
     if (value.length > 4 && catalogDB && catalogDB.length) {
       const matches = catalogDB
         .filter(row => row.UPC && String(row.UPC).startsWith(value));
+      console.log("Matches found:", matches);
       setUpcSuggestions(matches.slice(0, 10)); // show up to 10 matches
       setShowUpcDropdown(true);
     } else {
+      console.log("Matches found:", matches);
       setUpcSuggestions([]);
       setShowUpcDropdown(false);
     }
@@ -100,6 +102,7 @@ console.log("handleUpcChange called, value:", e.target.value);
     onFocus={() => (upcSuggestions.length > 0 ? setShowUpcDropdown(true) : null)}
     onBlur={() => setTimeout(() => setShowUpcDropdown(false), 150)}
   />
+console.log("showUpcDropdown:", showUpcDropdown, "upcSuggestions:", upcSuggestions);
   {showUpcDropdown && upcSuggestions.length > 0 && (
     <ul className="absolute z-10 left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg max-h-56 overflow-auto">
       {upcSuggestions.map((item, idx) => (
