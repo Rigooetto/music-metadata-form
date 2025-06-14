@@ -323,7 +323,7 @@ try {
     typeof rawComposers === "string" &&
     rawComposers.trim().startsWith("[") &&
     rawComposers.trim().endsWith("]") &&
-    rawComposers.trim().length > 2
+    rawComposers.trim().length > 4
   ) {
     composerData = JSON.parse(rawComposers);
   } else if (Array.isArray(rawComposers)) {
@@ -334,7 +334,7 @@ try {
     typeof rawPublishers === "string" &&
     rawPublishers.trim().startsWith("[") &&
     rawPublishers.trim().endsWith("]") &&
-    rawPublishers.trim().length > 2
+    rawPublishers.trim().length > 4
   ) {
     publisherData = JSON.parse(rawPublishers);
   } else if (Array.isArray(rawPublishers)) {
@@ -534,7 +534,7 @@ const newTracks = matches.map((entry) => {
       typeof rawPublishers === "string" &&
       rawPublishers.trim().startsWith("[") &&
       rawPublishers.trim().endsWith("]") &&
-      rawPublishers.trim().length > 2
+      rawPublishers.trim().length > 4
     ) {
       publisherData = JSON.parse(rawPublishers);
     } else if (Array.isArray(rawPublishers)) {
@@ -1042,7 +1042,7 @@ const handleUpcSearch = () => {
       typeof rawPublishers === "string" &&
       rawPublishers.trim().startsWith("[") &&
       rawPublishers.trim().endsWith("]") &&
-      rawPublishers.trim().length > 2
+      rawPublishers.trim().length > 4
     ) {
       publisherData = JSON.parse(rawPublishers);
     } else if (Array.isArray(rawPublishers)) {
