@@ -59,9 +59,11 @@ export default function ReleaseForm({ releaseInfo, onChange, artistDB, isLocked 
 
   const addAlbumArtist = () => {
     onChange("albumArtist", [...releaseInfo.albumArtist, ""]);
+    
+    console.log("catalogDB in ReleaseForm:", catalogDB);
   };
 
-console.log("catalogDB in ReleaseForm:", catalogDB);
+
   
   return (
     <section className="mb-10 border-b pb-6">
