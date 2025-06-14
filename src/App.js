@@ -1068,11 +1068,11 @@ return {
   recordingTitle: entry["Recording Title"] || "",
   akaTitle: entry["AKA Title"] || "",
   akaTypeCode: entry["AKA Type Code"] || "",
-  countryRelease: entry["United States"] || "",
-  basisClaim:  entry["Copyright Owner"] || "",
-  percentClaim: entry["Percent Claim"] || "",
-  collectionEnd: entry["Collection End Date"] || "",
-  nonUSRights: entry["Non US Rights"] || "",
+  countryRelease: entry["Country of Release"] || "",
+  basisClaim:  entry["Basis of Claim"] || "",
+  percentClaim: entry["Percentage of Claim"] || "",
+  collectionEnd: entry["Collection Right End Claim"] || "",
+  nonUSRights: entry["Non-US Collection Rights"] || "",
   genre: entry["Genre"] || "",
   recDate: entry["Recording Date"] || "",
   recEng: entry["Recording Engineer"] || "",
@@ -1684,11 +1684,11 @@ handleTrackChange(i, "trackArtistNames", parsedTrackArtists);
   handleTrackChange(i, "recordingTitle", entry["Recording Title"] || "");
   handleTrackChange(i, "akaTitle", entry["AKA Title"] || "");
   handleTrackChange(i, "akaTypeCode", entry["AKA Type Code (MLC)"] || "");
-  handleTrackChange(i, "countryRelease", entry["United States"] || "");
-  handleTrackChange(i, "basisClaim",  entry["Copyright Owner"] || "");
-  handleTrackChange(i, "percentClaim", entry["Percent Claim"] || "");
-  handleTrackChange(i, "collectionEnd", entry["Collection End Date"] || "");
-  handleTrackChange(i, "nonUSRights", entry["Non US Rights"] || "");
+  handleTrackChange(i, "countryRelease", entry["Country of Release"] || "");
+  handleTrackChange(i, "basisClaim",  entry["Basis of Claim"] || "");
+  handleTrackChange(i, "percentClaim", entry["Percentage of Claim"] || "");
+  handleTrackChange(i, "collectionEnd", entry["Collection Rights End Claim"] || "");
+  handleTrackChange(i, "nonUSRights", entry["Non-US Collection Rights"] || "");
   handleTrackChange(i, "genre", entry["Genre"] || "");
   handleTrackChange(i, "recEng", entry["Recording Engineer"] || "");
   handleTrackChange(i, "producer", entry["Producer"] || "");
@@ -1817,11 +1817,11 @@ handleTrackChange(i, "trackArtistNames", parsedTrackArtists);
   handleTrackChange(i, "recordingTitle", entry["Recording Title"] || "");
   handleTrackChange(i, "akaTitle", entry["AKA Title"] || "");
   handleTrackChange(i, "akaTypeCode", entry["AKA Type Code (MLC)"] || "");
-  handleTrackChange(i, "countryRelease", entry["United States"] || "");
-  handleTrackChange(i, "basisClaim",  entry["Copyright Owner"] || "");
-  handleTrackChange(i, "percentClaim", entry["Percent Claim"] || "");
-  handleTrackChange(i, "collectionEnd", entry["Collection End Date"] || "");
-  handleTrackChange(i, "nonUSRights", entry["Non US Rights"] || "");
+  handleTrackChange(i, "countryRelease", entry["Country of Release"] || "");
+  handleTrackChange(i, "basisClaim",  entry["Basis of Claim"] || "");
+  handleTrackChange(i, "percentClaim", entry["Percentage of Claim"] || "");
+  handleTrackChange(i, "collectionEnd", entry["Collection Rights End Claim"] || "");
+  handleTrackChange(i, "nonUSRights", entry["Non-US Collection Rights"] || "");
   handleTrackChange(i, "genre", entry["Genre"] || "");
   handleTrackChange(i, "recDate", entry["Recording Date"] || "");
   handleTrackChange(i, "recEng", entry["Recording Engineer"] || "");
