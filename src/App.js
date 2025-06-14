@@ -311,7 +311,7 @@ useEffect(() => {
 
 const results = catalogDB.filter(entry => {
   const title = entry["Album Title"];
-  return title?.toString().toLowerCase().includes(albumSearch.toLowerCase());
+  return title?.toString().toLowerCase().includes(String(albumSearch || "").toLowerCase());
 });
 
   // Deduplicate by UPC
@@ -336,7 +336,7 @@ useEffect(() => {
 
 const results = catalogDB.filter(entry => {
   const title = entry["Album Title"];
-  return title?.toString().toLowerCase().includes(albumSearch.toLowerCase());
+  return title?.toString().toLowerCase().includes(String(albumSearch || "").toLowerCase());
 });
 
   const uniqueResults = [...new Map(results.map(item => [item["UPC"], item])).values()];
@@ -920,7 +920,7 @@ const handleComposerChange = (trackIndex, composerIndex, field, value) => {
 
 if (field === "publisheradmin") {
   console.log("📥 Admin input typed:", value);
-  const input = value.toLowerCase();
+  const input = String(value || "").toLowerCase();
   const matches = publishersDB.filter((p) =>
     p.publisheradmin?.toLowerCase?.().startsWith(input)
   );
@@ -934,7 +934,7 @@ if (field === "publisheradmin") {
 
   // Composer name suggestions (first/last)
   if (field === "firstName" || field === "lastName") {
-    const input = value.toLowerCase();
+    const input = String(value || "").toLowerCase();
     const matches = composersDB.filter((c) =>
       c.firstName?.toLowerCase?.().startsWith(input) ||
       c.lastName?.toLowerCase?.().startsWith(input)
@@ -949,8 +949,8 @@ if (field === "publisheradmin") {
     if (composer.firstName && composer.lastName) {
       const match = composersDB.find(
         (c) =>
-          c.firstName?.toLowerCase?.() === composer.firstName.toLowerCase() &&
-          c.lastName?.toLowerCase?.() === composer.lastName.toLowerCase()
+          c.firstName?.toLowerCase?.() === String(composer.firstName || "").toLowerCase() &&
+          c.lastName?.toLowerCase?.() === String(composer.lastName || "").toLowerCase()
       );
       if (match) {
         updated[trackIndex].composers[composerIndex] = {
@@ -960,7 +960,7 @@ if (field === "publisheradmin") {
         setSuggestions([]);
 
 if (field === "pubadmin") {
-  const input = value.toLowerCase();
+  const input = String(value || "").toLowerCase();
   const matches = publishersDB.filter((p) =>
     p.pubadmin?.toLowerCase?.().startsWith(input)
   );
@@ -974,7 +974,7 @@ if (field === "pubadmin") {
 
   // Publisher name suggestions
   if (field === "publisher") {
-    const input = value.toLowerCase();
+    const input = String(value || "").toLowerCase();
 
 
     // ✅ Add debug logs here
@@ -1399,7 +1399,7 @@ const handleSubmit = async () => {
             const matches = artistDB
               .map((a) => a["Artist Name"])
               .filter((name) =>
-                name?.toLowerCase().startsWith(value.toLowerCase())
+                String(name? || "").toLowerCase().startsWith(String(value || "").toLowerCase())
               );
             setArtistSuggestions(matches);
             setHighlightedArtistIndex(0);
@@ -1661,7 +1661,7 @@ const handleSubmit = async () => {
 
     if (value.length >= 1) {
       const matches = catalogDB.filter((entry) =>
-        entry?.["Primary Title"]?.toLowerCase?.().startsWith(value.toLowerCase())
+        entry?.["Primary Title"]?.toLowerCase?.().startsWith(String(value || "").toLowerCase())
       );
       setTrackSuggestions(matches);
       setHighlightedTrackIndex(0); // Reset highlight
@@ -1970,7 +1970,7 @@ if (Array.isArray(composerData)) {
             const matches = artistDB
               .map((a) => a["Artist Name"])
               .filter((name) =>
-                name?.toLowerCase().startsWith(value.toLowerCase())
+                String(name? || "").toLowerCase().startsWith(String(value || "").toLowerCase())
               );
             setArtistSuggestions(matches);
             setHighlightedArtistIndex(0);
