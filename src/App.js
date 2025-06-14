@@ -1724,7 +1724,13 @@ handleTrackChange(i, "trackArtistNames", parsedTrackArtists);
   handleTrackChange(i, "recEng", entry["Recording Engineer"] || "");
   handleTrackChange(i, "producer", entry["Producer"] || "");
   handleTrackChange(i, "execProducer", entry["Executive Producer"] || "");    
-  handleTrackChange(i, "recDate", entry["Recording Date"] || "");
+ // Recording Date
+const rawRecDate = entry["Recording Date"];
+const formattedRecDate = rawRecDate
+  ? new Date(rawRecDate).toISOString().split("T")[0]
+  : "";
+handleTrackChange(i, "recDate", formattedRecDate);
+
   handleTrackChange(i, "isrc", entry["ISRC"] || "");
   handleTrackChange(i, "iswc", entry["ISWC"] || "");
   handleTrackChange(i, "duration", normalizeDuration(entry["Duration"]) || "");
