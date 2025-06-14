@@ -619,9 +619,19 @@ trackArtistNames: (() => {
       akaTypeCode: entry["AKA Type Code"] || "",
       isrc: entry["ISRC"] || "",
       iswc: entry["ISWC"] || "",
-duration: normalizeDuration(entry["Duration"]),
+      duration: normalizeDuration(entry["Duration"]),
       trackLabel: entry["Track Label"] || "",
       trackPLine: entry["Track P Line"] || "",
+      countryRelease: entry["Country of Release"] || "",
+      basisClaim:  entry["Basis of Claim"] || "",
+      percentClaim: entry["Percentage Claimed"] || "",
+      collectionEnd: entry["Collection Right End Date"] || "",
+      nonUSRights: entry["Non-US Collection Rights"] || "",
+      genre: entry["Genre"] || "",
+      recDate: entry["Recording Date"] || "",
+      recEng: entry["Recording Engineer"] || "",
+      producer: entry["Producer"] || "",
+      execProducer: entry["Executive Producer"] || "",  
       composers,
       collapsed: true
     };
@@ -662,6 +672,7 @@ const handleUpcSuggestionSelect = (entry) => {
         pubadmin: entry["Publisher Admin"] || "",
         pubadminIPI: entry["Publisher Admin IPI"] || "",
         pubadminShare: entry["Publisher Admin Collection Share"] || "",
+        
       };
     });
 
@@ -686,9 +697,19 @@ trackArtistNames: (() => {
         akaTypeCode: entry["AKA Type Code (MLC)"] || "",
         isrc: entry["ISRC"] || "",
         iswc: entry["ISWC"] || "",
-duration: normalizeDuration(entry["Duration"]),
+        duration: normalizeDuration(entry["Duration"]),
         trackLabel: entry["Track Label"] || "",
         trackPLine: entry["Track P Line"] || "",
+        countryRelease: entry["Country of Release"] || "",
+        basisClaim:  entry["Basis of Claim"] || "",
+        percentClaim: entry["Percentage Claimed"] || "",
+        collectionEnd: entry["Collection Right End Date"] || "",
+        nonUSRights: entry["Non-US Collection Rights"] || "",
+        genre: entry["Genre"] || "",
+        recDate: entry["Recording Date"] || "",
+       recEng: entry["Recording Engineer"] || "",
+       producer: entry["Producer"] || "",
+       execProducer: entry["Executive Producer"] || "",  
         composers,
       },
     ]);
