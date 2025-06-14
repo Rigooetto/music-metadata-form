@@ -25,6 +25,8 @@ export default function ReleaseForm({ releaseInfo, onChange, artistDB, isLocked 
       setUpcSuggestions([]);
       setShowUpcDropdown(false);
     }
+console.log("handleUpcChange called, value:", e.target.value);
+    
   };
 
   const handleUpcSelect = (item) => {
