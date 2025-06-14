@@ -328,6 +328,8 @@ let rawComposers = entry.Composers;
 let rawPublishers = entry.Publishers;
 
 try {
+  console.warn("🧪 Checking raw Composers:", rawComposers);
+console.warn("🧪 Checking raw Publishers:", rawPublishers);
   if (isLikelyValidJsonArray(rawComposers)) {
     try {
       composerData = JSON.parse(rawComposers);
@@ -340,7 +342,8 @@ try {
   } else {
     composerData = [];
   }
-
+console.warn("🧪 Checking raw Composers:", rawComposers);
+console.warn("🧪 Checking raw Publishers:", rawPublishers);
   if (isLikelyValidJsonArray(rawPublishers)) {
     try {
       publisherData = JSON.parse(rawPublishers);
@@ -541,6 +544,8 @@ let rawComposers = entry.Composers;
 let rawPublishers = entry.Publishers;
 
 try {
+  console.warn("🧪 Checking raw Composers:", rawComposers);
+console.warn("🧪 Checking raw Publishers:", rawPublishers);
   if (isLikelyValidJsonArray(rawComposers)) {
     try {
       composerData = JSON.parse(rawComposers);
@@ -553,8 +558,10 @@ try {
   } else {
     composerData = [];
   }
-
+console.warn("🧪 Checking raw Composers:", rawComposers);
+console.warn("🧪 Checking raw Publishers:", rawPublishers);
   if (isLikelyValidJsonArray(rawPublishers)) {
+    
     try {
       publisherData = JSON.parse(rawPublishers);
     } catch {
@@ -1061,6 +1068,8 @@ let rawComposers = entry.Composers;
 let rawPublishers = entry.Publishers;
 
 try {
+  console.warn("🧪 Checking raw Composers:", rawComposers);
+console.warn("🧪 Checking raw Publishers:", rawPublishers);
   if (isLikelyValidJsonArray(rawComposers)) {
     try {
       composerData = JSON.parse(rawComposers);
@@ -1075,6 +1084,8 @@ try {
   }
 
   if (isLikelyValidJsonArray(rawPublishers)) {
+    console.warn("🧪 Checking raw Composers:", rawComposers);
+console.warn("🧪 Checking raw Publishers:", rawPublishers);
     try {
       publisherData = JSON.parse(rawPublishers);
     } catch {
