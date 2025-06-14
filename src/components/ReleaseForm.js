@@ -71,6 +71,7 @@ console.log("handleUpcChange called, value:", e.target.value);
 
   
   return (
+    <h1>TESTING</h1>
      <section>
     <h1>TESTING</h1>
     {/* ...rest of your form... */}
