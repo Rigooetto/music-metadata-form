@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 console.log("isLocked:", isLocked);
 
-
 export default function ReleaseForm({ releaseInfo, onChange, artistDB, isLocked }) {
   console.log("artistDB (prop):", artistDB);
   const [artistSuggestions, setArtistSuggestions] = useState([]);
