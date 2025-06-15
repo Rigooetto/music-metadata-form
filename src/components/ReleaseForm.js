@@ -229,3 +229,4 @@ export default function ReleaseForm({ releaseInfo, onChange, artistDB, isLocked 
     </section>
   );
 }
+
