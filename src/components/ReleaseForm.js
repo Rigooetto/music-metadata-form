@@ -5,7 +5,6 @@ export default function ReleaseForm({ releaseInfo, onChange, artistDB, isLocked 
   const [activeArtistInputIndex, setActiveArtistInputIndex] = useState(null);
   const [highlightedArtistIndex, setHighlightedArtistIndex] = useState(0);
 
-
   const handleAlbumArtistChange = (index, value) => {
     const updated = [...releaseInfo.albumArtist];
     updated[index] = value;
