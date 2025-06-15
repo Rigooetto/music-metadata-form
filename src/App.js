@@ -66,12 +66,27 @@ export default function App() {
   const [highlightedPublisherIndex, setHighlightedPublisherIndex] = useState(-1);
 
   // -- EFFECTS: Load all remote DBs on mount --
-  useEffect(() => {
-    fetchDB(CATALOG_DB_URL).then(setCatalogDB);
-    fetchDB(COMPOSERS_DB_URL).then(setComposersDB);
-    fetchDB(ARTISTS_DB_URL).then(setArtistDB);
-    fetchDB(PUBLISHERS_DB_URL).then(setPublishersDB);
-  }, []);
+useEffect(() => {
+  fetchDB(CATALOG_DB_URL).then((data) => {
+    setCatalogDB(data);
+    console.log("Loaded catalogDB:", data);
+  });
+
+  fetchDB(COMPOSERS_DB_URL).then((data) => {
+    setComposersDB(data);
+    console.log("Loaded composersDB:", data);
+  });
+
+  fetchDB(ARTISTS_DB_URL).then((data) => {
+    setArtistDB(data);
+    console.log("Loaded artistDB:", data);
+  });
+
+  fetchDB(PUBLISHERS_DB_URL).then((data) => {
+    setPublishersDB(data);
+    console.log("Loaded publishersDB:", data);
+  });
+}, []);
 
   // --- HANDLERS ---
 
