@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 
-console.log("isLocked:", isLocked);
-
 export default function ReleaseForm({ releaseInfo, onChange, artistDB, isLocked }) {
-  console.log("artistDB (prop):", artistDB);
   const [artistSuggestions, setArtistSuggestions] = useState([]);
   const [activeArtistInputIndex, setActiveArtistInputIndex] = useState(null);
   const [highlightedArtistIndex, setHighlightedArtistIndex] = useState(0);
@@ -17,11 +14,9 @@ export default function ReleaseForm({ releaseInfo, onChange, artistDB, isLocked 
       const matches = artistDB
         .map(a => a["Artist Name"])
         .filter(name => String(name || "").toLowerCase().startsWith(String(value || "").toLowerCase()));
-      console.log("Input value:", value, "Matches:", matches);
       setArtistSuggestions(matches);
       setHighlightedArtistIndex(0);
       setActiveArtistInputIndex(index);
-      console.log("Suggestions set:", matches, "Active input index:", index);
     } else {
       setArtistSuggestions([]);
       setActiveArtistInputIndex(null);
@@ -124,17 +119,21 @@ export default function ReleaseForm({ releaseInfo, onChange, artistDB, isLocked 
                   )}
                 </div>
                 {/* Suggestions Dropdown */}
-console.log("Rendering suggestions for input", idx, "Active:", activeArtistInputIndex, "Suggestions:", artistSuggestions);
-                {artistSuggestions.map((name, i) => {
-    console.log("Rendering suggestion:", name);
-    return (
-        <li
-            key={i}
-            className={`p-2 cursor-pointer ${highlightedArtistIndex === i ? "bg-blue-100" : ""}`}
-            onMouseDown={() => {
-                handleAlbumArtistChange(idx, name);
-                setArtistSuggestions([]);
-                setActiveArtistInputIndex(null);
+                {activeArtistInputIndex === idx &&
+                  artistSuggestions.length > 0 && (
+                    <ul className="absolute z-10 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+                      {artistSuggestions.map((name, i) => (
+                        <li
+                          key={i}
+                          className={`p-2 cursor-pointer ${highlightedArtistIndex === i ? "bg-blue-100" : ""}`}
+                          onMouseDown={() => {
+                            handleAlbumArtistChange(idx, name);
+                            setArtistSuggestions([]);
+                            setActiveArtistInputIndex(null);
+                          }}
+                        >
+                          {name}
+                        </li>
                       ))}
                     </ul>
                   )}
@@ -230,4 +229,3 @@ console.log("Rendering suggestions for input", idx, "Active:", activeArtistInput
     </section>
   );
 }
-
