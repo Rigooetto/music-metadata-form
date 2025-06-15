@@ -29,3 +29,4 @@ export async function fetchPublishers() {
   if (!response.ok) throw new Error("Failed to fetch publishers");
   return response.json();
 }
+
