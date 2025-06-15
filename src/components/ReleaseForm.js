@@ -125,22 +125,16 @@ export default function ReleaseForm({ releaseInfo, onChange, artistDB, isLocked 
                 </div>
                 {/* Suggestions Dropdown */}
 console.log("Rendering suggestions for input", idx, "Active:", activeArtistInputIndex, "Suggestions:", artistSuggestions);
-                {activeArtistInputIndex === idx &&
-                  artistSuggestions.length > 0 && (
-                    <ul className="absolute z-10 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
-                      {artistSuggestions.map((name, i) => (
-                          console.log("Rendering suggestion:", name);
-                        <li
-                          key={i}
-                          className={`p-2 cursor-pointer ${highlightedArtistIndex === i ? "bg-blue-100" : ""}`}
-                          onMouseDown={() => {
-                            handleAlbumArtistChange(idx, name);
-                            setArtistSuggestions([]);
-                            setActiveArtistInputIndex(null);
-                          }}
-                        >
-                          {name}
-                        </li>
+                {artistSuggestions.map((name, i) => {
+    console.log("Rendering suggestion:", name);
+    return (
+        <li
+            key={i}
+            className={`p-2 cursor-pointer ${highlightedArtistIndex === i ? "bg-blue-100" : ""}`}
+            onMouseDown={() => {
+                handleAlbumArtistChange(idx, name);
+                setArtistSuggestions([]);
+                setActiveArtistInputIndex(null);
                       ))}
                     </ul>
                   )}
