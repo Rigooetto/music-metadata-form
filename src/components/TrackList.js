@@ -3,46 +3,48 @@ import TrackDetails from "./TrackDetails";
 
 export default function TrackList({
   tracks,
-  setTracks,
   handleTrackChange,
-  handleComposerChange,
+  handleTrackArtistChange,
+  addTrackArtist,
+  removeTrack,
   addComposer,
   removeComposer,
-  removeTrack,
+  composerSuggestions,
+  highlightedComposerIndex,
+  handleComposerChange,
+  activeComposerInput,
+  setComposerSuggestions,
+  setActiveComposerInput,
   isLocked,
-  catalogDB,
-  composersDB,
-  artistDB,
-  publishersDB,
+  onAddTrack,
 }) {
   return (
     <div>
       {tracks.map((track, i) => (
         <TrackDetails
           key={i}
-          index={i}
           track={track}
+          i={i}
           handleTrackChange={handleTrackChange}
-          handleComposerChange={handleComposerChange}
+          handleTrackArtistChange={handleTrackArtistChange}
+          addTrackArtist={addTrackArtist}
+          removeTrack={removeTrack}
           addComposer={addComposer}
           removeComposer={removeComposer}
-          removeTrack={removeTrack}
+          composerSuggestions={composerSuggestions}
+          highlightedComposerIndex={highlightedComposerIndex}
+          handleComposerChange={handleComposerChange}
+          activeComposerInput={activeComposerInput}
+          setComposerSuggestions={setComposerSuggestions}
+          setActiveComposerInput={setActiveComposerInput}
           isLocked={isLocked}
-          catalogDB={catalogDB}
-          composersDB={composersDB}
-          artistDB={artistDB}
-          publishersDB={publishersDB}
-          setTracks={setTracks}
         />
       ))}
       <div className="text-center mt-10">
         <button
           className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-md shadow text-lg font-semibold"
-          onClick={() => setTracks([...tracks, { ...tracks[0], trackNumber: tracks.length + 1 }])}
-          disabled={isLocked}
-        >
-          + Add Another Track
-        </button>
+          onClick={onAddTrack}
+        >+ Add Another Track</button>
       </div>
     </div>
   );

@@ -1,28 +1,24 @@
-// src/utils/normalize.js
-
 export function normalizeDuration(raw) {
   if (!raw) return "";
-  // Accepts mm:ss or just seconds or just minutes
-  if (/^\d+:\d+$/.test(raw)) {
-    return raw;
+  if (typeof raw === "string" && /^\d+:\d{2}$/.test(raw)) return raw;
+  if (typeof raw === "number" && raw > 0 && raw < 1) {
+    const totalSeconds = Math.round(raw * 86400);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
   }
-  if (/^\d+$/.test(raw)) {
-    const minutes = Math.floor(Number(raw) / 60);
-    const seconds = Number(raw) % 60;
-    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  if (typeof raw === "number") return `${String(raw).padStart(2, "0")}:00`;
+  if (typeof raw === "string" && raw.includes("T")) {
+    try {
+      const date = new Date(raw);
+      const minutes = date.getUTCHours() * 60 + date.getUTCMinutes();
+      const seconds = date.getUTCSeconds();
+      return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    } catch {
+      return "";
+    }
   }
   return raw;
-}
-
-export function createEmptyTrack() {
-  return {
-    primaryTitle: "",
-    trackNumber: "",
-    trackArtistNames: [""],
-    composers: [createEmptyComposer()],
-    collapsed: false,
-    // add any other default fields as needed
-  };
 }
 
 export function createEmptyComposer() {
@@ -30,10 +26,50 @@ export function createEmptyComposer() {
     firstName: "",
     middleName: "",
     lastName: "",
+    composeraddress: "",
+    composercity: "",
+    composerstate: "",
+    composerzip: "",
     ipi: "",
-    pro: "",
     split: "",
+    pro: "",
     roleCode: "",
     publisher: "",
+    publisherIPI: "",
+    publisherPRO: "",
+    pubadmin: "",
+    pubadminIPI: "",
+    pubadminShare: "",
+  };
+}
+
+export function createEmptyTrack() {
+  return {
+    trackNumber: "",
+    primaryTitle: "",
+    recordingTitle: "",
+    akaTitle: "",
+    akaTypeCode: "",
+    countryRelease: "United States",
+    basisClaim: "Copyright Owner",
+    percentClaim: "",
+    collectionEnd: "2999-12-31",
+    nonUSRights: "Worldwide",
+    genre: "Regional Mexican",
+    recDate: "",
+    recEng: "",
+    producer: "",
+    execProducer: "",
+    audioFile: null,
+    isrc: "",
+    iswc: "",
+    trackLabel: "",
+    duration: "",
+    trackPLine: "",
+    trackArtistNames: [""],
+    typeOfRelease: "",
+    collapsed: true,
+    composers: [createEmptyComposer()],
+    publishers: [],
   };
 }
