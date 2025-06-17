@@ -1282,11 +1282,11 @@ const handleAlbumArtistChange = (index, value) => {
     );
 
     const payload = {
-      releaseInfo,
-      tracks,
-      composerData: allComposers,
-      publisherData: allPublishers,
-    };
+  releaseInfo,
+  tracks,
+  composerData: allComposers,
+  publisherData: allPublishers,
+};
 
     const response = await fetch("https://rigoletto.app.n8n.cloud/webhook/fd8ebef7-dccb-4b7f-9381-1702ea074949", {
       method: "POST",
