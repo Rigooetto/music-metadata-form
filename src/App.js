@@ -1189,10 +1189,10 @@ const handleAlbumArtistChange = (index, value) => {
 
     // Send releaseInfo
     await fetch(ARTISTS_DB_URL, {
-      method: "POST",
-      boconst handleSubmitdy: JSON.stringify(releaseInfo),
-      headers: { "Content-Type": "application/json" },
-    });
+  method: "POST",
+  body: JSON.stringify(releaseInfo),
+  headers: { "Content-Type": "application/json" },
+});
 
     // Send each track
     for (const track of tracks) {
