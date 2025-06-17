@@ -1183,14 +1183,14 @@ const handleAlbumArtistChange = (index, value) => {
     setTracks(updated);
   };
 
-const handleSubmit = async () => {
+ = async () => {
   try {
     setIsSubmitting(true);
 
     // Send releaseInfo
     await fetch(ARTISTS_DB_URL, {
       method: "POST",
-      body: JSON.stringify(releaseInfo),
+      boconst handleSubmitdy: JSON.stringify(releaseInfo),
       headers: { "Content-Type": "application/json" },
     });
 
@@ -1263,11 +1263,12 @@ const handleSubmit = async () => {
       : releaseInfo.typeOfRelease === "Single"
       ? "Single Artist"
       : "Album Artist";
-const handleSubmit = async () => {
+ = async () => {
+ const handleSubmit = async () => {
   try {
     setIsSubmitting(true);
 
-    // Extract all composers and publishers from each track
+    // Extract all composers and publishers from the track list
     const allComposers = tracks.flatMap((t) => t.composers || []);
     const allPublishers = tracks.flatMap((t) =>
       (t.composers || []).map((c) => ({
