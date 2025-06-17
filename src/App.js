@@ -1224,7 +1224,7 @@ const handleAlbumArtistChange = (index, value) => {
     }
 
     alert("✅ Data submitted successfully!");
-    handleClearForm(); // Optional: reset form
+    //handleClearForm(); // Optional: reset form
   } catch (err) {
     console.error("❌ Submission error:", err);
     alert("❌ Submission failed. Check the console.");
