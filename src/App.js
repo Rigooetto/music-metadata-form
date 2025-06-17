@@ -1263,23 +1263,19 @@ const handleAlbumArtistChange = (index, value) => {
       : releaseInfo.typeOfRelease === "Single"
       ? "Single Artist"
       : "Album Artist";
- = async () => {
- const handleSubmit = async (e) => {
-    console.log("🚀 handleSubmit triggered");
-
-
+const handleSubmit = async () => {
+  console.log("🚀 handleSubmit triggered");
   try {
     setIsSubmitting(true);
 
-        console.log("📤 Sending releaseInfo...");
-    // POST: releaseInfo
+    console.log("📤 Sending releaseInfo...");
     await fetch(ARTISTS_DB_URL, {
       method: "POST",
       body: JSON.stringify(releaseInfo),
       headers: { "Content-Type": "application/json" },
     });
+
     console.log("📤 Sending tracks...");
-    // POST: tracks
     for (const track of tracks) {
       await fetch(CATALOG_DB_URL, {
         method: "POST",
@@ -1287,8 +1283,8 @@ const handleAlbumArtistChange = (index, value) => {
         headers: { "Content-Type": "application/json" },
       });
     }
+
     console.log("📤 Sending composers...");
-    // POST: composers
     for (const composer of composerData) {
       await fetch(COMPOSERS_DB_URL, {
         method: "POST",
@@ -1296,8 +1292,8 @@ const handleAlbumArtistChange = (index, value) => {
         headers: { "Content-Type": "application/json" },
       });
     }
+
     console.log("📤 Sending publishers...");
-    // POST: publishers
     if (publisherData?.length) {
       for (const publisher of publisherData) {
         await fetch(PUBLISHERS_DB_URL, {
@@ -1308,11 +1304,8 @@ const handleAlbumArtistChange = (index, value) => {
       }
     }
 
-    // ✅ Show success message (use `toast` if preferred)
     alert("✅ Data submitted successfully!");
-
-    // ❌ Do NOT clear form if you want data to persist
-    // handleClearForm(); ← leave this commented out
+    // handleClearForm(); // Leave commented if you want to keep data
 
   } catch (err) {
     console.error("❌ Submission error:", err);
