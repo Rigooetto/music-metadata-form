@@ -1264,46 +1264,30 @@ const handleSubmit = async () => {
       ? "Single Artist"
       : "Album Artist";
 const handleSubmit = async () => {
+  const payload = {
+    releaseInfo,
+    tracks,
+    composerData,
+    publisherData,
+  };
+
   try {
-    setIsSubmitting(true);
-
-    // Extract all composers and publishers from each track
-    const allComposers = tracks.flatMap((t) => t.composers || []);
-    const allPublishers = tracks.flatMap((t) =>
-      (t.composers || []).map((c) => ({
-        publisher: c.publisher || "",
-        publisherIPI: c.publisherIPI || "",
-        publisherPRO: c.publisherPRO || "",
-        publisheradmin: c.pubadmin || "",
-        publisheradminIPI: c.pubadminIPI || "",
-        publisheradmincollectionshare: c.pubadminShare || "",
-      }))
-    );
-
-    const payload = {
-      releaseInfo,
-      tracks,
-      composerData: allComposers,
-      publisherData: allPublishers,
-    };
-
     const response = await fetch("https://rigoletto.app.n8n.cloud/webhook/fd8ebef7-dccb-4b7f-9381-1702ea074949", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
     });
 
     if (response.ok) {
-      toast.success("✅ All tracks submitted successfully!");
-      handleClearForm();
+      alert("Form submitted successfully!");
     } else {
-      toast.error("❌ Submission failed.");
+      alert("Submission failed.");
     }
   } catch (error) {
-    console.error("❌ Submission error:", error);
-    toast.error("❌ Error submitting form.");
-  } finally {
-    setIsSubmitting(false);
+    console.error("Error submitting form:", error);
+    alert("Something went wrong.");
   }
 };
 
