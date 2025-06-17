@@ -1264,45 +1264,57 @@ const handleAlbumArtistChange = (index, value) => {
       ? "Single Artist"
       : "Album Artist";
  = async () => {
- const handleSubmit = async () => {
+ const handleSubmit = async (e) => {
+  e?.preventDefault(); // Prevent default if from a <form>
+
   try {
     setIsSubmitting(true);
 
-    // Extract all composers and publishers from the track list
-    const allComposers = tracks.flatMap((t) => t.composers || []);
-    const allPublishers = tracks.flatMap((t) =>
-      (t.composers || []).map((c) => ({
-        publisher: c.publisher || "",
-        publisherIPI: c.publisherIPI || "",
-        publisherPRO: c.publisherPRO || "",
-        publisheradmin: c.pubadmin || "",
-        publisheradminIPI: c.pubadminIPI || "",
-        publisheradmincollectionshare: c.pubadminShare || "",
-      }))
-    );
-
-    const payload = {
-  releaseInfo,
-  tracks,
-  composerData: allComposers,
-  publisherData: allPublishers,
-};
-
-    const response = await fetch("https://rigoletto.app.n8n.cloud/webhook/fd8ebef7-dccb-4b7f-9381-1702ea074949", {
+    // POST: releaseInfo
+    await fetch(ARTISTS_DB_URL, {
       method: "POST",
+      body: JSON.stringify(releaseInfo),
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
     });
 
-    if (response.ok) {
-      toast.success("✅ All tracks submitted successfully!");
-      handleClearForm();
-    } else {
-      toast.error("❌ Submission failed.");
+    // POST: tracks
+    for (const track of tracks) {
+      await fetch(CATALOG_DB_URL, {
+        method: "POST",
+        body: JSON.stringify(track),
+        headers: { "Content-Type": "application/json" },
+      });
     }
-  } catch (error) {
-    console.error("❌ Submission error:", error);
-    toast.error("❌ Error submitting form.");
+
+    // POST: composers
+    for (const composer of composerData) {
+      await fetch(COMPOSERS_DB_URL, {
+        method: "POST",
+        body: JSON.stringify(composer),
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    // POST: publishers
+    if (publisherData?.length) {
+      for (const publisher of publisherData) {
+        await fetch(PUBLISHERS_DB_URL, {
+          method: "POST",
+          body: JSON.stringify(publisher),
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+    }
+
+    // ✅ Show success message (use `toast` if preferred)
+    alert("✅ Data submitted successfully!");
+
+    // ❌ Do NOT clear form if you want data to persist
+    // handleClearForm(); ← leave this commented out
+
+  } catch (err) {
+    console.error("❌ Submission error:", err);
+    alert("❌ Submission failed. Check the console.");
   } finally {
     setIsSubmitting(false);
   }
