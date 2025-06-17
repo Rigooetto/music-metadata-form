@@ -1265,6 +1265,7 @@ const handleAlbumArtistChange = (index, value) => {
       : "Album Artist";
  = async () => {
  const handleSubmit = async (e) => {
+    console.log("🚀 handleSubmit triggered");
   e?.preventDefault(); // Prevent default if from a <form>
 
   try {
