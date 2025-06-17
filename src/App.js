@@ -188,7 +188,36 @@ export default function App() {
   const [isLocked, setIsLocked] = useState(false); // Fields are editable initially
 
 
+// ✅ Place this near the top level of App (not inside renderInput)
+const handleSubmit = async () => {
+  const payload = {
+    releaseInfo,
+    tracks: tracks.map(track => ({
+      ...track,
+      composers: track.composers || [],
+    })),
+  };
 
+  try {
+    const response = await fetch("https://rigoletto.app.n8n.cloud/webhook/fd8ebef7-dccb-4b7f-9381-1702ea074949", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (response.ok) {
+      toast.success("✅ Album submitted successfully!");
+      handleClearForm();
+    } else {
+      toast.error("❌ Submission failed.");
+    }
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    toast.error("Something went wrong.");
+  }
+};
 
   const handleEditClick = () => setIsLocked(false);
   const handleNewClick = () => {
@@ -1183,55 +1212,7 @@ const handleAlbumArtistChange = (index, value) => {
     setTracks(updated);
   };
 
-const handleSubmit = async () => {
-  try {
-    setIsSubmitting(true);
 
-    // Send releaseInfo
-    await fetch(ARTISTS_DB_URL, {
-      method: "POST",
-      body: JSON.stringify(releaseInfo),
-      headers: { "Content-Type": "application/json" },
-    });
-
-    // Send each track
-    for (const track of tracks) {
-      await fetch(CATALOG_DB_URL, {
-        method: "POST",
-        body: JSON.stringify(track),
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    // Send each composer
-    for (const composer of composerData) {
-      await fetch(COMPOSERS_DB_URL, {
-        method: "POST",
-        body: JSON.stringify(composer),
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    // Send each publisher if applicable
-    if (publisherData?.length) {
-      for (const publisher of publisherData) {
-        await fetch(PUBLISHERS_DB_URL, {
-          method: "POST",
-          body: JSON.stringify(publisher),
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-    }
-
-    alert("✅ Data submitted successfully!");
-    handleClearForm(); // Optional: reset form
-  } catch (err) {
-    console.error("❌ Submission error:", err);
-    alert("❌ Submission failed. Check the console.");
-  } finally {
-    setIsSubmitting(false);
-  }
-};
 
 
 
@@ -1263,33 +1244,7 @@ const handleSubmit = async () => {
       : releaseInfo.typeOfRelease === "Single"
       ? "Single Artist"
       : "Album Artist";
-const handleSubmit = async () => {
-  const payload = {
-    releaseInfo,
-    tracks,
-    composerData,
-    publisherData,
-  };
 
-  try {
-    const response = await fetch("https://rigoletto.app.n8n.cloud/webhook/fd8ebef7-dccb-4b7f-9381-1702ea074949", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (response.ok) {
-      alert("Form submitted successfully!");
-    } else {
-      alert("Submission failed.");
-    }
-  } catch (error) {
-    console.error("Error submitting form:", error);
-    alert("Something went wrong.");
-  }
-};
 
   
 
