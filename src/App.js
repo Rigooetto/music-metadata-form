@@ -1266,18 +1266,19 @@ const handleAlbumArtistChange = (index, value) => {
  = async () => {
  const handleSubmit = async (e) => {
     console.log("🚀 handleSubmit triggered");
-  e?.preventDefault(); // Prevent default if from a <form>
+
 
   try {
     setIsSubmitting(true);
 
+        console.log("📤 Sending releaseInfo...");
     // POST: releaseInfo
     await fetch(ARTISTS_DB_URL, {
       method: "POST",
       body: JSON.stringify(releaseInfo),
       headers: { "Content-Type": "application/json" },
     });
-
+    console.log("📤 Sending tracks...");
     // POST: tracks
     for (const track of tracks) {
       await fetch(CATALOG_DB_URL, {
@@ -1286,7 +1287,7 @@ const handleAlbumArtistChange = (index, value) => {
         headers: { "Content-Type": "application/json" },
       });
     }
-
+    console.log("📤 Sending composers...");
     // POST: composers
     for (const composer of composerData) {
       await fetch(COMPOSERS_DB_URL, {
@@ -1295,7 +1296,7 @@ const handleAlbumArtistChange = (index, value) => {
         headers: { "Content-Type": "application/json" },
       });
     }
-
+    console.log("📤 Sending publishers...");
     // POST: publishers
     if (publisherData?.length) {
       for (const publisher of publisherData) {
