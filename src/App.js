@@ -1183,7 +1183,7 @@ const handleAlbumArtistChange = (index, value) => {
     setTracks(updated);
   };
 
- = async () => {
+
   try {
     setIsSubmitting(true);
 
@@ -1294,18 +1294,16 @@ const handleSubmit = async () => {
     }
 
     console.log("📤 Sending publishers...");
-    if (publisherData?.length) {
-      for (const publisher of publisherData) {
-        await fetch(PUBLISHERS_DB_URL, {
-          method: "POST",
-          body: JSON.stringify(publisher),
-          headers: { "Content-Type": "application/json" },
-        });
-      }
+    for (const publisher of publisherData || []) {
+      await fetch(PUBLISHERS_DB_URL, {
+        method: "POST",
+        body: JSON.stringify(publisher),
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     alert("✅ Data submitted successfully!");
-    // handleClearForm(); // Leave commented if you want to keep data
+    // handleClearForm(); // Leave commented if you want to retain data
 
   } catch (err) {
     console.error("❌ Submission error:", err);
@@ -2560,12 +2558,12 @@ const removeComposer = (trackIndex, composerIndex) => {
   </button>
 
   <button
-    type="button"
-    onClick={handleSubmit}
-    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md shadow text-md font-semibold"
-  >
-    Submit
-  </button>
+  type="button"
+  onClick={handleSubmit}
+  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md shadow text-md font-semibold"
+>
+  Submit
+</button>
 </div>
     </div>
   );
