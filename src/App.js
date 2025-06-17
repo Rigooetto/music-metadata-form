@@ -1183,16 +1183,16 @@ const handleAlbumArtistChange = (index, value) => {
     setTracks(updated);
   };
 
-
+const handleSubmit = async () => {
   try {
     setIsSubmitting(true);
 
     // Send releaseInfo
     await fetch(ARTISTS_DB_URL, {
-  method: "POST",
-  body: JSON.stringify(releaseInfo),
-  headers: { "Content-Type": "application/json" },
-});
+      method: "POST",
+      body: JSON.stringify(releaseInfo),
+      headers: { "Content-Type": "application/json" },
+    });
 
     // Send each track
     for (const track of tracks) {
@@ -1224,7 +1224,7 @@ const handleAlbumArtistChange = (index, value) => {
     }
 
     alert("✅ Data submitted successfully!");
-    //handleClearForm(); // Optional: reset form
+    handleClearForm(); // Optional: reset form
   } catch (err) {
     console.error("❌ Submission error:", err);
     alert("❌ Submission failed. Check the console.");
@@ -1264,52 +1264,30 @@ const handleAlbumArtistChange = (index, value) => {
       ? "Single Artist"
       : "Album Artist";
 const handleSubmit = async () => {
-  console.log("🚀 handleSubmit triggered");
-  try {
-    setIsSubmitting(true);
+  const payload = {
+    releaseInfo,
+    tracks,
+    composerData,
+    publisherData,
+  };
 
-    // Send releaseInfo
-    await fetch(ARTISTS_DB_URL, {
+  try {
+    const response = await fetch("https://rigoletto.app.n8n.cloud/webhook/fd8ebef7-dccb-4b7f-9381-1702ea074949", {
       method: "POST",
-      body: JSON.stringify(releaseInfo),
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
     });
 
-    // Send each track
-    for (const track of tracks) {
-      await fetch(CATALOG_DB_URL, {
-        method: "POST",
-        body: JSON.stringify(track),
-        headers: { "Content-Type": "application/json" },
-      });
+    if (response.ok) {
+      alert("Form submitted successfully!");
+    } else {
+      alert("Submission failed.");
     }
-
-    // Send each composer
-    for (const composer of composerData) {
-      await fetch(COMPOSERS_DB_URL, {
-        method: "POST",
-        body: JSON.stringify(composer),
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    // Send each publisher
-    for (const publisher of publisherData || []) {
-      await fetch(PUBLISHERS_DB_URL, {
-        method: "POST",
-        body: JSON.stringify(publisher),
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    alert("✅ Data submitted successfully!");
-    // handleClearForm(); // keep commented if you want to keep form data
-
-  } catch (err) {
-    console.error("❌ Submission error:", err);
-    alert("❌ Submission failed. Check the console.");
-  } finally {
-    setIsSubmitting(false);
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    alert("Something went wrong.");
   }
 };
 
@@ -2558,12 +2536,12 @@ const removeComposer = (trackIndex, composerIndex) => {
   </button>
 
   <button
-  type="button"
-  onClick={handleSubmit}
-  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md shadow text-md font-semibold"
->
-  Submit
-</button>
+    type="button"
+    onClick={handleSubmit}
+    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md shadow text-md font-semibold"
+  >
+    Submit
+  </button>
 </div>
     </div>
   );
