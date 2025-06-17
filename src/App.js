@@ -1268,14 +1268,14 @@ const handleSubmit = async () => {
   try {
     setIsSubmitting(true);
 
-    console.log("📤 Sending releaseInfo...");
+    // Send releaseInfo
     await fetch(ARTISTS_DB_URL, {
       method: "POST",
       body: JSON.stringify(releaseInfo),
       headers: { "Content-Type": "application/json" },
     });
 
-    console.log("📤 Sending tracks...");
+    // Send each track
     for (const track of tracks) {
       await fetch(CATALOG_DB_URL, {
         method: "POST",
@@ -1284,7 +1284,7 @@ const handleSubmit = async () => {
       });
     }
 
-    console.log("📤 Sending composers...");
+    // Send each composer
     for (const composer of composerData) {
       await fetch(COMPOSERS_DB_URL, {
         method: "POST",
@@ -1293,7 +1293,7 @@ const handleSubmit = async () => {
       });
     }
 
-    console.log("📤 Sending publishers...");
+    // Send each publisher
     for (const publisher of publisherData || []) {
       await fetch(PUBLISHERS_DB_URL, {
         method: "POST",
@@ -1303,7 +1303,7 @@ const handleSubmit = async () => {
     }
 
     alert("✅ Data submitted successfully!");
-    // handleClearForm(); // Leave commented if you want to retain data
+    // handleClearForm(); // keep commented if you want to keep form data
 
   } catch (err) {
     console.error("❌ Submission error:", err);
