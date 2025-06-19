@@ -1,18 +1,37 @@
 export default async function handler(req, res) {
-  console.log('✅ Endpoint reached');
-
   if (req.method !== 'POST') {
-    console.log('❌ Método no permitido:', req.method);
-    return res.status(405).json({ error: 'Method Not Allowed' });
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const body = req.body;
-    console.log('🧾 Request body:', body);
+    // 👇 puedes agregar logs aquí también
+    console.log('📥 Recibido:', req.body);
 
-    return res.status(200).json({ message: 'Test OK', received: body });
+    const fetch = (await import('node-fetch')).default;
+
+    const response = await fetch('https://rigoletto.app.n8n.cloud/webhook-test/getCatalogPending', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(req.body),
+    });
+
+    const text = await response.text();
+
+    if (!response.ok) {
+      throw new Error(`Webhook responded with status ${response.status}: ${text}`);
+    }
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (err) {
+      console.error("⚠️ La respuesta no era JSON:", text);
+      return res.status(500).json({ error: "Webhook returned non-JSON response", raw: text });
+    }
+
+    return res.status(200).json(data);
   } catch (err) {
-    console.error('❌ Server error:', err);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    console.error('❌ Error en API route:', err.message);
+    return res.status(500).json({ error: 'Proxy failed', message: err.message });
   }
 }
