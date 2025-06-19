@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
     const fetch = (await import('node-fetch')).default;
 
-    const response = await fetch('https://rigoletto.app.n8n.cloud/webhook-test/getCatalogPending', {
+    const response = await fetch('https://rigoletto.app.n8n.cloud/webhook/generar-tracks', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(req.body),
