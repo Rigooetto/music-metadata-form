@@ -1,5 +1,3 @@
-// /api/generar-tracks.js
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -14,7 +12,7 @@ export default async function handler(req, res) {
       body: JSON.stringify(req.body),
     });
 
-    const text = await response.text(); // En caso de HTML de error, lo vemos crudo
+    const text = await response.text(); // Permite debuggear
 
     if (!response.ok) {
       throw new Error(`Webhook responded with status ${response.status}: ${text}`);
