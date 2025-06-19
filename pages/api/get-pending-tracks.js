@@ -6,10 +6,10 @@ export default async function handler(req, res) {
   try {
     const fetch = (await import('node-fetch')).default;
 
-    const response = await fetch('https://rigoletto.app.n8n.cloud/webhook-test/getCatalogPending', {
+    const response = await fetch('https://rigoletto.app.n8n.cloud/webhook/getCatalogPending', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(req.body), // { reportType: "MLC" }
+      body: JSON.stringify(req.body),
     });
 
     const text = await response.text();
@@ -41,5 +41,3 @@ export default async function handler(req, res) {
     });
   }
 }
-
-
