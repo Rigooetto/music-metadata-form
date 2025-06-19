@@ -1,12 +1,16 @@
 export default async function handler(req, res) {
-  try {
-    console.log('📥 Request received:', req.body);
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
+  try {
+    console.log('📥 Body recibido:', req.body);
     const fetch = (await import('node-fetch')).default;
 
     const response = await fetch('https://rigoletto.app.n8n.cloud/webhook/getCatalogPending', {
-      method: 'GET',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(req.body),
     });
 
     const text = await response.text();
@@ -30,11 +34,8 @@ export default async function handler(req, res) {
     }
 
     return res.status(200).json(data);
-  } catch (error) {
-    console.error('[API ERROR]:', error);
-    return res.status(500).json({
-      error: 'Proxy failed',
-      message: error.message,
-    });
+  } catch (err) {
+    console.error('❌ Error en API route:', err.message);
+    return res.status(500).json({ error: 'Proxy failed', message: err.message });
   }
 }
