@@ -1,3 +1,5 @@
+// /api/generar-tracks.js
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -12,14 +14,16 @@ export default async function handler(req, res) {
       body: JSON.stringify(req.body),
     });
 
+    const text = await response.text(); // Esto nos ayuda a ver errores
+
     if (!response.ok) {
-      throw new Error(`Webhook responded with status ${response.status}`);
+      throw new Error(`Webhook responded with status ${response.status}: ${text}`);
     }
 
-    const data = await response.json();
+    const data = JSON.parse(text);
     return res.status(200).json(data);
   } catch (err) {
-    console.error('❌ Error en API route:', err);
-    return res.status(500).json({ error: 'Proxy failed' });
+    console.error('❌ Error en API route:', err.message);
+    return res.status(500).json({ error: 'Proxy failed', message: err.message });
   }
 }
