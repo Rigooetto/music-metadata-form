@@ -1,33 +1,39 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
+    console.log('❌ Método no permitido:', req.method);
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const { reportType } = req.body;
+    const fetch = (await import('node-fetch')).default;
 
-    if (!reportType) {
-      return res.status(400).json({ error: 'Missing reportType' });
-    }
+    console.log('📨 Body recibido:', req.body);
 
-    // Puedes conectar con n8n o hacer lógica aquí
-    // Por ejemplo, enviar al webhook de n8n:
-    const response = await fetch('https://rigoletto.app.n8n.cloud/webhook/generar-tracks', {
+    const response = await fetch('https://rigoletto.app.n8n.cloud/webhook-test/getCatalogPending', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ reportType }),
+      body: JSON.stringify(req.body),
     });
 
+    const text = await response.text();
+
+    console.log('📥 Texto recibido desde el webhook:', text);
+
     if (!response.ok) {
-      const errorText = await response.text();
-      return res.status(response.status).json({ error: 'Webhook error', details: errorText });
+      throw new Error(`Webhook respondió con status ${response.status}: ${text}`);
     }
 
-    const data = await response.json();
-    return res.status(200).json(data);
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (err) {
+      console.error("⚠️ La respuesta no era JSON:", text);
+      return res.status(500).json({ error: "Webhook returned non-JSON response", raw: text });
+    }
 
+    return res.status(200).json(data);
   } catch (err) {
-    console.error('Error in /api/generar-tracks:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+    console.error('❌ Error en API route:', err.message);
+    return res.status(500).json({ error: 'Proxy failed', message: err.message });
   }
 }
