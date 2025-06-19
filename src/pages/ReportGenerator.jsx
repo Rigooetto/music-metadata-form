@@ -7,7 +7,7 @@ const ReportGenerator = () => {
   const [error, setError] = useState(null);
 
   // Reemplaza esta URL por tu webhook n8n real
-  const endpoint = 'https://n8n.tudominio.com/webhook-json/generar-tracks';
+const endpoint = '/api/generar-tracks';
 
   useEffect(() => {
     const fetchData = async () => {
