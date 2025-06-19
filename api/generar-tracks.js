@@ -1,17 +1,12 @@
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
-  }
-
   try {
-    console.log('📥 Request body:', req.body);
+    console.log('📥 Request received:', req.body);
 
     const fetch = (await import('node-fetch')).default;
 
     const response = await fetch('https://rigoletto.app.n8n.cloud/webhook/getCatalogPending', {
-      method: 'POST',
+      method: 'GET',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(req.body),
     });
 
     const text = await response.text();
