@@ -1,8 +1,6 @@
-// api/generar-tracks.js
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
   try {
@@ -19,7 +17,6 @@ export default async function handler(req, res) {
     const text = await response.text();
 
     if (!response.ok) {
-      console.error('⚠️ Webhook error:', text);
       return res.status(response.status).json({
         error: 'Webhook call failed',
         status: response.status,
@@ -31,7 +28,6 @@ export default async function handler(req, res) {
     try {
       data = JSON.parse(text);
     } catch (err) {
-      console.error('⚠️ Non-JSON response:', text);
       return res.status(500).json({
         error: 'Invalid JSON from webhook',
         raw: text,
@@ -39,8 +35,11 @@ export default async function handler(req, res) {
     }
 
     return res.status(200).json(data);
-  } catch (err) {
-    console.error('❌ Server error:', err.message);
-    return res.status(500).json({ error: 'Internal server error', message: err.message });
+  } catch (error) {
+    console.error('[API ERROR]:', error);
+    return res.status(500).json({
+      error: 'Proxy failed',
+      message: error.message,
+    });
   }
 }
