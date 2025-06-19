@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts/types';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const COLORS = ['#34D399', '#FBBF24']; // verde para approved, amarillo para pending
 
