@@ -184,7 +184,7 @@ const CATALOG_DB_URL = "https://script.google.com/macros/s/AKfycbxdta-h0LUQ4bHSR
 const PUBLISHERS_DB_URL = "https://script.google.com/macros/s/AKfycbzbKo0E1wih647uiiPQebf6x7Sl-LQTM9khdDhuv0D2lP79bqz69-smUUTUEsrnsuBGmA/exec";
 
 
-export default function App() {
+export default function InputForm() {
   const [isLocked, setIsLocked] = useState(false); // Fields are editable initially
 
 
