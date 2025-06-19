@@ -6,17 +6,32 @@ export default async function handler(req, res) {
   }
 
   try {
-    console.log('✅ API handler triggered');
-    const { reportType } = req.body;
-    console.log('📦 reportType recibido:', reportType);
+    const fetch = (await import('node-fetch')).default;
+    console.log('✅ API /api/generar-tracks triggered');
 
-    // Solo para prueba: responde con mensaje de éxito
-    return res.status(200).json({
-      message: 'API funcionando correctamente',
-      received: reportType,
+    const response = await fetch('https://rigoletto.app.n8n.cloud/webhook-test/getCatalogPending', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(req.body),
     });
-  } catch (error) {
-    console.error('❌ Error en el handler:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+
+    const text = await response.text();
+    if (!response.ok) {
+      console.error(`❌ Webhook error: ${response.status}`, text);
+      return res.status(response.status).json({ error: `Webhook failed`, raw: text });
+    }
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (err) {
+      console.error("⚠️ La respuesta no era JSON:", text);
+      return res.status(500).json({ error: "Webhook returned non-JSON response", raw: text });
+    }
+
+    return res.status(200).json(data);
+  } catch (err) {
+    console.error('❌ Error en API handler:', err.message);
+    return res.status(500).json({ error: 'Proxy failed', message: err.message });
   }
 }
