@@ -2,32 +2,35 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const ReportGenerator = () => {
-  const [tracks, setTracks] = useState([]); // aseguramos array inicial
+  const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Reemplaza esta URL por tu webhook n8n real
-const endpoint = '/api/generar-tracks';
+  const endpoint = '/api/generar-tracks'; // Se llama a la ruta interna de Vercel
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await axios.post(endpoint, {
-          reportType: 'MLC', // o cualquier otro tipo de reporte
+          reportType: 'MLC',
         });
 
-        console.log("🎯 Datos recibidos:", res.data);
-        
-        // si la estructura es res.data.tracks, ajusta esto:
+        console.log('🎯 Datos recibidos:', res.data);
+
         const receivedTracks = res.data?.tracks || [];
 
         if (!Array.isArray(receivedTracks)) {
           throw new Error('Formato de tracks inválido');
         }
 
-        setTracks(receivedTracks);
+        // Filtro para evitar mostrar los que ya fueron reportados
+        const filtered = receivedTracks.filter(
+          (t) => !t['Reportado MLC'] || t['Reportado MLC'].trim() === ''
+        );
+
+        setTracks(filtered);
       } catch (err) {
-        console.error("❌ Error al cargar datos:", err);
+        console.error('❌ Error al cargar datos:', err);
         setError(err.message || 'Error desconocido');
       } finally {
         setLoading(false);
@@ -49,7 +52,7 @@ const endpoint = '/api/generar-tracks';
       ) : (
         <ul className="space-y-2">
           {tracks.map((track, index) => (
-            <li key={index} className="border p-2 rounded bg-gray-100">
+            <li key={index} className="border p-3 rounded bg-gray-100 shadow-sm">
               <strong>{track['Primary Title'] || 'Sin título'}</strong><br />
               ISRC: {track.ISRC || 'N/A'}<br />
               UPC: {track.UPC || 'N/A'}
