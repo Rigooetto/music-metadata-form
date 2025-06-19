@@ -8,11 +8,11 @@ export default async function handler(req, res) {
   try {
     const fetch = (await import('node-fetch')).default;
 
-    const response = await fetch('https://rigoletto.app.n8n.cloud/webhook-json/generar-tracks', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(req.body),
-    });
+    const response = await fetch('https://rigoletto.app.n8n.cloud/webhook-test/getCatalogPending', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(req.body),
+});
 
     const text = await response.text(); // Esto nos ayuda a ver errores
 
@@ -20,7 +20,13 @@ export default async function handler(req, res) {
       throw new Error(`Webhook responded with status ${response.status}: ${text}`);
     }
 
-    const data = JSON.parse(text);
+    let data;
+try {
+  data = JSON.parse(text);
+} catch (err) {
+  console.error("⚠️ La respuesta no era JSON:", text);
+  return res.status(500).json({ error: "Webhook returned non-JSON response", raw: text });
+}
     return res.status(200).json(data);
   } catch (err) {
     console.error('❌ Error en API route:', err.message);
