@@ -50,7 +50,7 @@ const endpoint = '/api/generar-tracks';
         <ul className="space-y-2">
           {tracks.map((track, index) => (
             <li key={index} className="border p-2 rounded bg-gray-100">
-              <strong>{track['Track Title'] || 'Sin título'}</strong><br />
+              <strong>{track['Primary Title'] || 'Sin título'}</strong><br />
               ISRC: {track.ISRC || 'N/A'}<br />
               UPC: {track.UPC || 'N/A'}
             </li>
