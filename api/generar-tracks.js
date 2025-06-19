@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
   try {
-    const response = await fetch("https://n8n.tudominio.com/webhook-json/generar-tracks", {
+    const response = await fetch("https://rigoletto.app.n8n.cloud/webhook-json/generar-tracks", {
       method: "POST", // O "GET" si fuera el caso
       headers: {
         "Content-Type": "application/json",
