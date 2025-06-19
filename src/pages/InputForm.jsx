@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Toaster, toast } from 'react-hot-toast/dist';
+import { Toaster, toast } from 'react-hot-toast';
 
 // 🗂️ Simulated local Composer database 423
 const mockComposersDB = [
