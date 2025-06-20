@@ -73,28 +73,39 @@ export default function ReportGenerator() {
   };
 
   const handleGenerate = async () => {
-    const tracksToReport = selectedTracks.map((i) => tracks[i]);
+  const tracksToReport = selectedTracks.map((i) => tracks[i]);
+  setGenerating(true);
 
-    setGenerating(true);
+  // Definimos los tipos de reporte a generar
+  const reportTypesToGenerate =
+    reportType === '' // '' es All Reports
+      ? ['MLC', 'Music Reports', 'ESong', 'SoundExchange']
+      : [reportType];
 
-    try {
+  try {
+    for (const type of reportTypesToGenerate) {
       const response = await axios.post(
         'https://rigoletto.app.n8n.cloud/webhook/reportGeneratorWebhook',
         {
-          reportType,
+          reportType: type,
           tracks: tracksToReport,
         }
       );
-
-      console.log('✅ Reporte enviado exitosamente:', response.data);
-      alert('✅ Reporte generado exitosamente');
-    } catch (error) {
-      console.error('❌ Error al generar el reporte:', error);
-      alert('❌ Ocurrió un error al generar el reporte');
-    } finally {
-      setGenerating(false);
+      console.log(`✅ Reporte ${type} generado exitosamente:`, response.data);
     }
-  };
+
+    alert(
+      `✅ Reporte${reportTypesToGenerate.length > 1 ? 's' : ''} generado${
+        reportTypesToGenerate.length > 1 ? 's' : ''
+      } exitosamente`
+    );
+  } catch (error) {
+    console.error('❌ Error al generar el reporte:', error);
+    alert('❌ Ocurrió un error al generar el reporte');
+  } finally {
+    setGenerating(false);
+  }
+};
 
   return (
     <div className="p-6">
