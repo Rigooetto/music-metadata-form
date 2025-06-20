@@ -14,7 +14,7 @@ export default function ReportGenerator() {
   const [tracks, setTracks] = useState([]);
   const [selectedTracks, setSelectedTracks] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
-  const [reportType, setReportType] = useState('');
+  const [reportType, setReportType] = useState('All Reports');
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
 
@@ -22,12 +22,22 @@ export default function ReportGenerator() {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
+
       try {
-        const res = await axios.post(endpoint, { reportType });
+        const typeToSend = reportType === 'All Reports' ? 'MLC' : reportType;
+        const res = await axios.post(endpoint, { reportType: typeToSend });
+
         const receivedTracks = Array.isArray(res.data) ? res.data : [];
 
+        // Selecciona la columna de reporte correcta
+        const reportColumn =
+          reportType === 'All Reports'
+            ? 'Reportado MLC'
+            : `Reportado ${reportType}`;
+
         const filtered = receivedTracks.filter(
-          (t) => !t['Reportado MLC'] || t['Reportado MLC'].trim() === ''
+          (t) => !t[reportColumn] || t[reportColumn].trim() === ''
         );
 
         setTracks(filtered);
@@ -63,28 +73,28 @@ export default function ReportGenerator() {
   };
 
   const handleGenerate = async () => {
-  const tracksToReport = selectedTracks.map((i) => tracks[i]);
+    const tracksToReport = selectedTracks.map((i) => tracks[i]);
 
-  setGenerating(true); // ⏳ Mostrar loading
+    setGenerating(true);
 
-  try {
-    const response = await axios.post(
-      'https://rigoletto.app.n8n.cloud/webhook/reportGeneratorWebhook',
-      {
-        reportType,
-        tracks: tracksToReport,
-      }
-    );
+    try {
+      const response = await axios.post(
+        'https://rigoletto.app.n8n.cloud/webhook/reportGeneratorWebhook',
+        {
+          reportType,
+          tracks: tracksToReport,
+        }
+      );
 
-    console.log('✅ Reporte enviado exitosamente:', response.data);
-    alert('✅ Reporte generado exitosamente');
-  } catch (error) {
-    console.error('❌ Error al generar el reporte:', error);
-    alert('❌ Ocurrió un error al generar el reporte');
-  } finally {
-    setGenerating(false); // ✅ Ocultar loading
-  }
-};
+      console.log('✅ Reporte enviado exitosamente:', response.data);
+      alert('✅ Reporte generado exitosamente');
+    } catch (error) {
+      console.error('❌ Error al generar el reporte:', error);
+      alert('❌ Ocurrió un error al generar el reporte');
+    } finally {
+      setGenerating(false);
+    }
+  };
 
   return (
     <div className="p-6">
@@ -95,44 +105,45 @@ export default function ReportGenerator() {
           onChange={(e) => setReportType(e.target.value)}
         >
           {REPORT_OPTIONS.map((opt) => (
-            <option key={opt} value={opt === 'All Reports' ? '' : opt}>
+            <option key={opt} value={opt}>
               {opt}
             </option>
           ))}
         </select>
-    <button
-  className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 disabled:opacity-50"
-  disabled={selectedTracks.length === 0 || generating}
-  onClick={handleGenerate}
->
-  {generating ? (
-    <>
-      <svg
-        className="animate-spin h-5 w-5 text-white"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <circle
-          className="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          strokeWidth="4"
-        ></circle>
-        <path
-          className="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-        ></path>
-      </svg>
-      Generating...
-    </>
-  ) : (
-    'Generate Report'
-  )}
-</button>
+
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 disabled:opacity-50"
+          disabled={selectedTracks.length === 0 || generating}
+          onClick={handleGenerate}
+        >
+          {generating ? (
+            <>
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
+              </svg>
+              Generating...
+            </>
+          ) : (
+            'Generate Report'
+          )}
+        </button>
       </div>
 
       {loading ? (
@@ -173,19 +184,19 @@ export default function ReportGenerator() {
                 <td className="p-3">{track.UPC || 'N/A'}</td>
                 <td className="p-3">{track.ISRC || 'N/A'}</td>
                 <td className="p-3 whitespace-pre-line">
-  {Array.isArray(track.Composers)
-    ? track.Composers.map((c) => `${c['First Name']} ${c['Last Name']}`).join('\n')
-    : typeof track.Composers === 'string'
-    ? (() => {
-        try {
-          const parsed = JSON.parse(track.Composers);
-          return parsed.map((c) => `${c['First Name']} ${c['Last Name']}`).join('\n');
-        } catch {
-          return 'N/A';
-        }
-      })()
-    : 'N/A'}
-</td>
+                  {Array.isArray(track.Composers)
+                    ? track.Composers.map((c) => `${c['First Name']} ${c['Last Name']}`).join('\n')
+                    : typeof track.Composers === 'string'
+                    ? (() => {
+                        try {
+                          const parsed = JSON.parse(track.Composers);
+                          return parsed.map((c) => `${c['First Name']} ${c['Last Name']}`).join('\n');
+                        } catch {
+                          return 'N/A';
+                        }
+                      })()
+                    : 'N/A'}
+                </td>
                 <td className="p-3">{track['Digital Release Date'] || 'N/A'}</td>
               </tr>
             ))}
