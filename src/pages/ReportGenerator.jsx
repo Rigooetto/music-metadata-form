@@ -14,7 +14,7 @@ export default function ReportGenerator() {
   const [tracks, setTracks] = useState([]);
   const [selectedTracks, setSelectedTracks] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
-  const [reportType, setReportType] = useState('MLC');
+  const [reportType, setReportType] = useState('');
   const [loading, setLoading] = useState(true);
 
   const endpoint = '/api/generar-tracks';
@@ -126,20 +126,20 @@ export default function ReportGenerator() {
                 <td className="p-3">{track['Track Artist Name'] || 'N/A'}</td>
                 <td className="p-3">{track.UPC || 'N/A'}</td>
                 <td className="p-3">{track.ISRC || 'N/A'}</td>
-                <td className="p-3">
-                  {Array.isArray(track.Composers)
-                    ? track.Composers.map((c) => `${c['First Name']} ${c['Last Name']}`).join(', ')
-                    : typeof track.Composers === 'string'
-                    ? (() => {
-                        try {
-                          const parsed = JSON.parse(track.Composers);
-                          return parsed.map((c) => `${c['First Name']} ${c['Last Name']}`).join(', ');
-                        } catch {
-                          return 'N/A';
-                        }
-                      })()
-                    : 'N/A'}
-                </td>
+                <td className="p-3 whitespace-pre-line">
+  {Array.isArray(track.Composers)
+    ? track.Composers.map((c) => `${c['First Name']} ${c['Last Name']}`).join('\n')
+    : typeof track.Composers === 'string'
+    ? (() => {
+        try {
+          const parsed = JSON.parse(track.Composers);
+          return parsed.map((c) => `${c['First Name']} ${c['Last Name']}`).join('\n');
+        } catch {
+          return 'N/A';
+        }
+      })()
+    : 'N/A'}
+</td>
                 <td className="p-3">{track['Digital Release Date'] || 'N/A'}</td>
               </tr>
             ))}
