@@ -1,28 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const REPORT_OPTIONS = [
-  'All Reports',
-  'MLC',
-  'Music Reports',
-  'HFA',
-  'Sound Exchange',
-  'RegDig',
-];
-
-export default function ReportGenerator() {
+const ReportGenerator = () => {
   const [tracks, setTracks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedTracks, setSelectedTracks] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
-  const [reportType, setReportType] = useState('MLC');
-  const [loading, setLoading] = useState(true);
+  const [reportType, setReportType] = useState('All Reports');
 
   const endpoint = '/api/generar-tracks';
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.post(endpoint, { reportType });
+        const res = await axios.post(endpoint, {
+          reportType: 'MLC',
+        });
+
+        console.log('🎯 Datos recibidos:', res.data);
+
         const receivedTracks = Array.isArray(res.data) ? res.data : [];
 
         const filtered = receivedTracks.filter(
@@ -30,122 +27,108 @@ export default function ReportGenerator() {
         );
 
         setTracks(filtered);
-        setSelectedTracks([]);
-        setSelectAll(false);
+        setSelectedTracks(filtered.map((_, index) => false));
       } catch (err) {
-        console.error('Error:', err);
+        console.error('❌ Error al cargar datos:', err);
+        setError(err.message || 'Error desconocido');
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [reportType]);
+  }, []);
 
-  const toggleTrack = (index) => {
-    if (selectedTracks.includes(index)) {
-      setSelectedTracks(selectedTracks.filter((i) => i !== index));
-      setSelectAll(false);
-    } else {
-      setSelectedTracks([...selectedTracks, index]);
-    }
+  const toggleSelectAll = () => {
+    const newValue = !selectAll;
+    setSelectAll(newValue);
+    setSelectedTracks(tracks.map(() => newValue));
   };
 
-  const handleSelectAll = () => {
-    if (selectAll) {
-      setSelectedTracks([]);
-      setSelectAll(false);
-    } else {
-      setSelectedTracks(tracks.map((_, index) => index));
-      setSelectAll(true);
-    }
+  const toggleTrackSelection = (index) => {
+    const updatedSelections = [...selectedTracks];
+    updatedSelections[index] = !updatedSelections[index];
+    setSelectedTracks(updatedSelections);
+    setSelectAll(updatedSelections.every(Boolean));
   };
 
-  const handleGenerate = () => {
-    const tracksToReport = selectedTracks.map((i) => tracks[i]);
-    console.log('🚀 Generar reporte con:', tracksToReport);
+  const handleReportTypeChange = (e) => {
+    setReportType(e.target.value);
+    // Aquí podrías filtrar `tracks` si decides hacer lógica por tipo
   };
+
+  if (loading) return <p>🔄 Generando reporte, espera...</p>;
+  if (error) return <p>❌ Error: {error}</p>;
 
   return (
-    <div className="p-6">
-      <div className="flex items-center gap-4 mb-6">
-        <select
-          className="border p-2 rounded"
-          value={reportType}
-          onChange={(e) => setReportType(e.target.value)}
-        >
-          {REPORT_OPTIONS.map((opt) => (
-            <option key={opt} value={opt === 'All Reports' ? '' : opt}>
-              {opt}
-            </option>
-          ))}
-        </select>
+    <div className="p-4">
+      <h2 className="text-xl font-semibold mb-4">🎧 Tracks a reportar</h2>
+
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <label htmlFor="reportType" className="mr-2 font-medium">Tipo de reporte:</label>
+          <select
+            id="reportType"
+            value={reportType}
+            onChange={handleReportTypeChange}
+            className="border p-1 rounded"
+          >
+            <option>All Reports</option>
+            <option>MLC</option>
+            <option>Music Reports</option>
+            <option>HFA</option>
+            <option>Sound Exchange</option>
+            <option>RegDig</option>
+          </select>
+        </div>
+
         <button
-          className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
-          disabled={selectedTracks.length === 0}
-          onClick={handleGenerate}
+          onClick={toggleSelectAll}
+          className="ml-4 bg-blue-600 text-white px-3 py-1 rounded"
         >
-          Generate Report
+          {selectAll ? 'Deselect All' : 'Select All'}
         </button>
       </div>
 
-      {loading ? (
-        <p>Loading...</p>
-      ) : tracks.length === 0 ? (
+      {tracks.length === 0 ? (
         <p>No hay tracks para mostrar.</p>
       ) : (
-        <table className="w-full text-sm text-left border border-gray-200">
-          <thead className="bg-gray-100 font-semibold">
-            <tr>
-              <th className="p-3">
+        <ul className="space-y-4">
+          {tracks.map((track, index) => (
+            <li key={index} className="border p-4 rounded bg-gray-50 shadow-sm">
+              <label className="flex items-start gap-2">
                 <input
                   type="checkbox"
-                  checked={selectAll}
-                  onChange={handleSelectAll}
+                  checked={selectedTracks[index] || false}
+                  onChange={() => toggleTrackSelection(index)}
                 />
-              </th>
-              <th className="p-3">Track Title</th>
-              <th className="p-3">Artist</th>
-              <th className="p-3">UPC</th>
-              <th className="p-3">ISRC</th>
-              <th className="p-3">Composers</th>
-              <th className="p-3">Release Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tracks.map((track, index) => (
-              <tr key={index} className="border-t hover:bg-gray-50">
-                <td className="p-3">
-                  <input
-                    type="checkbox"
-                    checked={selectedTracks.includes(index)}
-                    onChange={() => toggleTrack(index)}
-                  />
-                </td>
-                <td className="p-3">{track['Primary Title'] || 'Sin título'}</td>
-                <td className="p-3">{track['Track Artist Name'] || 'N/A'}</td>
-                <td className="p-3">{track.UPC || 'N/A'}</td>
-                <td className="p-3">{track.ISRC || 'N/A'}</td>
-                <td className="p-3">
-                  {Array.isArray(track.Composers)
-                    ? track.Composers.map((c) => `${c['First Name']} ${c['Last Name']}`).join(', ')
-                    : typeof track.Composers === 'string'
-                    ? (() => {
+                <div>
+                  <p><strong>{track['Primary Title'] || 'Sin título'}</strong></p>
+                  <p>ISRC: {track.ISRC || 'N/A'}</p>
+                  <p>UPC: {track.UPC || 'N/A'}</p>
+                  {track.Composers && (
+                    <div className="mt-1">
+                      <p className="font-medium">Composers:</p>
+                      {(() => {
                         try {
-                          const parsed = JSON.parse(track.Composers);
-                          return parsed.map((c) => `${c['First Name']} ${c['Last Name']}`).join(', ');
-                        } catch {
-                          return 'N/A';
+                          const composers = JSON.parse(track.Composers);
+                          return composers.map((c, i) => (
+                            <p key={i} className="text-sm">- {c['First Name']} {c['Middle Name']} {c['Last Name']} ({c.PRO})</p>
+                          ));
+                        } catch (e) {
+                          return <p className="text-sm italic text-red-500">Formato inválido</p>;
                         }
-                      })()
-                    : 'N/A'}
-                </td>
-                <td className="p-3">{track['Digital Release Date'] || 'N/A'}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                      })()}
+                    </div>
+                  )}
+                </div>
+              </label>
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );
-}
+};
+
+export default ReportGenerator;
