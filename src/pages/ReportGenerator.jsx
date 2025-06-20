@@ -13,6 +13,7 @@ const REPORT_OPTIONS = [
 export default function ReportGenerator() {
   const [tracks, setTracks] = useState([]);
   const [selectedTracks, setSelectedTracks] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
   const [reportType, setReportType] = useState('MLC');
   const [loading, setLoading] = useState(true);
 
@@ -27,7 +28,10 @@ export default function ReportGenerator() {
         const filtered = receivedTracks.filter(
           (t) => !t['Reportado MLC'] || t['Reportado MLC'].trim() === ''
         );
+
         setTracks(filtered);
+        setSelectedTracks([]);
+        setSelectAll(false);
       } catch (err) {
         console.error('Error:', err);
       } finally {
@@ -41,15 +45,25 @@ export default function ReportGenerator() {
   const toggleTrack = (index) => {
     if (selectedTracks.includes(index)) {
       setSelectedTracks(selectedTracks.filter((i) => i !== index));
+      setSelectAll(false);
     } else {
       setSelectedTracks([...selectedTracks, index]);
+    }
+  };
+
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedTracks([]);
+      setSelectAll(false);
+    } else {
+      setSelectedTracks(tracks.map((_, index) => index));
+      setSelectAll(true);
     }
   };
 
   const handleGenerate = () => {
     const tracksToReport = selectedTracks.map((i) => tracks[i]);
     console.log('🚀 Generar reporte con:', tracksToReport);
-    // Aquí puedes hacer el POST al webhook para generación
   };
 
   return (
@@ -83,7 +97,13 @@ export default function ReportGenerator() {
         <table className="w-full text-sm text-left border border-gray-200">
           <thead className="bg-gray-100 font-semibold">
             <tr>
-              <th className="p-3"></th>
+              <th className="p-3">
+                <input
+                  type="checkbox"
+                  checked={selectAll}
+                  onChange={handleSelectAll}
+                />
+              </th>
               <th className="p-3">Track Title</th>
               <th className="p-3">Artist</th>
               <th className="p-3">UPC</th>
@@ -109,6 +129,15 @@ export default function ReportGenerator() {
                 <td className="p-3">
                   {Array.isArray(track.Composers)
                     ? track.Composers.map((c) => `${c['First Name']} ${c['Last Name']}`).join(', ')
+                    : typeof track.Composers === 'string'
+                    ? (() => {
+                        try {
+                          const parsed = JSON.parse(track.Composers);
+                          return parsed.map((c) => `${c['First Name']} ${c['Last Name']}`).join(', ');
+                        } catch {
+                          return 'N/A';
+                        }
+                      })()
                     : 'N/A'}
                 </td>
                 <td className="p-3">{track['Digital Release Date'] || 'N/A'}</td>
