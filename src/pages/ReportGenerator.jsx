@@ -63,22 +63,17 @@ export default function ReportGenerator() {
 
   const handleGenerate = async () => {
   const tracksToReport = selectedTracks.map((i) => tracks[i]);
-
   try {
     const response = await axios.post(
-      'https://rigoletto.app.n8n.cloud/webhook/generarReporte', // <-- tu webhook real
+      'https://rigoletto.app.n8n.cloud/webhook/reportGeneratorWebhook',
       {
         reportType,
         tracks: tracksToReport,
       }
     );
-
-    console.log('✅ Reporte enviado correctamente:', response.data);
-    // Opcional: mostrar mensaje al usuario
-    alert('Reporte enviado correctamente.');
-  } catch (error) {
-    console.error('❌ Error al enviar el reporte:', error);
-    alert('Ocurrió un error al generar el reporte.');
+    console.log('✅ Enviado a n8n:', response.data);
+  } catch (err) {
+    console.error('❌ Error enviando a n8n:', err);
   }
 };
 
