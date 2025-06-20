@@ -16,6 +16,7 @@ export default function ReportGenerator() {
   const [selectAll, setSelectAll] = useState(false);
   const [reportType, setReportType] = useState('');
   const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
 
   const endpoint = '/api/generar-tracks';
 
@@ -64,6 +65,8 @@ export default function ReportGenerator() {
   const handleGenerate = async () => {
   const tracksToReport = selectedTracks.map((i) => tracks[i]);
 
+  setGenerating(true); // ⏳ Mostrar loading
+
   try {
     const response = await axios.post(
       'https://rigoletto.app.n8n.cloud/webhook/reportGeneratorWebhook',
@@ -78,6 +81,8 @@ export default function ReportGenerator() {
   } catch (error) {
     console.error('❌ Error al generar el reporte:', error);
     alert('❌ Ocurrió un error al generar el reporte');
+  } finally {
+    setGenerating(false); // ✅ Ocultar loading
   }
 };
 
@@ -96,12 +101,12 @@ export default function ReportGenerator() {
           ))}
         </select>
         <button
-          className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
-          disabled={selectedTracks.length === 0}
-          onClick={handleGenerate}
-        >
-          Generate Report
-        </button>
+  className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
+  disabled={selectedTracks.length === 0 || generating}
+  onClick={handleGenerate}
+>
+  {generating ? 'Generating...' : 'Generate Report'}
+</button>
       </div>
 
       {loading ? (
