@@ -1,30 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const ReportGenerator = () => {
+export default function ReportGenerator() {
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const endpoint = '/api/generar-tracks'; // Ruta interna de Vercel
+  const endpoint = '/api/generar-tracks';
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.post(endpoint, {
-          reportType: 'MLC',
-        });
-
+        const res = await axios.post(endpoint, { reportType: 'MLC' });
         console.log('🎯 Datos recibidos:', res.data);
 
-        // Si res.data es un array directamente
         const receivedTracks = Array.isArray(res.data) ? res.data : [];
 
-        if (!Array.isArray(receivedTracks)) {
-          throw new Error('Formato de tracks inválido');
-        }
-
-        // Filtro para evitar mostrar los que ya fueron reportados
+        // Filtra los que no han sido reportados
         const filtered = receivedTracks.filter(
           (t) => !t['Reportado MLC'] || t['Reportado MLC'].trim() === ''
         );
@@ -45,24 +37,43 @@ const ReportGenerator = () => {
   if (error) return <p>❌ Error: {error}</p>;
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-semibold mb-4">🎧 Tracks a reportar</h2>
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-4">🎧 Tracks a reportar</h2>
 
       {tracks.length === 0 ? (
         <p>No hay tracks para mostrar.</p>
       ) : (
-        <ul className="space-y-2">
-          {tracks.map((track, index) => (
-            <li key={index} className="border p-3 rounded bg-gray-100 shadow-sm">
-              <strong>{track['Primary Title'] || 'Sin título'}</strong><br />
-              ISRC: {track.ISRC || 'N/A'}<br />
-              UPC: {track.UPC || 'N/A'}
-            </li>
-          ))}
-        </ul>
+        <div className="overflow-x-auto rounded shadow">
+          <table className="min-w-full text-sm text-left border border-gray-200">
+            <thead className="bg-gray-100 text-gray-700 font-semibold">
+              <tr>
+                <th className="p-3">Track Title</th>
+                <th className="p-3">Artist</th>
+                <th className="p-3">UPC</th>
+                <th className="p-3">ISRC</th>
+                <th className="p-3">Composers</th>
+                <th className="p-3">Release Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tracks.map((track, idx) => (
+                <tr key={idx} className="border-t hover:bg-gray-50">
+                  <td className="p-3">{track['Primary Title'] || 'Sin título'}</td>
+                  <td className="p-3">{track['Track Artist Name'] || 'N/A'}</td>
+                  <td className="p-3">{track.UPC || 'N/A'}</td>
+                  <td className="p-3">{track.ISRC || 'N/A'}</td>
+                  <td className="p-3">
+                    {Array.isArray(track.Composers)
+                      ? track.Composers.map((c) => `${c['First Name']} ${c['Last Name']}`).join(', ')
+                      : 'N/A'}
+                  </td>
+                  <td className="p-3">{track['Digital Release Date'] || 'N/A'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
-};
-
-export default ReportGenerator;
+}
