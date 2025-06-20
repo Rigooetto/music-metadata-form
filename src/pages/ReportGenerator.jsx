@@ -6,7 +6,7 @@ const ReportGenerator = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const endpoint = '/api/generar-tracks'; // Se llama a la ruta interna de Vercel
+  const endpoint = '/api/generar-tracks'; // Ruta interna de Vercel
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,7 +17,8 @@ const ReportGenerator = () => {
 
         console.log('🎯 Datos recibidos:', res.data);
 
-        const receivedTracks = res.data?.tracks || [];
+        // Si res.data es un array directamente
+        const receivedTracks = Array.isArray(res.data) ? res.data : [];
 
         if (!Array.isArray(receivedTracks)) {
           throw new Error('Formato de tracks inválido');
