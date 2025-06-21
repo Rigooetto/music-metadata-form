@@ -1259,7 +1259,7 @@ const handleAlbumArtistChange = (index, value) => {
         Music Catalog Data Entry
       </h1>
 
-        <sec<section className="mb-10 border-b border-blue-900 pb-6">
+        <section className="mb-10 border-b border-blue-900 pb-6">
   <h2 className="text-xl font-semibold mb-4 text-blue-400">Release Information</h2>
   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
     
@@ -1267,7 +1267,7 @@ const handleAlbumArtistChange = (index, value) => {
     <div className="flex flex-col">
       <label className="text-sm font-medium text-gray-200 mb-1">Type of Release</label>
       <select
-        className="p-2 h-11 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         value={releaseInfo.typeOfRelease || ""}
         onChange={(e) => handleReleaseInfoChange("typeOfRelease", e.target.value)}
       >
@@ -1301,17 +1301,19 @@ const handleAlbumArtistChange = (index, value) => {
         className="p-2 border border-blue-700 bg-[#0f172a] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       {upcSuggestions.length > 0 && (
-        <ul className="absolute z-10 mt-12 bg-[#1e293b] border border-blue-700 rounded-md w-full shadow-xl max-h-48 overflow-auto text-white">
+        <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
           {upcSuggestions.map((sugg, idx) => (
-            <li
-              key={idx}
-              className={`p-2 hover:bg-blue-700 cursor-pointer ${
-                highlightedUpcIndex === idx ? "bg-blue-800" : ""
-              }`}
-              onMouseDown={() => handleUpcSuggestionClick(sugg)}
-            >
-              {sugg["UPC"]} — {sugg["Album Title"] || "Sin título"}
-            </li>
+          <li
+  key={idx}
+  className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
+    highlightedUpcIndex === idx
+      ? "bg-blue-800 text-white font-semibold"
+      : "hover:bg-blue-700"
+  }`}
+  onMouseDown={() => handleUpcSuggestionClick(sugg)}
+>
+  {sugg["UPC"]} — {sugg["Album Title"] || "Sin título"}
+</li>
           ))}
         </ul>
       )}
@@ -1346,29 +1348,31 @@ const handleAlbumArtistChange = (index, value) => {
             </div>
             {activeArtistInputIndex === `album-${idx}` &&
               artistSuggestions.length > 0 && (
-                <ul className="absolute z-10 bg-[#1e293b] border border-blue-700 rounded-md w-full shadow-xl max-h-48 overflow-auto text-white">
+                <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
                   {artistSuggestions.map((name, i) => (
                     <li
-                      key={i}
-                      className={`p-2 cursor-pointer ${
-                        highlightedArtistIndex === i ? "bg-blue-800" : "hover:bg-blue-700"
-                      }`}
-                      onMouseDown={() => handleAlbumArtistChange(idx, name)}
-                    >
-                      {name}
-                    </li>
+  key={idx}
+  className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
+  idx === highlightedTrackIndex
+    ? "bg-blue-800 text-white font-semibold"
+    : "hover:bg-blue-700"
+}`}
+  onMouseDown={() => handleUpcSuggestionClick(sugg)}
+>
+  {sugg["UPC"]} — {sugg["Album Title"] || "Sin título"}
+</li>
                   ))}
                 </ul>
               )}
           </React.Fragment>
         ))}
       <button
-        type="button"
-        className="text-blue-400 hover:text-blue-300 text-sm mt-1 self-start"
-        onClick={addAlbumArtist}
-      >
-        + Add Another Artist
-      </button>
+  type="button"
+  onClick={() => addTrackArtist(i)}
+  className="text-blue-400 hover:text-blue-300 text-sm mt-1 self-start"
+>
+  + Add Another Artist
+</button>
     </div>
 
     {/* Digital Release Date */}
@@ -1397,18 +1401,19 @@ const handleAlbumArtistChange = (index, value) => {
         className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       {albumSuggestions.length > 0 && (
-        <ul className="absolute z-10 mt-12 bg-[#1e293b] border border-blue-700 rounded-md w-full shadow-xl max-h-48 overflow-auto text-white">
+        <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
           {albumSuggestions.map((sugg, idx) => (
             <li
-              key={idx}
-              className={`p-2 cursor-pointer ${
-                highlightedAlbumIndex === idx ? "bg-blue-800" : "hover:bg-blue-700"
-              }`}
-              onMouseDown={() => handleAlbumSuggestionClick(sugg)}
-              onMouseEnter={() => setHighlightedAlbumIndex(idx)}
-            >
-              {sugg["Album Title"] || "Unknown Album"} — {sugg["Album Artist"] || "Unknown Artist"}
-            </li>
+  key={idx}
+  className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
+  idx === highlightedTrackIndex
+    ? "bg-blue-800 text-white font-semibold"
+    : "hover:bg-blue-700"
+}`}
+  onMouseDown={() => handleUpcSuggestionClick(sugg)}
+>
+  {sugg["UPC"]} — {sugg["Album Title"] || "Sin título"}
+</li>
           ))}
         </ul>
       )}
@@ -1678,13 +1683,15 @@ toast.success("🎼 Composer & Publisher Info Loaded", {
 />
 
   {trackSuggestions.length > 0 && (
-    <ul className="absolute z-10 mt-10 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+    <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
       {trackSuggestions.map((entry, idx) => (
         <li
           key={idx}
-          className={`p-2 cursor-pointer ${
-            idx === highlightedTrackIndex ? "bg-blue-100" : "hover:bg-blue-50"
-          }`}
+          className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
+  idx === highlightedTrackIndex
+    ? "bg-blue-800 text-white font-semibold"
+    : "hover:bg-blue-700"
+}`}
           onMouseDown={() => {
   handleTrackChange(i, "primaryTitle", entry["Primary Title"] || "");
 let parsedTrackArtists = [];
@@ -1887,13 +1894,15 @@ if (Array.isArray(composerData)) {
     {/* Suggestions Dropdown */}
     {activeArtistInputIndex === `${i}-${artistIndex}` &&
       artistSuggestions.length > 0 && (
-        <ul className="absolute z-10 mt-1 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+        <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
           {artistSuggestions.map((name, idx) => (
             <li
               key={idx}
-              className={`p-2 cursor-pointer ${
-                idx === highlightedArtistIndex ? "bg-blue-100" : ""
-              }`}
+              className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
+  idx === highlightedTrackIndex
+    ? "bg-blue-800 text-white font-semibold"
+    : "hover:bg-blue-700"
+}`}
               onMouseDown={() => {
                 handleTrackArtistChange(i, artistIndex, name);
                 setArtistSuggestions([]);
@@ -1908,13 +1917,13 @@ if (Array.isArray(composerData)) {
   </React.Fragment>
 ))}
 
-  <button
-    type="button"
-    onClick={() => addTrackArtist(i)}
-    className="text-blue-600 hover:text-blue-800 text-sm mt-1 self-start"
-  >
-    + Add Another Artist
-  </button>
+ <button
+  type="button"
+  onClick={() => addTrackArtist(i)}
+  className="text-blue-400 hover:text-blue-300 text-sm mt-1 self-start"
+>
+  + Add Another Artist
+</button>
 </div>
 
 
@@ -2123,13 +2132,15 @@ const removeComposer = (trackIndex, composerIndex) => {
     activeInput.composerIndex === j &&
     activeInput.field === "firstName" &&
     suggestions.length > 0 && (
-      <ul className="absolute z-10 mt-10 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+      <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
   {suggestions.map((sugg, idx) => (
     <li
       key={idx}
-      className={`p-2 cursor-pointer hover:bg-blue-100 ${
-        idx === highlightedIndex ? "bg-blue-100 font-medium" : ""
-      }`}
+      className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
+  idx === highlightedTrackIndex
+    ? "bg-blue-800 text-white font-semibold"
+    : "hover:bg-blue-700"
+}`}
       onMouseDown={() => {
         const updated = [...tracks];
         updated[i].composers[j] = {
@@ -2199,13 +2210,15 @@ const removeComposer = (trackIndex, composerIndex) => {
   activeInput.composerIndex === j &&
   activeInput.field === "lastName" &&
   suggestions.length > 0 && (
-    <ul className="absolute z-10 mt-10 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+    <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
       {suggestions.map((sugg, idx) => (
         <li
           key={idx}
-          className={`p-2 hover:bg-blue-100 cursor-pointer ${
-            highlightedIndex === idx ? "bg-blue-100" : ""
-          }`}
+          className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
+  idx === highlightedTrackIndex
+    ? "bg-blue-800 text-white font-semibold"
+    : "hover:bg-blue-700"
+}`}
           onMouseDown={() => {
             const updated = [...tracks];
             updated[i].composers[j] = {
@@ -2281,7 +2294,7 @@ const removeComposer = (trackIndex, composerIndex) => {
 {activePublisherField?.trackIndex === i &&
   activePublisherField?.composerIndex === j &&
   publisherSuggestions.length > 0 && (
-    <div className="absolute top-full left-0 w-full z-10 bg-white border border-gray-300 rounded-md shadow-md max-h-48 overflow-y-auto">
+    <div className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
       {publisherSuggestions.map((s, idx) => (
         <div
           key={idx}
