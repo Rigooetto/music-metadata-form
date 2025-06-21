@@ -1,3 +1,5 @@
+
+// src/Sidebar.jsx
 import React, { useEffect, useState } from 'react';
 import { signOut } from 'firebase/auth';
 import { auth, db } from './firebaseConfig';
@@ -6,7 +8,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   LogOut, FileText, ClipboardList, LayoutDashboard,
-  ShieldCheck, UserCircle, Bell, Plus, User
+  ShieldCheck, UserCircle, Bell, Plus, User, Menu, ChevronLeft
 } from 'lucide-react';
 
 export default function Sidebar() {
@@ -54,18 +56,30 @@ export default function Sidebar() {
 
   return (
     <>
+      {/* Desktop Sidebar */}
       <aside className={`hidden md:flex ${expanded ? 'w-64' : 'w-20'} bg-[#1c1f26] text-white flex-col justify-between min-h-screen px-4 py-6 rounded-r-2xl shadow-xl transition-all duration-300`}>
         <div>
+          {/* Toggle Button */}
           <button
             onClick={() => setExpanded(!expanded)}
-            className="mb-6 focus:outline-none text-blue-400 hover:text-white"
+            className="mb-6 text-blue-400 hover:text-white transition-colors focus:outline-none"
           >
-            <ShieldCheck className="w-6 h-6" />
+            {expanded ? <ChevronLeft size={24} /> : <Menu size={24} />}
           </button>
+
+          {/* Logo (conditionally rendered) */}
+          {expanded && (
+            <div className="flex items-center gap-3 mb-8 text-blue-400 text-lg font-semibold">
+              <ShieldCheck className="w-6 h-6" />
+              LabelMind.ai
+            </div>
+          )}
+
           <nav className="space-y-2">
             {navLink('/input', 'Input Form', ClipboardList)}
             {navLink('/reports', 'Reports', FileText)}
           </nav>
+
           {isAdmin && (
             <div className="mt-6">
               {expanded && <h3 className="text-xs uppercase text-gray-400 tracking-wide mb-2">Admin</h3>}
@@ -76,6 +90,7 @@ export default function Sidebar() {
             </div>
           )}
         </div>
+
         <div className="space-y-2">
           {expanded && <div className="text-gray-400 text-sm">{displayName}</div>}
           <button onClick={handleLogout} className="flex items-center gap-2 text-blue-400 hover:text-white transition">
@@ -84,6 +99,8 @@ export default function Sidebar() {
           </button>
         </div>
       </aside>
+
+      {/* Mobile BottomNav */}
       <nav className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-[#1c1f26] text-gray-300 flex md:hidden items-center justify-between gap-6 px-6 py-3 rounded-2xl shadow-xl z-50">
         <NavIcon icon={<ClipboardList size={20} />} href="/input" />
         <NavIcon icon={<Plus size={24} />} center href="/input" />
