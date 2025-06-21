@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { getAuth } from "firebase/auth";
 import axios from 'axios';
 
 const REPORT_OPTIONS = [
@@ -72,7 +73,6 @@ export default function ReportGenerator() {
     }
   };
 
-  import { getAuth } from "firebase/auth"; // al inicio del archivo
 
 const handleGenerate = async () => {
   const auth = getAuth();
