@@ -72,21 +72,32 @@ export default function ReportGenerator() {
     }
   };
 
-  const handleGenerate = async () => {
+  import { getAuth } from "firebase/auth"; // al inicio del archivo
+
+const handleGenerate = async () => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  if (!user) {
+    alert("Inicia sesión primero");
+    return;
+  }
+
+  const name = user.displayName || "Usuario";
+  const email = user.email || "";
+
   const tracksToReport = selectedTracks.map((i) => tracks[i]);
   setGenerating(true);
 
-  // Definimos los tipos de reporte a generar
   const reportTypesToGenerate =
-    reportType === '' // '' es All Reports
-      ? ['MLC', 'Music Reports', 'ESong', 'SoundExchange']
-      : [reportType];
+    reportType === '' ? ['MLC', 'Music Reports', 'ESong', 'SoundExchange'] : [reportType];
 
   try {
     for (const type of reportTypesToGenerate) {
       const response = await axios.post(
         'https://rigoletto.app.n8n.cloud/webhook/reportGeneratorWebhook',
         {
+          user: { name, email }, // <-- aquí va el usuario
           reportType: type,
           tracks: tracksToReport,
         }
