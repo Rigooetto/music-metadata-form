@@ -1246,37 +1246,7 @@ const handleAlbumArtistChange = (index, value) => {
       : "Album Artist";
 
 
-  function handleUpcKeyDown(e) {
-  if (upcSuggestions.length > 0) {
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setHighlightedUpcIndex((prev) =>
-        prev < upcSuggestions.length - 1 ? prev + 1 : 0
-      );
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setHighlightedUpcIndex((prev) =>
-        prev > 0 ? prev - 1 : upcSuggestions.length - 1
-      );
-    } else if (e.key === "Enter") {
-      e.preventDefault();
-      if (highlightedUpcIndex >= 0) {
-        handleUpcSuggestionClick(upcSuggestions[highlightedUpcIndex]);
-      }
-    } else if (e.key === "Escape") {
-      setUpcSuggestions([]);
-      setHighlightedUpcIndex(-1);
-    }
-  }
-}
-
-function handleAlbumTitleChange(e) {
-  const value = e.target.value;
-  handleReleaseInfoChange("albumTitle", value);
-  setAlbumSearch(value); // (si lo usas para fetch en vivo)
-  setHighlightedAlbumIndex(0); // reinicia el índice de selección
-}
-
+  
 
 
 
@@ -1289,140 +1259,75 @@ function handleAlbumTitleChange(e) {
         Music Catalog Data Entry
       </h1>
 
-<section className="mb-10 border-b border-blue-900 pb-6">
+        <section className="mb-10 border-b border-blue-900 pb-6">
   <h2 className="text-xl font-semibold mb-4 text-blue-400">Release Information</h2>
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-    {/* Type of Release */}
-    <div className="flex flex-col">
-      <label className="text-sm font-medium text-gray-200 mb-1">Type of Release</label>
-      <select
-        className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        value={releaseInfo.typeOfRelease || ""}
-        onChange={(e) => handleReleaseInfoChange("typeOfRelease", e.target.value)}
-      >
-        <option value="" disabled>Select type</option>
-        <option value="Single">Single</option>
-        <option value="Album">Album</option>
-        <option value="EP">EP</option>
-      </select>
-    </div>
-
-    {/* UPC Input with Suggestions */}
-    <div className="relative flex flex-col">
-      <label className="text-sm font-medium text-gray-200 mb-1">UPC</label>
-      <input
-        disabled={isLocked}
-        type="text"
-        value={releaseInfo.upc || ""}
-        onChange={(e) => {
-          const value = e.target.value.replace(/\D/g, "");
-          handleReleaseInfoChange("upc", value);
-          const matches = catalogDB.filter(entry =>
-            entry?.["UPC"]?.toString().startsWith(value)
-          );
-          const unique = [...new Map(matches.map(item => [item["UPC"], item])).values()];
-          setUpcSuggestions(unique);
-          setHighlightedUpcIndex(-1);
-        }}
-        onKeyDown={handleUpcKeyDown}
-        onBlur={() => setTimeout(() => setUpcSuggestions([]), 200)}
-        placeholder="Buscar por UPC"
-        className="p-2 border border-blue-700 bg-[#0f172a] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      {upcSuggestions.length > 0 && (
-        <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
-          {upcSuggestions.map((sugg, idx) => (
-            <li
-              key={idx}
-              className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
-                highlightedUpcIndex === idx
-                  ? "bg-blue-800 text-white font-semibold"
-                  : "hover:bg-blue-700"
-              }`}
-              onMouseDown={() => handleUpcSuggestionClick(sugg)}
-            >
-              {sugg["UPC"]} — {sugg["Album Title"] || "Sin título"}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-
-    {/* Album Title */}
-    <div className="relative flex flex-col">
-      <label className="text-sm font-medium text-gray-200 mb-1">Album Title</label>
-      <input
-        disabled={isLocked}
-        type="text"
-        value={releaseInfo.albumTitle || ""}
-        onChange={handleAlbumTitleChange}
-        onKeyDown={handleAlbumKeyDown}
-        onBlur={() => setTimeout(() => setAlbumSuggestions([]), 200)}
-        placeholder="Search by album title"
-        className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      {albumSuggestions.length > 0 && (
-        <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
-          {albumSuggestions.map((sugg, idx) => (
-            <li
-              key={idx}
-              className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
-                highlightedAlbumIndex === idx
-                  ? "bg-blue-800 text-white font-semibold"
-                  : "hover:bg-blue-700"
-              }`}
-              onMouseDown={() => {
-                handleReleaseInfoChange("albumTitle", sugg["Album Title"] || "");
-                setAlbumSuggestions([]);
-              }}
-            >
-              {sugg["UPC"]} — {sugg["Album Title"] || "Sin título"}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-
-    {/* Digital Release Date */}
-    <div className="flex flex-col">
-      <label className="text-sm font-medium text-gray-200 mb-1">Digital Release Date</label>
-      <input
-        disabled={isLocked}
-        type="date"
-        value={releaseInfo.releaseDate || ""}
-        onChange={(e) => handleReleaseInfoChange("releaseDate", e.target.value)}
-        className="p-2 h-12 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
- 
-
-   {/* Album Title */}
-<div className="relative flex flex-col">
-  <label className="text-sm font-medium text-gray-200 mb-1">Album Title</label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col">
+              <label className="text-sm font-medium text-gray-700 mb-1">Type of Release</label>
+              <select
+                className="p-2 h-11 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={releaseInfo.typeOfRelease || ""}
+                onChange={(e) => handleReleaseInfoChange("typeOfRelease", e.target.value)}
+              >
+                <option value="" disabled>Select type</option>
+                <option value="Single">Single</option>
+                <option value="Album">Album</option>
+                <option value="EP">EP</option>
+              </select>
+            
+            </div>
+            <div className="relative flex flex-col">
+  <label className="text-sm font-medium text-gray-700 mb-1">UPC</label>
   <input
     disabled={isLocked}
     type="text"
-    value={releaseInfo.albumTitle || ""}
-    onChange={handleAlbumTitleChange}
-    onKeyDown={handleAlbumKeyDown}
-    onBlur={() => setTimeout(() => setAlbumSuggestions([]), 200)}
-    placeholder="Search by album title"
-    className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+    value={releaseInfo.upc || ""}
+    onChange={(e) => {
+      const value = e.target.value.replace(/\D/g, "");
+      handleReleaseInfoChange("upc", value);
+
+      const matches = catalogDB.filter(entry =>
+        entry?.["UPC"]?.toString().startsWith(value)
+      );
+      const unique = [...new Map(matches.map(item => [item["UPC"], item])).values()];
+      setUpcSuggestions(unique);
+      setHighlightedUpcIndex(-1);
+    }}
+    onKeyDown={(e) => {
+      if (upcSuggestions.length > 0) {
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          setHighlightedUpcIndex(prev =>
+            prev < upcSuggestions.length - 1 ? prev + 1 : prev
+          );
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          setHighlightedUpcIndex(prev => (prev > 0 ? prev - 1 : 0));
+        } else if (e.key === "Enter") {
+          e.preventDefault();
+          if (highlightedUpcIndex >= 0) {
+            handleUpcSuggestionClick(upcSuggestions[highlightedUpcIndex]);
+          }
+        } else if (e.key === "Escape") {
+          setUpcSuggestions([]);
+          setHighlightedUpcIndex(-1);
+        }
+      }
+    }}
+    onBlur={() => setTimeout(() => setUpcSuggestions([]), 200)}
+    placeholder="Buscar por UPC"
+    className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
   />
-  {albumSuggestions.length > 0 && (
-    <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
-      {albumSuggestions.map((sugg, idx) => (
+
+  {upcSuggestions.length > 0 && (
+    <ul className="absolute z-10 mt-12 bg-[#1e293b] border border-blue-700 rounded-md w-full shadow-xl max-h-48 overflow-auto text-white">
+      {upcSuggestions.map((sugg, idx) => (
         <li
           key={idx}
-          className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
-            idx === highlightedAlbumIndex
-              ? "bg-blue-800 text-white font-semibold"
-              : "hover:bg-blue-700"
+          className={`p-2 hover:bg-blue-100 cursor-pointer ${
+            highlightedUpcIndex === idx ? "bg-blue-100" : ""
           }`}
-          onMouseDown={() => {
-            handleReleaseInfoChange("albumTitle", sugg["Album Title"] || "");
-            setAlbumSuggestions([]);
-          }}
+          onMouseDown={() => handleUpcSuggestionClick(sugg)}
         >
           {sugg["UPC"]} — {sugg["Album Title"] || "Sin título"}
         </li>
@@ -1431,45 +1336,235 @@ function handleAlbumTitleChange(e) {
   )}
 </div>
 
-    {/* Distributor */}
-    <div className="flex flex-col">
-      <label className="text-sm font-medium text-gray-200 mb-1">Distributor</label>
+<div className="flex flex-col">
+  <label className="text-sm font-medium text-gray-700 mb-1">{albumArtistLabel}(s)</label>
+{Array.isArray(releaseInfo.albumArtist) &&
+  releaseInfo.albumArtist.map((artist, idx) => (
+  <React.Fragment key={idx}>
+    <div className="relative flex items-center mb-2">
       <input
-        disabled={isLocked}
         type="text"
-        value={releaseInfo.distributor || ""}
-        onChange={(e) => handleReleaseInfoChange("distributor", e.target.value)}
-        placeholder="Enter Distributor"
-        className="p-2 h-12 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
+        value={artist}
+        placeholder={`Artist ${idx + 1}`}
+        onChange={(e) => {
+          const value = e.target.value;
+          handleAlbumArtistChange(idx, value);
 
-    {/* Upload Cover Art */}
-    <div className="flex flex-col">
-      <label className="text-sm font-medium text-gray-200 mb-1">Upload Cover Art</label>
-      <input
-        disabled={isLocked}
-        type="file"
-        accept="image/*"
-        onChange={(e) => handleReleaseInfoChange("coverArt", e.target.files[0])}
-        className="p-2 h-12 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          if (value.length > 0) {
+            const matches = artistDB
+              .map((a) => a["Artist Name"])
+              .filter((name) =>
+                String(name || "").toLowerCase().startsWith(String(value || "").toLowerCase())
+              );
+            setArtistSuggestions(matches);
+            setHighlightedArtistIndex(0);
+            setActiveArtistInputIndex(`album-${idx}`);
+          } else {
+            setArtistSuggestions([]);
+            setActiveArtistInputIndex(null);
+          }
+        }}
+        onKeyDown={(e) => {
+          if (artistSuggestions.length > 0) {
+            if (e.key === "ArrowDown") {
+              e.preventDefault();
+              setHighlightedArtistIndex((prev) =>
+                prev < artistSuggestions.length - 1 ? prev + 1 : 0
+              );
+            } else if (e.key === "ArrowUp") {
+              e.preventDefault();
+              setHighlightedArtistIndex((prev) =>
+                prev > 0 ? prev - 1 : artistSuggestions.length - 1
+              );
+            } else if (e.key === "Enter") {
+              e.preventDefault();
+              const selected = artistSuggestions[highlightedArtistIndex];
+              if (selected) {
+                handleAlbumArtistChange(idx, selected);
+                setArtistSuggestions([]);
+                setActiveArtistInputIndex(null);
+              }
+            }
+          }
+        }}
+        onBlur={() => setTimeout(() => setArtistSuggestions([]), 150)}
+        className="p-2 border border-gray-300 rounded-md w-full"
       />
-      {releaseInfo.coverArtPreview && (
-        <img
-          src={releaseInfo.coverArtPreview}
-          alt="Cover Preview"
-          className="mt-2 w-24 h-24 object-cover rounded shadow"
-        />
+
+      {/* Trashcan to remove artist */}
+      {releaseInfo.albumArtist.length > 1 && (
+        <button
+          type="button"
+          onClick={() => {
+            const updated = [...releaseInfo.albumArtist];
+            updated.splice(idx, 1);
+            setReleaseInfo((prev) => ({
+              ...prev,
+              albumArtist: updated,
+            }));
+          }}
+          className="ml-2 text-red-500 hover:text-red-700 text-lg"
+          title="Remove Artist"
+        >
+          🗑️
+        </button>
       )}
     </div>
-    
+
+    {/* Suggestions Dropdown */}
+    {activeArtistInputIndex === `album-${idx}` &&
+      artistSuggestions.length > 0 && (
+        <ul className="absolute z-10 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+          {artistSuggestions.map((name, i) => (
+            <li
+              key={i}
+              className={`p-2 cursor-pointer ${
+                highlightedArtistIndex === i ? "bg-blue-100" : ""
+              }`}
+              onMouseDown={() => {
+                handleAlbumArtistChange(idx, name);
+                setArtistSuggestions([]);
+                setActiveArtistInputIndex(null);
+              }}
+            >
+              {name}
+            </li>
+          ))}
+        </ul>
+      )}
+  </React.Fragment>
+))}
+  <button
+    type="button"
+    className="text-blue-600 hover:text-blue-800 text-sm mt-1 self-start"
+    onClick={addAlbumArtist}
+  >
+    + Add Another Artist
+  </button>
+</div>
+
+
+<div className="flex flex-col">
+  <label className="text-sm font-medium text-gray-700 mb-1">Digital Release Date</label>
+  <input
+     disabled={isLocked}type="date"
+    value={releaseInfo.releaseDate || ""}
+    onChange={(e) => handleReleaseInfoChange("releaseDate", e.target.value)}
+    className="p-2 h-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+  />
+</div>
+            
+<div className="relative flex flex-col">
+  <label className="text-sm font-medium text-gray-700 mb-1">Album Title</label>
+  <input
+    disabled={isLocked}
+    type="text"
+    value={releaseInfo.albumTitle || ""}
+    onChange={(e) => {
+      const value = e.target.value;
+      handleReleaseInfoChange("albumTitle", value);
+      setAlbumSearch(value);
+      setHighlightedAlbumIndex(0); // 👈 reinicia selección al escribir
+    }}
+    onKeyDown={(e) => {
+      if (albumSuggestions.length > 0) {
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          setHighlightedAlbumIndex((prev) =>
+            prev < albumSuggestions.length - 1 ? prev + 1 : prev
+          );
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          setHighlightedAlbumIndex((prev) =>
+            prev > 0 ? prev - 1 : 0
+          );
+        } else if (e.key === "Enter") {
+          e.preventDefault();
+          if (highlightedAlbumIndex >= 0) {
+            handleAlbumSuggestionClick(albumSuggestions[highlightedAlbumIndex]);
+          }
+        }
+      }
+    }}
+    onBlur={() => setTimeout(() => setAlbumSuggestions([]), 200)}
+    placeholder="Search by album title"
+    className="p-2 border border-gray-300 rounded-md w-full"
+  />
+
+  {albumSuggestions.length > 0 && (
+    <ul className="absolute z-10 mt-12 bg-[#1e293b] border border-blue-700 rounded-md w-full shadow-xl max-h-48 overflow-auto text-white">
+      {albumSuggestions.map((sugg, idx) => (
+        <li
+          key={idx}
+          className={`p-2 cursor-pointer ${
+            highlightedAlbumIndex === idx ? "bg-blue-100" : "hover:bg-blue-50"
+          }`}
+          onMouseDown={() => handleAlbumSuggestionClick(sugg)}
+          onMouseEnter={() => setHighlightedAlbumIndex(idx)} // 👈 esto permite resaltar con el mouse
+        >
+          {sugg["Album Title"] || "Unknown Album"} — {sugg["Album Artist"] || "Unknown Artist"}
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+     
+
+  <div className="flex flex-col">
+    <label className="text-sm font-medium text-gray-700 mb-1"># of Tracks</label>
+    <input
+       disabled={isLocked}type="number"
+      min="1"
+      step="1"
+      value={releaseInfo.numTracks || ""}
+      onChange={(e) => {
+        const value = e.target.value;
+        if (/^\d*$/.test(value)) {
+          handleReleaseInfoChange("numTracks", value);
+        }
+      }}
+      placeholder="Enter number of tracks"
+      className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    />
   </div>
-</section>
+
+
+
+
+           <div className="flex flex-col">
+  <label className="text-sm font-medium text-gray-700 mb-1">Distributor</label>
+  <input
+     disabled={isLocked}type="text"
+    value={releaseInfo.distributor || ""}
+    onChange={(e) => handleReleaseInfoChange("distributor", e.target.value)}
+    placeholder="Enter Distributor"
+    className="p-2 h-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+  />
+
+  </div>
+           <div className="flex flex-col">
+  <label className="text-sm font-medium text-gray-700 mb-1">Upload Cover Art</label>
+  <input
+     disabled={isLocked}type="file"
+    accept="image/*"
+    onChange={(e) => handleReleaseInfoChange("coverArt", e.target.files[0])}
+    className="p-2 h-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+  />
+  {releaseInfo.coverArtPreview && (
+    <img
+      src={releaseInfo.coverArtPreview}
+      alt="Cover Preview"
+      className="mt-2 w-24 h-24 object-cover rounded shadow"
+    />
+  )}
+</div>
+          </div>
+        </section>
 
         {tracks.map((track, i) => (
-          <details key={i} open={!track.collapsed} ref={(el) => (trackRefs.current[i] = el)} className="mb-6 border border-blue-900 rounded-xl p-4 bg-[#111827] text-white shadow-lg">
+          <details key={i} open={!track.collapsed} ref={(el) => (trackRefs.current[i] = el)} className="mb-6 border rounded-xl p-4 bg-gray-50">
             <summary
-  className="cursor-pointer font-semibold text-blue-400 mb-4 flex items-center justify-between"
+  className="cursor-pointer font-semibold text-blue-700 mb-4 flex items-center justify-between"
   onClick={(e) => {
     e.preventDefault();
     const updated = [...tracks];
@@ -1491,7 +1586,7 @@ function handleAlbumTitleChange(e) {
   </span>
 
   <span
-    className="text-gray-400 hover:text-red-500 text-xl ml-4 cursor-pointer"
+    className="text-gray-400 hover:text-red-600 text-xl ml-4 cursor-pointer"
     title="Delete Track"
     onClick={(e) => {
       e.stopPropagation();
@@ -1680,15 +1775,13 @@ toast.success("🎼 Composer & Publisher Info Loaded", {
 />
 
   {trackSuggestions.length > 0 && (
-    <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
+    <ul className="absolute z-10 mt-10 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
       {trackSuggestions.map((entry, idx) => (
         <li
           key={idx}
-          className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
-  idx === highlightedTrackIndex
-    ? "bg-blue-800 text-white font-semibold"
-    : "hover:bg-blue-700"
-}`}
+          className={`p-2 cursor-pointer ${
+            idx === highlightedTrackIndex ? "bg-blue-100" : "hover:bg-blue-50"
+          }`}
           onMouseDown={() => {
   handleTrackChange(i, "primaryTitle", entry["Primary Title"] || "");
 let parsedTrackArtists = [];
@@ -1891,15 +1984,13 @@ if (Array.isArray(composerData)) {
     {/* Suggestions Dropdown */}
     {activeArtistInputIndex === `${i}-${artistIndex}` &&
       artistSuggestions.length > 0 && (
-        <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
+        <ul className="absolute z-10 mt-1 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
           {artistSuggestions.map((name, idx) => (
             <li
               key={idx}
-              className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
-  idx === highlightedAlbumIndex
-    ? "bg-blue-800 text-white font-semibold"
-    : "hover:bg-blue-700"
-}`}
+              className={`p-2 cursor-pointer ${
+                idx === highlightedArtistIndex ? "bg-blue-100" : ""
+              }`}
               onMouseDown={() => {
                 handleTrackArtistChange(i, artistIndex, name);
                 setArtistSuggestions([]);
@@ -1914,13 +2005,13 @@ if (Array.isArray(composerData)) {
   </React.Fragment>
 ))}
 
- <button
-  type="button"
-  onClick={() => addTrackArtist(i)}
-  className="text-blue-400 hover:text-blue-300 text-sm mt-1 self-start"
->
-  + Add Another Artist
-</button>
+  <button
+    type="button"
+    onClick={() => addTrackArtist(i)}
+    className="text-blue-600 hover:text-blue-800 text-sm mt-1 self-start"
+  >
+    + Add Another Artist
+  </button>
 </div>
 
 
@@ -2061,33 +2152,6 @@ const removeComposer = (trackIndex, composerIndex) => {
   setTracks(updated);
 };
                 
-function handleAlbumKeyDown(e) {
-  if (albumSuggestions.length > 0) {
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setHighlightedAlbumIndex((prev) =>
-        prev < albumSuggestions.length - 1 ? prev + 1 : 0
-      );
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setHighlightedAlbumIndex((prev) =>
-        prev > 0 ? prev - 1 : albumSuggestions.length - 1
-      );
-    } else if (e.key === "Enter") {
-      e.preventDefault();
-      if (highlightedAlbumIndex >= 0) {
-        const selected = albumSuggestions[highlightedAlbumIndex];
-        handleReleaseInfoChange("albumTitle", selected["Album Title"] || "");
-        setAlbumSuggestions([]);
-      }
-    } else if (e.key === "Escape") {
-      setAlbumSuggestions([]);
-      setHighlightedAlbumIndex(-1);
-    }
-  }
-}
-
-
 
 
 
@@ -2103,97 +2167,177 @@ function handleAlbumKeyDown(e) {
     🗑️
   </button>
 </div>
- // Bloque Composer modernizado
-return (
-  <div key={key} ref={(el) => (composerRefs.current[key] = el)} className="mb-6 pb-4 border-b border-gray-700">
-    <div className="flex items-center justify-between mb-2">
-      <h4 className="font-semibold text-blue-400">Composer {j + 1}</h4>
-      <button
-        title="Remove Composer"
-        onClick={() => removeComposer(i, j)}
-        className="text-gray-400 hover:text-red-500 text-xl"
-      >
-        🗑️
-      </button>
-    </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                     {/* Composer First Name */}
+{/* Composer First Name */}
+<div className="relative flex flex-col">
+  <label className="text-sm font-medium text-gray-700 mb-1">First Name</label>
+<input
+   disabled={isLocked}type="text"
+  value={composer.firstName || ""}
+  onChange={(e) => handleComposerChange(i, j, "firstName", e.target.value)}
+  onKeyDown={(e) => {
+    if (suggestions.length === 0) return;
 
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-      {/* First Name */}
-      <div className="relative flex flex-col">
-        <label className="text-sm font-medium text-gray-300 mb-1">First Name</label>
-        <input
-          disabled={isLocked}
-          type="text"
-          value={composer.firstName || ""}
-          onChange={(e) => handleComposerChange(i, j, "firstName", e.target.value)}
-          onKeyDown={(e) => handleNameKeyDown(e, i, j, "firstName")}
-          onBlur={() => setTimeout(() => setSuggestions([]), 200)}
-          placeholder="Start typing first name"
-          className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        {activeInput?.trackIndex === i && activeInput?.composerIndex === j && activeInput?.field === "firstName" && suggestions.length > 0 && (
-          <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
-            {suggestions.map((sugg, idx) => (
-              <li
-                key={idx}
-                className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${idx === highlightedIndex ? "bg-blue-800 text-white font-semibold" : "hover:bg-blue-700"}`}
-                onMouseDown={() => applyComposerSuggestion(i, j, sugg)}
-              >
-                {sugg.firstName} {sugg.middleName} {sugg.lastName}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightedIndex((prev) => (prev + 1) % suggestions.length);
+    }
 
-      {/* Middle Name */}
-      {renderInput("Middle Name", composer.middleName, (e) => handleComposerChange(i, j, "middleName", e.target.value))}
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightedIndex((prev) => (prev - 1 + suggestions.length) % suggestions.length);
+    }
 
-      {/* Last Name */}
-      <div className="relative flex flex-col">
-        <label className="text-sm font-medium text-gray-300 mb-1">Last Name(s)</label>
-        <input
-          disabled={isLocked}
-          type="text"
-          value={composer.lastName || ""}
-          onChange={(e) => handleComposerChange(i, j, "lastName", e.target.value)}
-          onKeyDown={(e) => handleNameKeyDown(e, i, j, "lastName")}
-          onBlur={() => setTimeout(() => setSuggestions([]), 200)}
-          placeholder="Start typing last name"
-          className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        {activeInput?.trackIndex === i && activeInput?.composerIndex === j && activeInput?.field === "lastName" && suggestions.length > 0 && (
-          <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
-            {suggestions.map((sugg, idx) => (
-              <li
-                key={idx}
-                className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${idx === highlightedIndex ? "bg-blue-800 text-white font-semibold" : "hover:bg-blue-700"}`}
-                onMouseDown={() => applyComposerSuggestion(i, j, sugg)}
-              >
-                {sugg.firstName} {sugg.middleName} {sugg.lastName}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </div>
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const selected = suggestions[highlightedIndex];
+      if (selected) {
+        const updated = [...tracks];
+        updated[i].composers[j] = {
+          ...updated[i].composers[j],
+          ...selected,
+        };
+        setTracks(updated);
+        setSuggestions([]);
+        setActiveInput(null);
+      }
+    }
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-      {renderInput("Composer Address", composer.composeraddress, (e) => handleComposerChange(i, j, "composeraddress", e.target.value))}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {renderInput("City", composer.composercity, (e) => handleComposerChange(i, j, "composercity", e.target.value))}
-        {renderInput("State", composer.composerstate, (e) => handleComposerChange(i, j, "composerstate", e.target.value))}
-        {renderInput("Zip", composer.composerzip, (e) => handleComposerChange(i, j, "composerzip", e.target.value))}
-      </div>
-    </div>
+    if (e.key === "Escape") {
+      setSuggestions([]);
+      setActiveInput(null);
+    }
+  }}
+  onBlur={() => setTimeout(() => setSuggestions([]), 200)}
+  placeholder="Start typing first name"
+  className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+/>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {renderInput("Composer IPI/CAE#", composer.ipi, (e) => handleComposerChange(i, j, "ipi", e.target.value))}
-      {renderInput("Composer PRO", composer.pro, (e) => handleComposerChange(i, j, "pro", e.target.value))}
-      {renderInput("Composer Share %", composer.split, (e) => handleComposerChange(i, j, "split", e.target.value))}
-      {renderInput("Writer Role Code (MLC)", composer.roleCode, (e) => handleComposerChange(i, j, "roleCode", e.target.value))}
-    </div>
-  
+  {/* 👇 Composer name suggestion dropdown */}
+  {activeInput &&
+    activeInput.trackIndex === i &&
+    activeInput.composerIndex === j &&
+    activeInput.field === "firstName" &&
+    suggestions.length > 0 && (
+      <ul className="absolute z-10 mt-10 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+  {suggestions.map((sugg, idx) => (
+    <li
+      key={idx}
+      className={`p-2 cursor-pointer hover:bg-blue-100 ${
+        idx === highlightedIndex ? "bg-blue-100 font-medium" : ""
+      }`}
+      onMouseDown={() => {
+        const updated = [...tracks];
+        updated[i].composers[j] = {
+          ...updated[i].composers[j],
+          ...sugg,
+        };
+        setTracks(updated);
+        setSuggestions([]);
+        setActiveInput(null);
+      }}
+    >
+      {sugg.firstName} {sugg.middleName} {sugg.lastName}
+    </li>
+  ))}
+</ul>
+    )}
+</div>
+
+                       {renderInput("Middle Name", composer.middleName, (e) => handleComposerChange(i, j, "middleName", e.target.value))}
+
+{/* Composer Last Name */}
+<div className="relative flex flex-col">
+  <label className="text-sm font-medium text-gray-700 mb-1">Last Name(s)</label>
+  <input
+   disabled={isLocked}type="text"
+  value={composer.lastName || ""}
+  onChange={(e) => handleComposerChange(i, j, "lastName", e.target.value)}
+  onKeyDown={(e) => {
+    if (suggestions.length === 0) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightedIndex((prev) => (prev + 1) % suggestions.length);
+    }
+
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightedIndex((prev) => (prev - 1 + suggestions.length) % suggestions.length);
+    }
+
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const selected = suggestions[highlightedIndex];
+      if (selected) {
+        const updated = [...tracks];
+        updated[i].composers[j] = {
+          ...updated[i].composers[j],
+          ...selected,
+        };
+        setTracks(updated);
+        setSuggestions([]);
+        setActiveInput(null);
+      }
+    }
+
+    if (e.key === "Escape") {
+      setSuggestions([]);
+      setActiveInput(null);
+    }
+  }}
+  onBlur={() => setTimeout(() => setSuggestions([]), 200)}
+  placeholder="Start typing last name"
+  className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+/>
+{activeInput &&
+  activeInput.trackIndex === i &&
+  activeInput.composerIndex === j &&
+  activeInput.field === "lastName" &&
+  suggestions.length > 0 && (
+    <ul className="absolute z-10 mt-10 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+      {suggestions.map((sugg, idx) => (
+        <li
+          key={idx}
+          className={`p-2 hover:bg-blue-100 cursor-pointer ${
+            highlightedIndex === idx ? "bg-blue-100" : ""
+          }`}
+          onMouseDown={() => {
+            const updated = [...tracks];
+            updated[i].composers[j] = {
+              ...updated[i].composers[j],
+              ...sugg,
+            };
+            setTracks(updated);
+            setSuggestions([]);
+          }}
+        >
+           {sugg.firstName} {sugg.middleName} {sugg.lastName}
+        </li>
+      ))}
+    </ul>
+)}
+
+</div>                     
+
+
+                      
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      {renderInput("Composer Address", composer.composeraddress, (e) => handleComposerChange(i, j, "composeraddress", e.target.value))}
+                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {renderInput("City", composer.composercity, (e) => handleComposerChange(i, j, "composercity", e.target.value))}
+                      {renderInput("State", composer.composerstate, (e) => handleComposerChange(i, j, "composerstate", e.target.value))}
+                      {renderInput("Zip", composer.composerzip, (e) => handleComposerChange(i, j, "composerzip", e.target.value))}
+                    </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {renderInput("Composer IPI/CAE#", composer.ipi, (e) => handleComposerChange(i, j, "ipi", e.target.value))}
+                      {renderInput("Composer PRO", composer.pro, (e) => handleComposerChange(i, j, "pro", e.target.value))}
+                      {renderInput("Composer Share %", composer.split, (e) => handleComposerChange(i, j, "split", e.target.value))}
+                      {renderInput("Writer Role Code (MLC)", composer.roleCode, (e) => handleComposerChange(i, j, "roleCode", e.target.value))}
+
 
 
 
@@ -2234,7 +2378,7 @@ return (
 {activePublisherField?.trackIndex === i &&
   activePublisherField?.composerIndex === j &&
   publisherSuggestions.length > 0 && (
-    <div className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
+    <div className="absolute top-full left-0 w-full z-10 bg-white border border-gray-300 rounded-md shadow-md max-h-48 overflow-y-auto">
       {publisherSuggestions.map((s, idx) => (
         <div
           key={idx}
