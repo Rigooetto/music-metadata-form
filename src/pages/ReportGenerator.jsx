@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getAuth } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 import axios from 'axios';
 
 const REPORT_OPTIONS = [
@@ -83,8 +84,24 @@ const handleGenerate = async () => {
     return;
   }
 
-  const name = user.displayName || "Usuario";
   const email = user.email || "";
+  let name = "Usuario"; // Valor por defecto
+
+  // 🔥 Obtenemos nombre desde Firestore
+  try {
+    const db = getFirestore();
+    const userDocRef = doc(db, "users", user.uid);
+    const userSnapshot = await getDoc(userDocRef);
+
+    if (userSnapshot.exists()) {
+      const userData = userSnapshot.data();
+      if (userData.name) {
+        name = userData.name;
+      }
+    }
+  } catch (err) {
+    console.warn("⚠️ No se pudo obtener el nombre desde Firestore:", err);
+  }
 
   const tracksToReport = selectedTracks.map((i) => tracks[i]);
   setGenerating(true);
@@ -97,7 +114,7 @@ const handleGenerate = async () => {
       const response = await axios.post(
         'https://rigoletto.app.n8n.cloud/webhook/reportGeneratorWebhook',
         {
-          user: { name, email }, // <-- aquí va el usuario
+          user: { name, email },
           reportType: type,
           tracks: tracksToReport,
         }
