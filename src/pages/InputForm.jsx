@@ -2097,6 +2097,33 @@ const removeComposer = (trackIndex, composerIndex) => {
   setTracks(updated);
 };
                 
+function handleAlbumKeyDown(e) {
+  if (albumSuggestions.length > 0) {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightedAlbumIndex((prev) =>
+        prev < albumSuggestions.length - 1 ? prev + 1 : 0
+      );
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightedAlbumIndex((prev) =>
+        prev > 0 ? prev - 1 : albumSuggestions.length - 1
+      );
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (highlightedAlbumIndex >= 0) {
+        const selected = albumSuggestions[highlightedAlbumIndex];
+        handleReleaseInfoChange("albumTitle", selected["Album Title"] || "");
+        setAlbumSuggestions([]);
+      }
+    } else if (e.key === "Escape") {
+      setAlbumSuggestions([]);
+      setHighlightedAlbumIndex(-1);
+    }
+  }
+}
+
+
 
 
 
