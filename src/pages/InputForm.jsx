@@ -1289,10 +1289,9 @@ function handleAlbumTitleChange(e) {
         Music Catalog Data Entry
       </h1>
 
-        <section className="mb-10 border-b border-blue-900 pb-6">
+<section className="mb-10 border-b border-blue-900 pb-6">
   <h2 className="text-xl font-semibold mb-4 text-blue-400">Release Information</h2>
   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-    
     {/* Type of Release */}
     <div className="flex flex-col">
       <label className="text-sm font-medium text-gray-200 mb-1">Type of Release</label>
@@ -1333,88 +1332,20 @@ function handleAlbumTitleChange(e) {
       {upcSuggestions.length > 0 && (
         <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
           {upcSuggestions.map((sugg, idx) => (
-          <li
-  key={idx}
-  className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
-    highlightedUpcIndex === idx
-      ? "bg-blue-800 text-white font-semibold"
-      : "hover:bg-blue-700"
-  }`}
-  onMouseDown={() => handleUpcSuggestionClick(sugg)}
->
-  {sugg["UPC"]} — {sugg["Album Title"] || "Sin título"}
-</li>
+            <li
+              key={idx}
+              className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
+                highlightedUpcIndex === idx
+                  ? "bg-blue-800 text-white font-semibold"
+                  : "hover:bg-blue-700"
+              }`}
+              onMouseDown={() => handleUpcSuggestionClick(sugg)}
+            >
+              {sugg["UPC"]} — {sugg["Album Title"] || "Sin título"}
+            </li>
           ))}
         </ul>
       )}
-    </div>
-
-    {/* Album Artist Input(s) */}
-    <div className="flex flex-col col-span-1 md:col-span-2">
-      <label className="text-sm font-medium text-gray-200 mb-1">{albumArtistLabel}(s)</label>
-      {Array.isArray(releaseInfo.albumArtist) &&
-        releaseInfo.albumArtist.map((artist, idx) => (
-          <React.Fragment key={idx}>
-            <div className="relative flex items-center mb-2">
-              <input
-                type="text"
-                value={artist}
-                placeholder={`Artist ${idx + 1}`}
-                onChange={(e) => handleAlbumArtistChangeHandler(e, idx)}
-                onKeyDown={(e) => handleArtistKeyDown(e, idx)}
-                onBlur={() => setTimeout(() => setArtistSuggestions([]), 150)}
-                className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              {releaseInfo.albumArtist.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeAlbumArtist(idx)}
-                  className="ml-2 text-red-400 hover:text-red-600 text-lg"
-                  title="Remove Artist"
-                >
-                  🗑️
-                </button>
-              )}
-            </div>
-            {activeArtistInputIndex === `album-${idx}` &&
-              artistSuggestions.length > 0 && (
-                <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
-                  {artistSuggestions.map((name, i) => (
-                    <li
-  key={idx}
-  className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
-  idx === highlightedAlbumIndex
-    ? "bg-blue-800 text-white font-semibold"
-    : "hover:bg-blue-700"
-}`}
-  onMouseDown={() => handleUpcSuggestionClick(sugg)}
->
-  {sugg["UPC"]} — {sugg["Album Title"] || "Sin título"}
-</li>
-                  ))}
-                </ul>
-              )}
-          </React.Fragment>
-        ))}
-      <button
-  type="button"
-  onClick={() => addTrackArtist(i)}
-  className="text-blue-400 hover:text-blue-300 text-sm mt-1 self-start"
->
-  + Add Another Artist
-</button>
-    </div>
-
-    {/* Digital Release Date */}
-    <div className="flex flex-col">
-      <label className="text-sm font-medium text-gray-200 mb-1">Digital Release Date</label>
-      <input
-        disabled={isLocked}
-        type="date"
-        value={releaseInfo.releaseDate || ""}
-        onChange={(e) => handleReleaseInfoChange("releaseDate", e.target.value)}
-        className="p-2 h-12 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
     </div>
 
     {/* Album Title */}
@@ -1434,38 +1365,71 @@ function handleAlbumTitleChange(e) {
         <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
           {albumSuggestions.map((sugg, idx) => (
             <li
-  key={idx}
-  className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
-  idx === highlightedAlbumIndex
-    ? "bg-blue-800 text-white font-semibold"
-    : "hover:bg-blue-700"
-}`}
-  onMouseDown={() => {
-  handleReleaseInfoChange("albumTitle", sugg["Album Title"] || "");
-  setAlbumSuggestions([]);
-}}
->
-  {sugg["UPC"]} — {sugg["Album Title"] || "Sin título"}
-</li>
+              key={idx}
+              className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
+                highlightedAlbumIndex === idx
+                  ? "bg-blue-800 text-white font-semibold"
+                  : "hover:bg-blue-700"
+              }`}
+              onMouseDown={() => {
+                handleReleaseInfoChange("albumTitle", sugg["Album Title"] || "");
+                setAlbumSuggestions([]);
+              }}
+            >
+              {sugg["UPC"]} — {sugg["Album Title"] || "Sin título"}
+            </li>
           ))}
         </ul>
       )}
     </div>
 
-    {/* Number of Tracks */}
+    {/* Digital Release Date */}
     <div className="flex flex-col">
-      <label className="text-sm font-medium text-gray-200 mb-1"># of Tracks</label>
+      <label className="text-sm font-medium text-gray-200 mb-1">Digital Release Date</label>
       <input
         disabled={isLocked}
-        type="number"
-        min="1"
-        step="1"
-        value={releaseInfo.numTracks || ""}
-        onChange={handleNumTracksChange}
-        placeholder="Enter number of tracks"
-        className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        type="date"
+        value={releaseInfo.releaseDate || ""}
+        onChange={(e) => handleReleaseInfoChange("releaseDate", e.target.value)}
+        className="p-2 h-12 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
     </div>
+ 
+
+   {/* Album Title */}
+<div className="relative flex flex-col">
+  <label className="text-sm font-medium text-gray-200 mb-1">Album Title</label>
+  <input
+    disabled={isLocked}
+    type="text"
+    value={releaseInfo.albumTitle || ""}
+    onChange={handleAlbumTitleChange}
+    onKeyDown={handleAlbumKeyDown}
+    onBlur={() => setTimeout(() => setAlbumSuggestions([]), 200)}
+    placeholder="Search by album title"
+    className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
+  {albumSuggestions.length > 0 && (
+    <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
+      {albumSuggestions.map((sugg, idx) => (
+        <li
+          key={idx}
+          className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
+            idx === highlightedAlbumIndex
+              ? "bg-blue-800 text-white font-semibold"
+              : "hover:bg-blue-700"
+          }`}
+          onMouseDown={() => {
+            handleReleaseInfoChange("albumTitle", sugg["Album Title"] || "");
+            setAlbumSuggestions([]);
+          }}
+        >
+          {sugg["UPC"]} — {sugg["Album Title"] || "Sin título"}
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
 
     {/* Distributor */}
     <div className="flex flex-col">
@@ -1498,7 +1462,7 @@ function handleAlbumTitleChange(e) {
         />
       )}
     </div>
-
+    
   </div>
 </section>
 
