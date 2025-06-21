@@ -1465,9 +1465,9 @@ const handleAlbumArtistChange = (index, value) => {
 </section>
 
         {tracks.map((track, i) => (
-          <details key={i} open={!track.collapsed} ref={(el) => (trackRefs.current[i] = el)} className="mb-6 border rounded-xl p-4 bg-gray-50">
+          <details key={i} open={!track.collapsed} ref={(el) => (trackRefs.current[i] = el)} className="mb-6 border border-blue-900 rounded-xl p-4 bg-[#111827] text-white shadow-lg">
             <summary
-  className="cursor-pointer font-semibold text-blue-700 mb-4 flex items-center justify-between"
+  className="cursor-pointer font-semibold text-blue-400 mb-4 flex items-center justify-between"
   onClick={(e) => {
     e.preventDefault();
     const updated = [...tracks];
@@ -1489,7 +1489,7 @@ const handleAlbumArtistChange = (index, value) => {
   </span>
 
   <span
-    className="text-gray-400 hover:text-red-600 text-xl ml-4 cursor-pointer"
+    className="text-gray-400 hover:text-red-500 text-xl ml-4 cursor-pointer"
     title="Delete Track"
     onClick={(e) => {
       e.stopPropagation();
