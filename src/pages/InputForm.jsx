@@ -1246,7 +1246,29 @@ const handleAlbumArtistChange = (index, value) => {
       : "Album Artist";
 
 
-  
+  function handleUpcKeyDown(e) {
+  if (upcSuggestions.length > 0) {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightedUpcIndex((prev) =>
+        prev < upcSuggestions.length - 1 ? prev + 1 : 0
+      );
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightedUpcIndex((prev) =>
+        prev > 0 ? prev - 1 : upcSuggestions.length - 1
+      );
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (highlightedUpcIndex >= 0) {
+        handleUpcSuggestionClick(upcSuggestions[highlightedUpcIndex]);
+      }
+    } else if (e.key === "Escape") {
+      setUpcSuggestions([]);
+      setHighlightedUpcIndex(-1);
+    }
+  }
+}
 
 
 
