@@ -1270,6 +1270,14 @@ const handleAlbumArtistChange = (index, value) => {
   }
 }
 
+function handleAlbumTitleChange(e) {
+  const value = e.target.value;
+  handleReleaseInfoChange("albumTitle", value);
+  setAlbumSearch(value); // (si lo usas para fetch en vivo)
+  setHighlightedAlbumIndex(0); // reinicia el índice de selección
+}
+
+
 
 
 
@@ -1375,7 +1383,7 @@ const handleAlbumArtistChange = (index, value) => {
                     <li
   key={idx}
   className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
-  idx === highlightedTrackIndex
+  idx === highlightedAlbumIndex
     ? "bg-blue-800 text-white font-semibold"
     : "hover:bg-blue-700"
 }`}
@@ -1428,11 +1436,14 @@ const handleAlbumArtistChange = (index, value) => {
             <li
   key={idx}
   className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
-  idx === highlightedTrackIndex
+  idx === highlightedAlbumIndex
     ? "bg-blue-800 text-white font-semibold"
     : "hover:bg-blue-700"
 }`}
-  onMouseDown={() => handleUpcSuggestionClick(sugg)}
+  onMouseDown={() => {
+  handleReleaseInfoChange("albumTitle", sugg["Album Title"] || "");
+  setAlbumSuggestions([]);
+}}
 >
   {sugg["UPC"]} — {sugg["Album Title"] || "Sin título"}
 </li>
@@ -1921,7 +1932,7 @@ if (Array.isArray(composerData)) {
             <li
               key={idx}
               className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
-  idx === highlightedTrackIndex
+  idx === highlightedAlbumIndex
     ? "bg-blue-800 text-white font-semibold"
     : "hover:bg-blue-700"
 }`}
