@@ -1253,19 +1253,19 @@ const handleAlbumArtistChange = (index, value) => {
 
 
   return (
+  <div className="bg-[#0f172a] min-h-screen px-4 py-8 md:px-10">
+    <div className="max-w-6xl mx-auto bg-[#111827] border border-blue-900 shadow-2xl rounded-xl p-8 text-white">
+      <h1 className="text-3xl font-bold mb-8 text-center text-blue-400">
+        Music Catalog Data Entry
+      </h1>
 
-
-    <div className="bg-gray-50 min-h-screen p-6">
-      <div className="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-8">
-        <h1 className="text-3xl font-bold mb-8 text-center text-blue-700">Music Catalog Data Entry</h1>
-
-        <section className="mb-10 border-b pb-6">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Release Information</h2>
+        <section className="mb-10 border-b border-blue-900 pb-6">
+  <h2 className="text-xl font-semibold mb-4 text-blue-400">Release Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col">
               <label className="text-sm font-medium text-gray-700 mb-1">Type of Release</label>
               <select
-                className="p-2 h-11 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="p-2 h-11 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={releaseInfo.typeOfRelease || ""}
                 onChange={(e) => handleReleaseInfoChange("typeOfRelease", e.target.value)}
               >
@@ -1320,7 +1320,7 @@ const handleAlbumArtistChange = (index, value) => {
   />
 
   {upcSuggestions.length > 0 && (
-    <ul className="absolute z-10 mt-12 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+    <ul className="absolute z-10 mt-12 bg-[#1e293b] border border-blue-700 rounded-md w-full shadow-xl max-h-48 overflow-auto text-white">
       {upcSuggestions.map((sugg, idx) => (
         <li
           key={idx}
@@ -1492,7 +1492,7 @@ const handleAlbumArtistChange = (index, value) => {
   />
 
   {albumSuggestions.length > 0 && (
-    <ul className="absolute z-10 mt-12 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+    <ul className="absolute z-10 mt-12 bg-[#1e293b] border border-blue-700 rounded-md w-full shadow-xl max-h-48 overflow-auto text-white">
       {albumSuggestions.map((sugg, idx) => (
         <li
           key={idx}
