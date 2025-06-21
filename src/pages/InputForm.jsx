@@ -2139,181 +2139,97 @@ function handleAlbumKeyDown(e) {
     🗑️
   </button>
 </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                     {/* Composer First Name */}
-{/* Composer First Name */}
-<div className="relative flex flex-col">
-  <label className="text-sm font-medium text-gray-700 mb-1">First Name</label>
-<input
-   disabled={isLocked}type="text"
-  value={composer.firstName || ""}
-  onChange={(e) => handleComposerChange(i, j, "firstName", e.target.value)}
-  onKeyDown={(e) => {
-    if (suggestions.length === 0) return;
+ // Bloque Composer modernizado
+return (
+  <div key={key} ref={(el) => (composerRefs.current[key] = el)} className="mb-6 pb-4 border-b border-gray-700">
+    <div className="flex items-center justify-between mb-2">
+      <h4 className="font-semibold text-blue-400">Composer {j + 1}</h4>
+      <button
+        title="Remove Composer"
+        onClick={() => removeComposer(i, j)}
+        className="text-gray-400 hover:text-red-500 text-xl"
+      >
+        🗑️
+      </button>
+    </div>
 
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setHighlightedIndex((prev) => (prev + 1) % suggestions.length);
-    }
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+      {/* First Name */}
+      <div className="relative flex flex-col">
+        <label className="text-sm font-medium text-gray-300 mb-1">First Name</label>
+        <input
+          disabled={isLocked}
+          type="text"
+          value={composer.firstName || ""}
+          onChange={(e) => handleComposerChange(i, j, "firstName", e.target.value)}
+          onKeyDown={(e) => handleNameKeyDown(e, i, j, "firstName")}
+          onBlur={() => setTimeout(() => setSuggestions([]), 200)}
+          placeholder="Start typing first name"
+          className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        {activeInput?.trackIndex === i && activeInput?.composerIndex === j && activeInput?.field === "firstName" && suggestions.length > 0 && (
+          <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
+            {suggestions.map((sugg, idx) => (
+              <li
+                key={idx}
+                className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${idx === highlightedIndex ? "bg-blue-800 text-white font-semibold" : "hover:bg-blue-700"}`}
+                onMouseDown={() => applyComposerSuggestion(i, j, sugg)}
+              >
+                {sugg.firstName} {sugg.middleName} {sugg.lastName}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
-    if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setHighlightedIndex((prev) => (prev - 1 + suggestions.length) % suggestions.length);
-    }
+      {/* Middle Name */}
+      {renderInput("Middle Name", composer.middleName, (e) => handleComposerChange(i, j, "middleName", e.target.value))}
 
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const selected = suggestions[highlightedIndex];
-      if (selected) {
-        const updated = [...tracks];
-        updated[i].composers[j] = {
-          ...updated[i].composers[j],
-          ...selected,
-        };
-        setTracks(updated);
-        setSuggestions([]);
-        setActiveInput(null);
-      }
-    }
+      {/* Last Name */}
+      <div className="relative flex flex-col">
+        <label className="text-sm font-medium text-gray-300 mb-1">Last Name(s)</label>
+        <input
+          disabled={isLocked}
+          type="text"
+          value={composer.lastName || ""}
+          onChange={(e) => handleComposerChange(i, j, "lastName", e.target.value)}
+          onKeyDown={(e) => handleNameKeyDown(e, i, j, "lastName")}
+          onBlur={() => setTimeout(() => setSuggestions([]), 200)}
+          placeholder="Start typing last name"
+          className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        {activeInput?.trackIndex === i && activeInput?.composerIndex === j && activeInput?.field === "lastName" && suggestions.length > 0 && (
+          <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
+            {suggestions.map((sugg, idx) => (
+              <li
+                key={idx}
+                className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${idx === highlightedIndex ? "bg-blue-800 text-white font-semibold" : "hover:bg-blue-700"}`}
+                onMouseDown={() => applyComposerSuggestion(i, j, sugg)}
+              >
+                {sugg.firstName} {sugg.middleName} {sugg.lastName}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
 
-    if (e.key === "Escape") {
-      setSuggestions([]);
-      setActiveInput(null);
-    }
-  }}
-  onBlur={() => setTimeout(() => setSuggestions([]), 200)}
-  placeholder="Start typing first name"
-  className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-/>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      {renderInput("Composer Address", composer.composeraddress, (e) => handleComposerChange(i, j, "composeraddress", e.target.value))}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {renderInput("City", composer.composercity, (e) => handleComposerChange(i, j, "composercity", e.target.value))}
+        {renderInput("State", composer.composerstate, (e) => handleComposerChange(i, j, "composerstate", e.target.value))}
+        {renderInput("Zip", composer.composerzip, (e) => handleComposerChange(i, j, "composerzip", e.target.value))}
+      </div>
+    </div>
 
-  {/* 👇 Composer name suggestion dropdown */}
-  {activeInput &&
-    activeInput.trackIndex === i &&
-    activeInput.composerIndex === j &&
-    activeInput.field === "firstName" &&
-    suggestions.length > 0 && (
-      <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
-  {suggestions.map((sugg, idx) => (
-    <li
-      key={idx}
-      className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
-  idx === highlightedTrackIndex
-    ? "bg-blue-800 text-white font-semibold"
-    : "hover:bg-blue-700"
-}`}
-      onMouseDown={() => {
-        const updated = [...tracks];
-        updated[i].composers[j] = {
-          ...updated[i].composers[j],
-          ...sugg,
-        };
-        setTracks(updated);
-        setSuggestions([]);
-        setActiveInput(null);
-      }}
-    >
-      {sugg.firstName} {sugg.middleName} {sugg.lastName}
-    </li>
-  ))}
-</ul>
-    )}
-</div>
-
-                       {renderInput("Middle Name", composer.middleName, (e) => handleComposerChange(i, j, "middleName", e.target.value))}
-
-{/* Composer Last Name */}
-<div className="relative flex flex-col">
-  <label className="text-sm font-medium text-gray-700 mb-1">Last Name(s)</label>
-  <input
-   disabled={isLocked}type="text"
-  value={composer.lastName || ""}
-  onChange={(e) => handleComposerChange(i, j, "lastName", e.target.value)}
-  onKeyDown={(e) => {
-    if (suggestions.length === 0) return;
-
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setHighlightedIndex((prev) => (prev + 1) % suggestions.length);
-    }
-
-    if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setHighlightedIndex((prev) => (prev - 1 + suggestions.length) % suggestions.length);
-    }
-
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const selected = suggestions[highlightedIndex];
-      if (selected) {
-        const updated = [...tracks];
-        updated[i].composers[j] = {
-          ...updated[i].composers[j],
-          ...selected,
-        };
-        setTracks(updated);
-        setSuggestions([]);
-        setActiveInput(null);
-      }
-    }
-
-    if (e.key === "Escape") {
-      setSuggestions([]);
-      setActiveInput(null);
-    }
-  }}
-  onBlur={() => setTimeout(() => setSuggestions([]), 200)}
-  placeholder="Start typing last name"
-  className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-/>
-{activeInput &&
-  activeInput.trackIndex === i &&
-  activeInput.composerIndex === j &&
-  activeInput.field === "lastName" &&
-  suggestions.length > 0 && (
-    <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
-      {suggestions.map((sugg, idx) => (
-        <li
-          key={idx}
-          className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
-  idx === highlightedTrackIndex
-    ? "bg-blue-800 text-white font-semibold"
-    : "hover:bg-blue-700"
-}`}
-          onMouseDown={() => {
-            const updated = [...tracks];
-            updated[i].composers[j] = {
-              ...updated[i].composers[j],
-              ...sugg,
-            };
-            setTracks(updated);
-            setSuggestions([]);
-          }}
-        >
-           {sugg.firstName} {sugg.middleName} {sugg.lastName}
-        </li>
-      ))}
-    </ul>
-)}
-
-</div>                     
-
-
-                      
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                      {renderInput("Composer Address", composer.composeraddress, (e) => handleComposerChange(i, j, "composeraddress", e.target.value))}
-                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {renderInput("City", composer.composercity, (e) => handleComposerChange(i, j, "composercity", e.target.value))}
-                      {renderInput("State", composer.composerstate, (e) => handleComposerChange(i, j, "composerstate", e.target.value))}
-                      {renderInput("Zip", composer.composerzip, (e) => handleComposerChange(i, j, "composerzip", e.target.value))}
-                    </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {renderInput("Composer IPI/CAE#", composer.ipi, (e) => handleComposerChange(i, j, "ipi", e.target.value))}
-                      {renderInput("Composer PRO", composer.pro, (e) => handleComposerChange(i, j, "pro", e.target.value))}
-                      {renderInput("Composer Share %", composer.split, (e) => handleComposerChange(i, j, "split", e.target.value))}
-                      {renderInput("Writer Role Code (MLC)", composer.roleCode, (e) => handleComposerChange(i, j, "roleCode", e.target.value))}
-
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {renderInput("Composer IPI/CAE#", composer.ipi, (e) => handleComposerChange(i, j, "ipi", e.target.value))}
+      {renderInput("Composer PRO", composer.pro, (e) => handleComposerChange(i, j, "pro", e.target.value))}
+      {renderInput("Composer Share %", composer.split, (e) => handleComposerChange(i, j, "split", e.target.value))}
+      {renderInput("Writer Role Code (MLC)", composer.roleCode, (e) => handleComposerChange(i, j, "roleCode", e.target.value))}
+    </div>
+  
 
 
 
