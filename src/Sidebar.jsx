@@ -1,4 +1,3 @@
-
 // src/Sidebar.jsx
 import React, { useEffect, useState } from 'react';
 import { signOut } from 'firebase/auth';
@@ -16,6 +15,7 @@ export default function Sidebar() {
   const [displayName, setDisplayName] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
   const [expanded, setExpanded] = useState(true);
+  const [activeTab, setActiveTab] = useState('input'); // nuevo estado para tab activo
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -101,25 +101,53 @@ export default function Sidebar() {
       </aside>
 
       {/* Mobile BottomNav */}
-      <nav className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-[#1c1f26] text-gray-300 flex md:hidden items-center justify-between gap-6 px-6 py-3 rounded-2xl shadow-xl z-50">
-        <NavIcon icon={<ClipboardList size={20} />} href="/input" />
-        <NavIcon icon={<Plus size={24} />} center href="/input" />
-        <NavIcon icon={<Bell size={20} />} />
-        <NavIcon icon={<User size={20} />} />
-      </nav>
+      <div className="fixed bottom-0 w-full bg-white border-t shadow-md flex justify-around py-2 md:hidden z-50">
+        <NavIcon
+          icon={<ClipboardList size={20} />}
+          label="Input"
+          active={activeTab === 'input'}
+          onClick={() => {
+            setActiveTab('input');
+            navigate('/input');
+          }}
+        />
+        <NavIcon
+          icon={<Plus size={24} />}
+          center
+          onClick={() => {
+            setActiveTab('add');
+            navigate('/input');
+          }}
+        />
+        <NavIcon
+          icon={<Bell size={20} />}
+          label="Alerts"
+          active={activeTab === 'alerts'}
+          onClick={() => setActiveTab('alerts')}
+        />
+        <NavIcon
+          icon={<User size={20} />}
+          label="User"
+          active={activeTab === 'user'}
+          onClick={() => setActiveTab('user')}
+        />
+      </div>
     </>
   );
 }
 
-function NavIcon({ icon, href = '#', center = false }) {
+function NavIcon({ icon, label, href = '#', center = false, onClick, active = false }) {
   return (
-    <a
-      href={href}
-      className={`p-2 rounded-full flex items-center justify-center transition-all ${
-        center ? 'bg-blue-500 text-white w-12 h-12 shadow-lg' : 'hover:text-white'
-      }`}
+    <button
+      onClick={onClick}
+      className={`flex flex-col items-center justify-center transition-all ${
+        center
+          ? 'bg-blue-600 text-white w-12 h-12 rounded-full -mt-6 shadow-lg'
+          : 'text-xs text-gray-600'
+      } ${active && !center ? 'text-blue-600 font-semibold' : ''}`}
     >
       {icon}
-    </a>
+      {!center && label && <span className="text-[10px] mt-0.5">{label}</span>}
+    </button>
   );
 }
