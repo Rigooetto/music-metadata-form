@@ -21,6 +21,7 @@ export default function Sidebar() {
   const [user] = useAuthState(auth);
   const [displayName, setDisplayName] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
+  const [expanded, setExpanded] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -50,12 +51,12 @@ export default function Sidebar() {
     return (
       <a
         href={href}
-        className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
+        className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all ${
           isActive ? `${highlight} bg-blue-500 font-semibold` : 'text-gray-300 hover:bg-[#2a2e39] hover:text-white'
         }`}
       >
-        <Icon className="w-4 h-4" />
-        <span className="text-sm">{label}</span>
+        <Icon className="w-5 h-5" />
+        {expanded && <span className="text-sm">{label}</span>}
       </a>
     );
   };
@@ -63,12 +64,14 @@ export default function Sidebar() {
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex w-64 bg-[#1c1f26] text-white flex-col justify-between min-h-screen px-4 py-6 rounded-r-2xl shadow-xl">
+      <aside className={`hidden md:flex ${expanded ? 'w-64' : 'w-20'} bg-[#1c1f26] text-white flex-col justify-between min-h-screen px-4 py-6 rounded-r-2xl shadow-xl transition-all duration-300`}>
         <div>
-          <div className="flex items-center gap-3 mb-10 text-blue-400 text-lg font-semibold">
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="mb-6 focus:outline-none text-blue-400 hover:text-white"
+          >
             <ShieldCheck className="w-6 h-6" />
-            LabelMind.ai
-          </div>
+          </button>
 
           <nav className="space-y-2">
             {navLink('/input', 'Input Form', ClipboardList)}
@@ -77,7 +80,7 @@ export default function Sidebar() {
 
           {isAdmin && (
             <div className="mt-6">
-              <h3 className="text-xs uppercase text-gray-400 tracking-wide mb-2">Admin</h3>
+              {expanded && <h3 className="text-xs uppercase text-gray-400 tracking-wide mb-2">Admin</h3>}
               <nav className="space-y-2">
                 {navLink('/admin', 'User Approval', UserCircle, 'text-yellow-400')}
                 {navLink('/admin-dashboard', 'Admin Dashboard', LayoutDashboard, 'text-yellow-400')}
@@ -87,10 +90,10 @@ export default function Sidebar() {
         </div>
 
         <div className="space-y-2">
-          <div className="text-gray-400 text-sm">{displayName}</div>
+          {expanded && <div className="text-gray-400 text-sm">{displayName}</div>}
           <button onClick={handleLogout} className="flex items-center gap-2 text-blue-400 hover:text-white transition">
             <LogOut size={18} />
-            Logout
+            {expanded && <span>Logout</span>}
           </button>
         </div>
       </aside>
