@@ -1388,7 +1388,7 @@ const handleAlbumArtistChange = (index, value) => {
           }
         }}
         onBlur={() => setTimeout(() => setArtistSuggestions([]), 150)}
-        className="p-2 border border-blue-700 rounded-md w-full"
+        className="p-2 bg-[#0f172a] border border-blue-700 rounded-md w-full"
       />
 
       {/* Trashcan to remove artist */}
@@ -1450,7 +1450,7 @@ const handleAlbumArtistChange = (index, value) => {
      disabled={isLocked}type="date"
     value={releaseInfo.releaseDate || ""}
     onChange={(e) => handleReleaseInfoChange("releaseDate", e.target.value)}
-    className="p-2 h-12 border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    className="p-2 h-12 bg-[#0f172a] border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
   />
 </div>
             
@@ -1488,7 +1488,7 @@ const handleAlbumArtistChange = (index, value) => {
     }}
     onBlur={() => setTimeout(() => setAlbumSuggestions([]), 200)}
     placeholder="Search by album title"
-    className="p-2 border border-blue-700 rounded-md w-full"
+    className="p-2 bg-[#0f172a] border border-blue-700 rounded-md w-full"
   />
 
   {albumSuggestions.length > 0 && (
@@ -1538,7 +1538,7 @@ const handleAlbumArtistChange = (index, value) => {
     value={releaseInfo.distributor || ""}
     onChange={(e) => handleReleaseInfoChange("distributor", e.target.value)}
     placeholder="Enter Distributor"
-    className="p-2 h-12 border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    className="p-2 h-12 bg-[#0f172a] border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
   />
 
   </div>
@@ -1959,7 +1959,7 @@ if (Array.isArray(composerData)) {
           }
         }}
         onBlur={() => setTimeout(() => setArtistSuggestions([]), 150)}
-        className="p-2 border border-blue-700 rounded-md w-full"
+        className="p-2 bg-[#0f172a] border border-blue-700 rounded-md w-full"
       />
 
       {/* Remove button */}
@@ -2485,7 +2485,7 @@ const removeComposer = (trackIndex, composerIndex) => {
   <button
     type="button"
     onClick={handleClearForm}
-    className="bg-gray-200 hover:bg-gray-300 text-gray-200 px-6 py-3 rounded-md shadow text-md font-semibold"
+    className="bg-gray-200 hover:bg-gray-300 text-gray-900 px-6 py-3 rounded-md shadow text-md font-semibold"
   >
     Clear Form
   </button>
