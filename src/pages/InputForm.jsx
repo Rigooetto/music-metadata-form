@@ -298,7 +298,7 @@ const maybeAutofillPLine = (i, label, releaseDate) => {
    // default to locked after DB load
   
 
-  const [activeInput, setActiveInput] = useState(null); // to know which input className="p-2 rounded-md shadow-sm " is triggering suggestions
+  const [activeInput, setActiveInput] = useState(null); // to know which input is triggering suggestions
 
 const [artistSuggestions, setArtistSuggestions] = useState([]);
 const [activeArtistInputIndex, setActiveArtistInputIndex] = useState(null);
@@ -1218,14 +1218,14 @@ const handleAlbumArtistChange = (index, value) => {
 
   return (
 
-      <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex flex-col">
-        <label className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <div className="flex flex-col">
+        <label className="text-sm font-medium text-gray-200 mb-1">{label}</label>
         <input
            disabled={isLocked}type="text"
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
     );
@@ -1246,266 +1246,325 @@ const handleAlbumArtistChange = (index, value) => {
       : "Album Artist";
 
 
-  function handleUpcKeyDown(e) {
-  if (upcSuggestions.length > 0) {
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setHighlightedUpcIndex((prev) =>
-        prev < upcSuggestions.length - 1 ? prev + 1 : 0
-      );
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setHighlightedUpcIndex((prev) =>
-        prev > 0 ? prev - 1 : upcSuggestions.length - 1
-      );
-    } else if (e.key === "Enter") {
-      e.preventDefault();
-      if (highlightedUpcIndex >= 0) {
-        handleUpcSuggestionClick(upcSuggestions[highlightedUpcIndex]);
-      }
-    } else if (e.key === "Escape") {
-      setUpcSuggestions([]);
-      setHighlightedUpcIndex(-1);
-    }
-  }
-}
-
-function handleAlbumTitleChange(e) {
-  const value = e.target.value;
-  handleReleaseInfoChange("albumTitle", value);
-  setAlbumSearch(value); // (si lo usas para fetch en vivo)
-  setHighlightedAlbumIndex(0); // reinicia el índice de selección
-}
-
+  
 
 
 
 
 
   return (
-  <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#0f172a] min-h-screen px-4 py-8 md:px-10">
-    <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 max-w-6xl mx-auto bg-[#111827] border border-blue-900 shadow-2xl rounded-xl p-8 text-white">
-      <h1 className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-3xl font-bold mb-8 text-center text-blue-400">
+  <div className="bg-[#0f172a] min-h-screen px-4 py-8 md:px-10">
+    <div className="max-w-6xl mx-auto bg-[#111827] border border-blue-900 shadow-2xl rounded-xl p-8 text-white">
+      <h1 className="text-3xl font-bold mb-8 text-center text-blue-400">
         Music Catalog Data Entry
       </h1>
 
-        <section className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-10 border-b border-blue-900 pb-6">
-  <h2 className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xl font-semibold mb-4 text-blue-400"><span className="text-blue-400">Release Information</span></h2>
-  <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 grid grid-cols-1 md:grid-cols-2 gap-6">
-    
-    {/* Type of Release */}
-    <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex flex-col">
-      <label className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-200 mb-1">Type of Release</label>
-      <select
-        className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        value={releaseInfo.typeOfRelease || ""}
-        onChange={(e) => handleReleaseInfoChange("typeOfRelease", e.target.value)}
-      >
-        <option value="" disabled>Select type</option>
-        <option value="Single">Single</option>
-        <option value="Album">Album</option>
-        <option value="EP">EP</option>
-      </select>
-    </div>
-
-    {/* UPC Input with Suggestions */}
-    <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 relative flex flex-col">
-      <label className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-200 mb-1">UPC</label>
-      <input
-        disabled={isLocked}
-        type="text"
-        value={releaseInfo.upc || ""}
-        onChange={(e) => {
-          const value = e.target.value.replace(/\D/g, "");
-          handleReleaseInfoChange("upc", value);
-          const matches = catalogDB.filter(entry =>
-            entry?.["UPC"]?.toString().startsWith(value)
-          );
-          const unique = [...new Map(matches.map(item => [item["UPC"], item])).values()];
-          setUpcSuggestions(unique);
-          setHighlightedUpcIndex(-1);
-        }}
-        onKeyDown={handleUpcKeyDown}
-        onBlur={() => setTimeout(() => setUpcSuggestions([]), 200)}
-        placeholder="Buscar por UPC"
-        className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 border border-blue-700 bg-[#0f172a] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      {upcSuggestions.length > 0 && (
-        <ul className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
-          {upcSuggestions.map((sugg, idx) => (
-          <li
-  key={idx}
-  className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
-    highlightedUpcIndex === idx
-      ? "bg-blue-800 text-white font-semibold"
-      : "hover:bg-blue-700"
-  }`}
-  onMouseDown={() => handleUpcSuggestionClick(sugg)}
->
-  {sugg["UPC"]} — {sugg["Album Title"] || "Sin título"}
-</li>
-          ))}
-        </ul>
-      )}
-    </div>
-
-    {/* Album Artist Input(s) */}
-    <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex flex-col col-span-1 md:col-span-2">
-      <label className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-200 mb-1">{albumArtistLabel}(s)</label>
-      {Array.isArray(releaseInfo.albumArtist) &&
-        releaseInfo.albumArtist.map((artist, idx) => (
-          <React.Fragment key={idx}>
-            <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 relative flex items-center mb-2">
-              <input
-                type="text"
-                value={artist}
-                placeholder={`Artist ${idx + 1}`}
-                onChange={(e) => handleAlbumArtistChangeHandler(e, idx)}
-                onKeyDown={(e) => handleArtistKeyDown(e, idx)}
-                onBlur={() => setTimeout(() => setArtistSuggestions([]), 150)}
-                className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              {releaseInfo.albumArtist.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeAlbumArtist(idx)}
-                  className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ml-2 text-red-400 hover:text-red-600 text-lg"
-                  title="Remove Artist"
-                >
-                  🗑️
-                </button>
-              )}
+        <section className="mb-10 border-b border-blue-900 pb-6">
+  <h2 className="text-xl font-semibold mb-4 text-blue-400">Release Information</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col">
+              <label className="text-sm font-medium text-gray-200 mb-1">Type of Release</label>
+              <select
+                className="p-2 h-11 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={releaseInfo.typeOfRelease || ""}
+                onChange={(e) => handleReleaseInfoChange("typeOfRelease", e.target.value)}
+              >
+                <option value="" disabled>Select type</option>
+                <option value="Single">Single</option>
+                <option value="Album">Album</option>
+                <option value="EP">EP</option>
+              </select>
+            
             </div>
-            {activeArtistInputIndex === `album-${idx}` &&
-              artistSuggestions.length > 0 && (
-                <ul className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
-                  {artistSuggestions.map((name, i) => (
-                    <li
-  key={idx}
-  className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
-  idx === highlightedAlbumIndex
-    ? "bg-blue-800 text-white font-semibold"
-    : "hover:bg-blue-700"
-}`}
-  onMouseDown={() => handleUpcSuggestionClick(sugg)}
->
-  {sugg["UPC"]} — {sugg["Album Title"] || "Sin título"}
-</li>
-                  ))}
-                </ul>
-              )}
-          </React.Fragment>
-        ))}
-      <button
-  type="button"
-  onClick={() => addTrackArtist(i)}
-  className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-blue-400 hover:text-blue-300 text-sm mt-1 self-start"
->
-  + Add Another Artist
-</button>
-    </div>
+            <div className="relative flex flex-col">
+  <label className="text-sm font-medium text-gray-200 mb-1">UPC</label>
+  <input
+    disabled={isLocked}
+    type="text"
+    value={releaseInfo.upc || ""}
+    onChange={(e) => {
+      const value = e.target.value.replace(/\D/g, "");
+      handleReleaseInfoChange("upc", value);
 
-    {/* Digital Release Date */}
-    <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex flex-col">
-      <label className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-200 mb-1">Digital Release Date</label>
-      <input
-        disabled={isLocked}
-        type="date"
-        value={releaseInfo.releaseDate || ""}
-        onChange={(e) => handleReleaseInfoChange("releaseDate", e.target.value)}
-        className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 h-12 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
+      const matches = catalogDB.filter(entry =>
+        entry?.["UPC"]?.toString().startsWith(value)
+      );
+      const unique = [...new Map(matches.map(item => [item["UPC"], item])).values()];
+      setUpcSuggestions(unique);
+      setHighlightedUpcIndex(-1);
+    }}
+    onKeyDown={(e) => {
+      if (upcSuggestions.length > 0) {
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          setHighlightedUpcIndex(prev =>
+            prev < upcSuggestions.length - 1 ? prev + 1 : prev
+          );
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          setHighlightedUpcIndex(prev => (prev > 0 ? prev - 1 : 0));
+        } else if (e.key === "Enter") {
+          e.preventDefault();
+          if (highlightedUpcIndex >= 0) {
+            handleUpcSuggestionClick(upcSuggestions[highlightedUpcIndex]);
+          }
+        } else if (e.key === "Escape") {
+          setUpcSuggestions([]);
+          setHighlightedUpcIndex(-1);
+        }
+      }
+    }}
+    onBlur={() => setTimeout(() => setUpcSuggestions([]), 200)}
+    placeholder="Buscar por UPC"
+    className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
 
-    {/* Album Title */}
-    <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 relative flex flex-col">
-      <label className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-200 mb-1">Album Title</label>
+  {upcSuggestions.length > 0 && (
+    <ul className="absolute z-10 mt-12 bg-[#1e293b] border border-blue-700 rounded-md w-full shadow-xl max-h-48 overflow-auto text-white">
+      {upcSuggestions.map((sugg, idx) => (
+        <li
+          key={idx}
+          className={`p-2 hover:bg-blue-100 cursor-pointer ${
+            highlightedUpcIndex === idx ? "bg-blue-100" : ""
+          }`}
+          onMouseDown={() => handleUpcSuggestionClick(sugg)}
+        >
+          {sugg["UPC"]} — {sugg["Album Title"] || "Sin título"}
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
+<div className="flex flex-col">
+  <label className="text-sm font-medium text-gray-200 mb-1">{albumArtistLabel}(s)</label>
+{Array.isArray(releaseInfo.albumArtist) &&
+  releaseInfo.albumArtist.map((artist, idx) => (
+  <React.Fragment key={idx}>
+    <div className="relative flex items-center mb-2">
       <input
-        disabled={isLocked}
         type="text"
-        value={releaseInfo.albumTitle || ""}
-        onChange={handleAlbumTitleChange}
-        onKeyDown={handleAlbumKeyDown}
-        onBlur={() => setTimeout(() => setAlbumSuggestions([]), 200)}
-        placeholder="Search by album title"
-        className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+        value={artist}
+        placeholder={`Artist ${idx + 1}`}
+        onChange={(e) => {
+          const value = e.target.value;
+          handleAlbumArtistChange(idx, value);
+
+          if (value.length > 0) {
+            const matches = artistDB
+              .map((a) => a["Artist Name"])
+              .filter((name) =>
+                String(name || "").toLowerCase().startsWith(String(value || "").toLowerCase())
+              );
+            setArtistSuggestions(matches);
+            setHighlightedArtistIndex(0);
+            setActiveArtistInputIndex(`album-${idx}`);
+          } else {
+            setArtistSuggestions([]);
+            setActiveArtistInputIndex(null);
+          }
+        }}
+        onKeyDown={(e) => {
+          if (artistSuggestions.length > 0) {
+            if (e.key === "ArrowDown") {
+              e.preventDefault();
+              setHighlightedArtistIndex((prev) =>
+                prev < artistSuggestions.length - 1 ? prev + 1 : 0
+              );
+            } else if (e.key === "ArrowUp") {
+              e.preventDefault();
+              setHighlightedArtistIndex((prev) =>
+                prev > 0 ? prev - 1 : artistSuggestions.length - 1
+              );
+            } else if (e.key === "Enter") {
+              e.preventDefault();
+              const selected = artistSuggestions[highlightedArtistIndex];
+              if (selected) {
+                handleAlbumArtistChange(idx, selected);
+                setArtistSuggestions([]);
+                setActiveArtistInputIndex(null);
+              }
+            }
+          }
+        }}
+        onBlur={() => setTimeout(() => setArtistSuggestions([]), 150)}
+        className="p-2 border border-gray-300 rounded-md w-full"
       />
-      {albumSuggestions.length > 0 && (
-        <ul className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
-          {albumSuggestions.map((sugg, idx) => (
+
+      {/* Trashcan to remove artist */}
+      {releaseInfo.albumArtist.length > 1 && (
+        <button
+          type="button"
+          onClick={() => {
+            const updated = [...releaseInfo.albumArtist];
+            updated.splice(idx, 1);
+            setReleaseInfo((prev) => ({
+              ...prev,
+              albumArtist: updated,
+            }));
+          }}
+          className="ml-2 text-red-500 hover:text-red-700 text-lg"
+          title="Remove Artist"
+        >
+          🗑️
+        </button>
+      )}
+    </div>
+
+    {/* Suggestions Dropdown */}
+    {activeArtistInputIndex === `album-${idx}` &&
+      artistSuggestions.length > 0 && (
+        <ul className="absolute z-10 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+          {artistSuggestions.map((name, i) => (
             <li
-  key={idx}
-  className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
-  idx === highlightedAlbumIndex
-    ? "bg-blue-800 text-white font-semibold"
-    : "hover:bg-blue-700"
-}`}
-  onMouseDown={() => {
-  handleReleaseInfoChange("albumTitle", sugg["Album Title"] || "");
-  setAlbumSuggestions([]);
-}}
->
-  {sugg["UPC"]} — {sugg["Album Title"] || "Sin título"}
-</li>
+              key={i}
+              className={`p-2 cursor-pointer ${
+                highlightedArtistIndex === i ? "bg-blue-100" : ""
+              }`}
+              onMouseDown={() => {
+                handleAlbumArtistChange(idx, name);
+                setArtistSuggestions([]);
+                setActiveArtistInputIndex(null);
+              }}
+            >
+              {name}
+            </li>
           ))}
         </ul>
       )}
-    </div>
+  </React.Fragment>
+))}
+  <button
+    type="button"
+    className="text-blue-600 hover:text-blue-800 text-sm mt-1 self-start"
+    onClick={addAlbumArtist}
+  >
+    + Add Another Artist
+  </button>
+</div>
 
-    {/* Number of Tracks */}
-    <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex flex-col">
-      <label className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-200 mb-1"># of Tracks</label>
-      <input
-        disabled={isLocked}
-        type="number"
-        min="1"
-        step="1"
-        value={releaseInfo.numTracks || ""}
-        onChange={handleNumTracksChange}
-        placeholder="Enter number of tracks"
-        className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
 
-    {/* Distributor */}
-    <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex flex-col">
-      <label className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-200 mb-1">Distributor</label>
-      <input
-        disabled={isLocked}
-        type="text"
-        value={releaseInfo.distributor || ""}
-        onChange={(e) => handleReleaseInfoChange("distributor", e.target.value)}
-        placeholder="Enter Distributor"
-        className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 h-12 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
+<div className="flex flex-col">
+  <label className="text-sm font-medium text-gray-200 mb-1">Digital Release Date</label>
+  <input
+     disabled={isLocked}type="date"
+    value={releaseInfo.releaseDate || ""}
+    onChange={(e) => handleReleaseInfoChange("releaseDate", e.target.value)}
+    className="p-2 h-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+  />
+</div>
+            
+<div className="relative flex flex-col">
+  <label className="text-sm font-medium text-gray-200 mb-1">Album Title</label>
+  <input
+    disabled={isLocked}
+    type="text"
+    value={releaseInfo.albumTitle || ""}
+    onChange={(e) => {
+      const value = e.target.value;
+      handleReleaseInfoChange("albumTitle", value);
+      setAlbumSearch(value);
+      setHighlightedAlbumIndex(0); // 👈 reinicia selección al escribir
+    }}
+    onKeyDown={(e) => {
+      if (albumSuggestions.length > 0) {
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          setHighlightedAlbumIndex((prev) =>
+            prev < albumSuggestions.length - 1 ? prev + 1 : prev
+          );
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          setHighlightedAlbumIndex((prev) =>
+            prev > 0 ? prev - 1 : 0
+          );
+        } else if (e.key === "Enter") {
+          e.preventDefault();
+          if (highlightedAlbumIndex >= 0) {
+            handleAlbumSuggestionClick(albumSuggestions[highlightedAlbumIndex]);
+          }
+        }
+      }
+    }}
+    onBlur={() => setTimeout(() => setAlbumSuggestions([]), 200)}
+    placeholder="Search by album title"
+    className="p-2 border border-gray-300 rounded-md w-full"
+  />
 
-    {/* Upload Cover Art */}
-    <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex flex-col">
-      <label className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-200 mb-1">Upload Cover Art</label>
-      <input
-        disabled={isLocked}
-        type="file"
-        accept="image/*"
-        onChange={(e) => handleReleaseInfoChange("coverArt", e.target.files[0])}
-        className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 h-12 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      {releaseInfo.coverArtPreview && (
-        <img
-          src={releaseInfo.coverArtPreview}
-          alt="Cover Preview"
-          className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2 w-24 h-24 object-cover rounded shadow"
-        />
-      )}
-    </div>
+  {albumSuggestions.length > 0 && (
+    <ul className="absolute z-10 mt-12 bg-[#1e293b] border border-blue-700 rounded-md w-full shadow-xl max-h-48 overflow-auto text-white">
+      {albumSuggestions.map((sugg, idx) => (
+        <li
+          key={idx}
+          className={`p-2 cursor-pointer ${
+            highlightedAlbumIndex === idx ? "bg-blue-100" : "hover:bg-blue-50"
+          }`}
+          onMouseDown={() => handleAlbumSuggestionClick(sugg)}
+          onMouseEnter={() => setHighlightedAlbumIndex(idx)} // 👈 esto permite resaltar con el mouse
+        >
+          {sugg["Album Title"] || "Unknown Album"} — {sugg["Album Artist"] || "Unknown Artist"}
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+     
+
+  <div className="flex flex-col">
+    <label className="text-sm font-medium text-gray-200 mb-1"># of Tracks</label>
+    <input
+       disabled={isLocked}type="number"
+      min="1"
+      step="1"
+      value={releaseInfo.numTracks || ""}
+      onChange={(e) => {
+        const value = e.target.value;
+        if (/^\d*$/.test(value)) {
+          handleReleaseInfoChange("numTracks", value);
+        }
+      }}
+      placeholder="Enter number of tracks"
+      className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+  </div>
+
+
+
+
+           <div className="flex flex-col">
+  <label className="text-sm font-medium text-gray-200 mb-1">Distributor</label>
+  <input
+     disabled={isLocked}type="text"
+    value={releaseInfo.distributor || ""}
+    onChange={(e) => handleReleaseInfoChange("distributor", e.target.value)}
+    placeholder="Enter Distributor"
+    className="p-2 h-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+  />
 
   </div>
-</section>
+           <div className="flex flex-col">
+  <label className="text-sm font-medium text-gray-200 mb-1">Upload Cover Art</label>
+  <input
+     disabled={isLocked}type="file"
+    accept="image/*"
+    onChange={(e) => handleReleaseInfoChange("coverArt", e.target.files[0])}
+    className="p-2 h-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+  />
+  {releaseInfo.coverArtPreview && (
+    <img
+      src={releaseInfo.coverArtPreview}
+      alt="Cover Preview"
+      className="mt-2 w-24 h-24 object-cover rounded shadow"
+    />
+  )}
+</div>
+          </div>
+        </section>
 
         {tracks.map((track, i) => (
-          <details key={i} open={!track.collapsed} ref={(el) => (trackRefs.current[i] = el)} className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-6 border border-blue-900 rounded-xl p-4 bg-[#111827] text-white shadow-lg">
+          <details key={i} open={!track.collapsed} ref={(el) => (trackRefs.current[i] = el)} className="mb-6 border rounded-xl p-4 bg-gray-50">
             <summary
-  className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer font-semibold text-blue-400 mb-4 flex items-center justify-between"
+  className="cursor-pointer font-semibold text-blue-700 mb-4 flex items-center justify-between"
   onClick={(e) => {
     e.preventDefault();
     const updated = [...tracks];
@@ -1516,18 +1575,18 @@ function handleAlbumTitleChange(e) {
 
   }}
 >
-<div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center justify-between w-full">
+<div className="flex items-center justify-between w-full">
   <span>
     Track {i + 1} Information
     {tracks[i]?.primaryTitle && (
-      <span className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-500 italic text-sm ml-2">
+      <span className="text-gray-500 italic text-sm ml-2">
         – “{tracks[i].primaryTitle}”
       </span>
     )}
   </span>
 
   <span
-    className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400 hover:text-red-500 text-xl ml-4 cursor-pointer"
+    className="text-gray-400 hover:text-red-600 text-xl ml-4 cursor-pointer"
     title="Delete Track"
     onClick={(e) => {
       e.stopPropagation();
@@ -1543,11 +1602,11 @@ function handleAlbumTitleChange(e) {
 
 
            
-            <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
 {/* Primary Title */}
-<div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 relative flex flex-col">
-  <label className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-700 mb-1">Primary Title</label>
+<div className="relative flex flex-col">
+  <label className="text-sm font-medium text-gray-200 mb-1">Primary Title</label>
 <input
    disabled={isLocked}type="text"
   value={track.primaryTitle || ""}
@@ -1712,19 +1771,17 @@ toast.success("🎼 Composer & Publisher Info Loaded", {
   }}
   onBlur={() => setTimeout(() => setTrackSuggestions([]), 150)}
   placeholder="Start typing primary title"
-  className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+  className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
 />
 
   {trackSuggestions.length > 0 && (
-    <ul className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
+    <ul className="absolute z-10 mt-10 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
       {trackSuggestions.map((entry, idx) => (
         <li
           key={idx}
-          className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
-  idx === highlightedTrackIndex
-    ? "bg-blue-800 text-white font-semibold"
-    : "hover:bg-blue-700"
-}`}
+          className={`p-2 cursor-pointer ${
+            idx === highlightedTrackIndex ? "bg-blue-100" : "hover:bg-blue-50"
+          }`}
           onMouseDown={() => {
   handleTrackChange(i, "primaryTitle", entry["Primary Title"] || "");
 let parsedTrackArtists = [];
@@ -1843,18 +1900,18 @@ if (Array.isArray(composerData)) {
     </ul>
   )}
 </div>
-</div>
+
 
 
 {/* Track Artist(s) with Search */}
-<div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex flex-col mb-4">
-  <label className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-700 mb-1">
+<div className="flex flex-col mb-4">
+  <label className="text-sm font-medium text-gray-200 mb-1">
     Track Artist(s)
   </label>
 
   {track.trackArtistNames.map((artist, artistIndex) => (
   <React.Fragment key={artistIndex}>
-    <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 relative flex items-center mb-2">
+    <div className="relative flex items-center mb-2">
       <input
         type="text"
         disabled={isLocked}
@@ -1902,7 +1959,7 @@ if (Array.isArray(composerData)) {
           }
         }}
         onBlur={() => setTimeout(() => setArtistSuggestions([]), 150)}
-        className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 border border-gray-300 rounded-md w-full"
+        className="p-2 border border-gray-300 rounded-md w-full"
       />
 
       {/* Remove button */}
@@ -1916,7 +1973,7 @@ if (Array.isArray(composerData)) {
             updatedTracks[i].trackArtistNames = updated;
             setTracks(updatedTracks);
           }}
-          className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ml-2 text-red-500 hover:text-red-700 text-lg"
+          className="ml-2 text-red-500 hover:text-red-700 text-lg"
           title="Remove Artist"
         >
           🗑️
@@ -1927,15 +1984,13 @@ if (Array.isArray(composerData)) {
     {/* Suggestions Dropdown */}
     {activeArtistInputIndex === `${i}-${artistIndex}` &&
       artistSuggestions.length > 0 && (
-        <ul className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
+        <ul className="absolute z-10 mt-1 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
           {artistSuggestions.map((name, idx) => (
             <li
               key={idx}
-              className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
-  idx === highlightedAlbumIndex
-    ? "bg-blue-800 text-white font-semibold"
-    : "hover:bg-blue-700"
-}`}
+              className={`p-2 cursor-pointer ${
+                idx === highlightedArtistIndex ? "bg-blue-100" : ""
+              }`}
               onMouseDown={() => {
                 handleTrackArtistChange(i, artistIndex, name);
                 setArtistSuggestions([]);
@@ -1950,81 +2005,73 @@ if (Array.isArray(composerData)) {
   </React.Fragment>
 ))}
 
-{/* Add Another Artist */}
-<button
-  type="button"
-  onClick={() => addTrackArtist(i)}
-  className="bg-[#0f172a] text-blue-400 hover:text-blue-300 border border-blue-700 text-sm mt-1 self-start rounded-md px-3 py-1"
->
-  + Add Another Artist
-</button>
-
-{/* Recording Title */}
-{renderInput("Recording Title", track.recordingTitle, (e) =>
-  handleTrackChange(i, "recordingTitle", e.target.value)
-)}
-
-{/* AKA Title */}
-{renderInput("AKA Title", track.akaTitle, (e) =>
-  handleTrackChange(i, "akaTitle", e.target.value)
-)}
-
-{/* ISRC */}
-<div className="flex flex-col">
-  <label className="text-sm font-medium text-gray-200 mb-1">ISRC</label>
-  <input
-    disabled={isLocked}
-    type="text"
-    value={track.isrc || ""}
-    maxLength={15}
-    onChange={(e) => {
-      let raw = e.target.value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 12);
-      let formatted = "";
-      if (raw.length > 0) formatted += raw.slice(0, 2);
-      if (raw.length > 2) formatted += "-" + raw.slice(2, 5);
-      if (raw.length > 5) formatted += "-" + raw.slice(5, 7);
-      if (raw.length > 7) formatted += "-" + raw.slice(7, 12);
-      handleTrackChange(i, "isrc", formatted);
-    }}
-    placeholder="AA-AAA-AA-12345"
-    className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-  />
+  <button
+    type="button"
+    onClick={() => addTrackArtist(i)}
+    className="text-blue-600 hover:text-blue-800 text-sm mt-1 self-start"
+  >
+    + Add Another Artist
+  </button>
 </div>
 
-{/* ISWC */}
-<div className="flex flex-col">
-  <label className="text-sm font-medium text-gray-200 mb-1">ISWC</label>
-  <input
-    disabled={isLocked}
-    type="text"
-    value={track.iswc || ""}
-    onFocus={(e) => {
-      if (!e.target.value.startsWith("T-")) {
-        handleTrackChange(i, "iswc", "T-");
-      }
-    }}
-    onChange={(e) => {
-      let input = e.target.value.replace(/[^0-9]/g, "");
-      input = input.replace(/-/g, "").slice(0, 10);
-      let formatted = "T-";
-      if (input.length <= 9) {
-        formatted += input;
-      } else {
-        formatted += input.slice(0, 9) + "-" + input[9];
-      }
-      handleTrackChange(i, "iswc", formatted);
-    }}
-    placeholder="T-123456789-0"
-    className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-  />
-</div>
 
-{/* Track Number */}
-{renderInput("Track Number", track.trackNumber, (e) =>
-  handleTrackChange(i, "trackNumber", e.target.value)
-)}
 
-{/* Duration */}
+
+  {/* Other Fields */}
+  {renderInput("Recording Title", track.recordingTitle, (e) => handleTrackChange(i, "recordingTitle", e.target.value))}
+  {renderInput("AKA Title", track.akaTitle, (e) => handleTrackChange(i, "akaTitle", e.target.value))}
+
+  {/* ISRC */}
+  <div className="flex flex-col">
+    <label className="text-sm font-medium text-gray-200 mb-1">ISRC</label>
+    <input
+       disabled={isLocked}type="text"
+      value={track.isrc || ""}
+      maxLength={15}
+      onChange={(e) => {
+        let raw = e.target.value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 12);
+        let formatted = "";
+        if (raw.length > 0) formatted += raw.slice(0, 2);
+        if (raw.length > 2) formatted += "-" + raw.slice(2, 5);
+        if (raw.length > 5) formatted += "-" + raw.slice(5, 7);
+        if (raw.length > 7) formatted += "-" + raw.slice(7, 12);
+        handleTrackChange(i, "isrc", formatted);
+      }}
+      placeholder="AA-AAA-AA-12345"
+      className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+  </div>
+
+  {/* ISWC */}
+  <div className="flex flex-col">
+    <label className="text-sm font-medium text-gray-200 mb-1">ISWC</label>
+    <input
+       disabled={isLocked}type="text"
+      value={track.iswc || ""}
+      onFocus={(e) => {
+        if (!e.target.value.startsWith("T-")) {
+          handleTrackChange(i, "iswc", "T-");
+        }
+      }}
+      onChange={(e) => {
+        let input = e.target.value.replace(/[^0-9-]/g, "");
+        if (input.startsWith("T-")) input = input.slice(2);
+        input = input.replace(/-/g, "").slice(0, 10);
+        let formatted = "T-";
+        if (input.length <= 9) {
+          formatted += input;
+        } else {
+          formatted += input.slice(0, 9) + "-" + input[9];
+        }
+        handleTrackChange(i, "iswc", formatted);
+      }}
+      placeholder="T-123456789-0"
+      className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+  </div>
+
+  {renderInput("Track number", track.trackNumber, (e) => handleTrackChange(i, "trackNumber", e.target.value))}
+
 <div className="flex flex-col">
   <label className="text-sm font-medium text-gray-200 mb-1">Duration</label>
   <input
@@ -2032,8 +2079,8 @@ if (Array.isArray(composerData)) {
     type="text"
     value={track.duration || ""}
     onChange={(e) => {
-      const raw = e.target.value.replace(/\D/g, "").slice(0, 4);
-      handleTrackChange(i, "duration", raw);
+      const raw = e.target.value.replace(/\D/g, "").slice(0, 4); // only digits
+      handleTrackChange(i, "duration", raw); // store unformatted
     }}
     onBlur={(e) => {
       const raw = e.target.value.replace(/\D/g, "").slice(0, 4);
@@ -2053,8 +2100,6 @@ if (Array.isArray(composerData)) {
     className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
   />
 </div>
-
-
 {renderInput("Track label", track.trackLabel, (e) => {
   const label = e.target.value;
   handleTrackChange(i, "trackLabel", label);
@@ -2068,14 +2113,14 @@ if (Array.isArray(composerData)) {
   {renderInput("Collection Rights End Date", track.collectionEnd, (e) => handleTrackChange(i, "collectionEnd", e.target.value))}
   {renderInput("Non-US Collection Rights", track.nonUSRights, (e) => handleTrackChange(i, "nonUSRights", e.target.value))}
   {renderInput("Genre", track.genre, (e) => handleTrackChange(i, "genre", e.target.value))}
-<div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex flex-col">
-  <label className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-700 mb-1">Recording Date</label>
+<div className="flex flex-col">
+  <label className="text-sm font-medium text-gray-200 mb-1">Recording Date</label>
   <input
     type="date"
     disabled={isLocked}
     value={track.recDate || ""}
     onChange={(e) => handleTrackChange(i, "recDate", e.target.value)}
-    className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 h-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    className="p-2 h-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
   />
 </div>
   {renderInput("Recording Engineer", track.recEng, (e) => handleTrackChange(i, "recEng", e.target.value))}
@@ -2085,20 +2130,20 @@ if (Array.isArray(composerData)) {
 
 
   {/* Audio Upload */}
-  <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex flex-col">
-    <label className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-700 mb-1">Audio File</label>
+  <div className="flex flex-col">
+    <label className="text-sm font-medium text-gray-200 mb-1">Audio File</label>
     <input
        disabled={isLocked}type="file"
       accept="audio/*"
       onChange={(e) => handleTrackChange(i, "audioFile", e.target.files[0])}
-      className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+      className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
   </div>
 </div>
           
     
-            <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 mt-6 border-t pt-4">
-              <h3 className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg font-semibold text-gray-700 mb-4">Composers</h3>
+            <div className="mt-6 border-t pt-4">
+              <h3 className="text-lg font-semibold text-gray-700 mb-4">Composers</h3>
               {track.composers.map((composer, j) => {
                 const key = `${i}-${j}`;
 const removeComposer = (trackIndex, composerIndex) => {
@@ -2107,145 +2152,197 @@ const removeComposer = (trackIndex, composerIndex) => {
   setTracks(updated);
 };
                 
-function handleAlbumKeyDown(e) {
-  if (albumSuggestions.length > 0) {
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setHighlightedAlbumIndex((prev) =>
-        prev < albumSuggestions.length - 1 ? prev + 1 : 0
-      );
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setHighlightedAlbumIndex((prev) =>
-        prev > 0 ? prev - 1 : albumSuggestions.length - 1
-      );
-    } else if (e.key === "Enter") {
-      e.preventDefault();
-      if (highlightedAlbumIndex >= 0) {
-        const selected = albumSuggestions[highlightedAlbumIndex];
-        handleReleaseInfoChange("albumTitle", selected["Album Title"] || "");
-        setAlbumSuggestions([]);
-      }
-    } else if (e.key === "Escape") {
-      setAlbumSuggestions([]);
-      setHighlightedAlbumIndex(-1);
-    }
-  }
-}
-
-
 
 
 
   return (
-                  <div key={key} ref={(el) => (composerRefs.current[key] = el)} className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-6 pb-4 border-b border-gray-300">
-                    <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center justify-between mb-2">
-  <h4 className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold text-blue-600">Composer {j + 1}</h4>
+                  <div key={key} ref={(el) => (composerRefs.current[key] = el)} className="mb-6 pb-4 border-b border-gray-300">
+                    <div className="flex items-center justify-between mb-2">
+  <h4 className="font-semibold text-blue-600">Composer {j + 1}</h4>
   <button
     title="Remove Composer"
     onClick={() => removeComposer(i, j)}
-    className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400 hover:text-red-600 text-xl"
+    className="text-gray-400 hover:text-red-600 text-xl"
   >
     🗑️
   </button>
 </div>
- // Bloque Composer modernizado
-return (
-  <div key={key} ref={(el) => (composerRefs.current[key] = el)} className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-6 pb-4 border-b border-gray-700">
-    <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center justify-between mb-2">
-      <h4 className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold text-blue-400">Composer {j + 1}</h4>
-      <button
-        title="Remove Composer"
-        onClick={() => removeComposer(i, j)}
-        className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400 hover:text-red-500 text-xl"
-      >
-        🗑️
-      </button>
-    </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                     {/* Composer First Name */}
+{/* Composer First Name */}
+<div className="relative flex flex-col">
+  <label className="text-sm font-medium text-gray-200 mb-1">First Name</label>
+<input
+   disabled={isLocked}type="text"
+  value={composer.firstName || ""}
+  onChange={(e) => handleComposerChange(i, j, "firstName", e.target.value)}
+  onKeyDown={(e) => {
+    if (suggestions.length === 0) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightedIndex((prev) => (prev + 1) % suggestions.length);
+    }
+
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightedIndex((prev) => (prev - 1 + suggestions.length) % suggestions.length);
+    }
+
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const selected = suggestions[highlightedIndex];
+      if (selected) {
+        const updated = [...tracks];
+        updated[i].composers[j] = {
+          ...updated[i].composers[j],
+          ...selected,
+        };
+        setTracks(updated);
+        setSuggestions([]);
+        setActiveInput(null);
+      }
+    }
+
+    if (e.key === "Escape") {
+      setSuggestions([]);
+      setActiveInput(null);
+    }
+  }}
+  onBlur={() => setTimeout(() => setSuggestions([]), 200)}
+  placeholder="Start typing first name"
+  className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+/>
+
+  {/* 👇 Composer name suggestion dropdown */}
+  {activeInput &&
+    activeInput.trackIndex === i &&
+    activeInput.composerIndex === j &&
+    activeInput.field === "firstName" &&
+    suggestions.length > 0 && (
+      <ul className="absolute z-10 mt-10 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+  {suggestions.map((sugg, idx) => (
+    <li
+      key={idx}
+      className={`p-2 cursor-pointer hover:bg-blue-100 ${
+        idx === highlightedIndex ? "bg-blue-100 font-medium" : ""
+      }`}
+      onMouseDown={() => {
+        const updated = [...tracks];
+        updated[i].composers[j] = {
+          ...updated[i].composers[j],
+          ...sugg,
+        };
+        setTracks(updated);
+        setSuggestions([]);
+        setActiveInput(null);
+      }}
+    >
+      {sugg.firstName} {sugg.middleName} {sugg.lastName}
+    </li>
+  ))}
+</ul>
+    )}
+</div>
+
+                       {renderInput("Middle Name", composer.middleName, (e) => handleComposerChange(i, j, "middleName", e.target.value))}
+
+{/* Composer Last Name */}
+<div className="relative flex flex-col">
+  <label className="text-sm font-medium text-gray-200 mb-1">Last Name(s)</label>
+  <input
+   disabled={isLocked}type="text"
+  value={composer.lastName || ""}
+  onChange={(e) => handleComposerChange(i, j, "lastName", e.target.value)}
+  onKeyDown={(e) => {
+    if (suggestions.length === 0) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightedIndex((prev) => (prev + 1) % suggestions.length);
+    }
+
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightedIndex((prev) => (prev - 1 + suggestions.length) % suggestions.length);
+    }
+
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const selected = suggestions[highlightedIndex];
+      if (selected) {
+        const updated = [...tracks];
+        updated[i].composers[j] = {
+          ...updated[i].composers[j],
+          ...selected,
+        };
+        setTracks(updated);
+        setSuggestions([]);
+        setActiveInput(null);
+      }
+    }
+
+    if (e.key === "Escape") {
+      setSuggestions([]);
+      setActiveInput(null);
+    }
+  }}
+  onBlur={() => setTimeout(() => setSuggestions([]), 200)}
+  placeholder="Start typing last name"
+  className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+/>
+{activeInput &&
+  activeInput.trackIndex === i &&
+  activeInput.composerIndex === j &&
+  activeInput.field === "lastName" &&
+  suggestions.length > 0 && (
+    <ul className="absolute z-10 mt-10 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+      {suggestions.map((sugg, idx) => (
+        <li
+          key={idx}
+          className={`p-2 hover:bg-blue-100 cursor-pointer ${
+            highlightedIndex === idx ? "bg-blue-100" : ""
+          }`}
+          onMouseDown={() => {
+            const updated = [...tracks];
+            updated[i].composers[j] = {
+              ...updated[i].composers[j],
+              ...sugg,
+            };
+            setTracks(updated);
+            setSuggestions([]);
+          }}
+        >
+           {sugg.firstName} {sugg.middleName} {sugg.lastName}
+        </li>
+      ))}
+    </ul>
+)}
+
+</div>                     
 
 
-    <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-      {/* First Name */}
-      <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 relative flex flex-col">
-        <label className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-300 mb-1">First Name</label>
-        <input
-          disabled={isLocked}
-          type="text"
-          value={composer.firstName || ""}
-          onChange={(e) => handleComposerChange(i, j, "firstName", e.target.value)}
-          onKeyDown={(e) => handleNameKeyDown(e, i, j, "firstName")}
-          onBlur={() => setTimeout(() => setSuggestions([]), 200)}
-          placeholder="Start typing first name"
-          className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        {activeInput?.trackIndex === i && activeInput?.composerIndex === j && activeInput?.field === "firstName" && suggestions.length > 0 && (
-          <ul className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
-            {suggestions.map((sugg, idx) => (
-              <li
-                key={idx}
-                className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${idx === highlightedIndex ? "bg-blue-800 text-white font-semibold" : "hover:bg-blue-700"}`}
-                onMouseDown={() => applyComposerSuggestion(i, j, sugg)}
-              >
-                {sugg.firstName} {sugg.middleName} {sugg.lastName}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      {/* Middle Name */}
-      {renderInput("Middle Name", composer.middleName, (e) => handleComposerChange(i, j, "middleName", e.target.value))}
-
-      {/* Last Name */}
-      <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 relative flex flex-col">
-        <label className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-300 mb-1">Last Name(s)</label>
-        <input
-          disabled={isLocked}
-          type="text"
-          value={composer.lastName || ""}
-          onChange={(e) => handleComposerChange(i, j, "lastName", e.target.value)}
-          onKeyDown={(e) => handleNameKeyDown(e, i, j, "lastName")}
-          onBlur={() => setTimeout(() => setSuggestions([]), 200)}
-          placeholder="Start typing last name"
-          className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        {activeInput?.trackIndex === i && activeInput?.composerIndex === j && activeInput?.field === "lastName" && suggestions.length > 0 && (
-          <ul className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
-            {suggestions.map((sugg, idx) => (
-              <li
-                key={idx}
-                className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${idx === highlightedIndex ? "bg-blue-800 text-white font-semibold" : "hover:bg-blue-700"}`}
-                onMouseDown={() => applyComposerSuggestion(i, j, sugg)}
-              >
-                {sugg.firstName} {sugg.middleName} {sugg.lastName}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </div>
-
-    <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-      {renderInput("Composer Address", composer.composeraddress, (e) => handleComposerChange(i, j, "composeraddress", e.target.value))}
-      <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 grid grid-cols-1 md:grid-cols-3 gap-4">
-        {renderInput("City", composer.composercity, (e) => handleComposerChange(i, j, "composercity", e.target.value))}
-        {renderInput("State", composer.composerstate, (e) => handleComposerChange(i, j, "composerstate", e.target.value))}
-        {renderInput("Zip", composer.composerzip, (e) => handleComposerChange(i, j, "composerzip", e.target.value))}
-      </div>
-    </div>
-
-    <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 grid grid-cols-1 md:grid-cols-2 gap-4">
-      {renderInput("Composer IPI/CAE#", composer.ipi, (e) => handleComposerChange(i, j, "ipi", e.target.value))}
-      {renderInput("Composer PRO", composer.pro, (e) => handleComposerChange(i, j, "pro", e.target.value))}
-      {renderInput("Composer Share %", composer.split, (e) => handleComposerChange(i, j, "split", e.target.value))}
-      {renderInput("Writer Role Code (MLC)", composer.roleCode, (e) => handleComposerChange(i, j, "roleCode", e.target.value))}
-    </div>
-  
+                      
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      {renderInput("Composer Address", composer.composeraddress, (e) => handleComposerChange(i, j, "composeraddress", e.target.value))}
+                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {renderInput("City", composer.composercity, (e) => handleComposerChange(i, j, "composercity", e.target.value))}
+                      {renderInput("State", composer.composerstate, (e) => handleComposerChange(i, j, "composerstate", e.target.value))}
+                      {renderInput("Zip", composer.composerzip, (e) => handleComposerChange(i, j, "composerzip", e.target.value))}
+                    </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {renderInput("Composer IPI/CAE#", composer.ipi, (e) => handleComposerChange(i, j, "ipi", e.target.value))}
+                      {renderInput("Composer PRO", composer.pro, (e) => handleComposerChange(i, j, "pro", e.target.value))}
+                      {renderInput("Composer Share %", composer.split, (e) => handleComposerChange(i, j, "split", e.target.value))}
+                      {renderInput("Writer Role Code (MLC)", composer.roleCode, (e) => handleComposerChange(i, j, "roleCode", e.target.value))}
 
 
 
-<div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex flex-col relative">
-  <label className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-700 mb-1">Publisher</label>
+
+<div className="flex flex-col relative">
+  <label className="text-sm font-medium text-gray-200 mb-1">Publisher</label>
     <input
    disabled={isLocked}type="text"
   value={composer.publisher || ""}
@@ -2275,13 +2372,13 @@ return (
     }
   }}
   onBlur={() => setTimeout(() => setPublisherSuggestions([]), 200)}
-  className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+  className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
 />
 
 {activePublisherField?.trackIndex === i &&
   activePublisherField?.composerIndex === j &&
   publisherSuggestions.length > 0 && (
-    <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
+    <div className="absolute top-full left-0 w-full z-10 bg-white border border-gray-300 rounded-md shadow-md max-h-48 overflow-y-auto">
       {publisherSuggestions.map((s, idx) => (
         <div
           key={idx}
@@ -2304,8 +2401,8 @@ return (
                       {renderInput("Publisher IPI/CAE#", composer.publisherIPI, (e) => handleComposerChange(i, j, "publisherIPI", e.target.value))}
 
                       
-<div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex flex-col relative">
-  <label className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-700 mb-1">Publisher Admin</label>
+<div className="flex flex-col relative">
+  <label className="text-sm font-medium text-gray-200 mb-1">Publisher Admin</label>
   <input
     disabled={isLocked}
     type="text"
@@ -2337,13 +2434,13 @@ return (
     onFocus={() => {
       setActiveAdminField({ trackIndex: i, composerIndex: j });
     }}
-    className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
   />
 
   {activeAdminField?.trackIndex === i &&
     activeAdminField?.composerIndex === j &&
     adminSuggestions.length > 0 && (
-      <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 absolute top-full left-0 w-full z-10 bg-white border border-gray-300 rounded-md shadow-md max-h-48 overflow-y-auto">
+      <div className="absolute top-full left-0 w-full z-10 bg-white border border-gray-300 rounded-md shadow-md max-h-48 overflow-y-auto">
         {adminSuggestions.map((s, idx) => (
           <div
             key={idx}
@@ -2369,7 +2466,7 @@ return (
 
                 );
               })}
-              <button type="button" onClick={() => addComposer(i)} className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-blue-600 hover:text-blue-800 text-sm font-medium mt-2">
+              <button type="button" onClick={() => addComposer(i)} className="text-blue-600 hover:text-blue-800 text-sm font-medium mt-2">
                 + Add Composer
               </button>
             </div>
@@ -2377,18 +2474,18 @@ return (
         ))}
 
         {releaseInfo.typeOfRelease !== "Single" || tracks.length < 1 ? (
-          <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-center mt-10">
-            <button className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-md shadow text-lg font-semibold" onClick={addTrack}>
+          <div className="text-center mt-10">
+            <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-md shadow text-lg font-semibold" onClick={addTrack}>
               + Add Another Track
             </button>
           </div>
         ) : null}
       </div>
-<div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-center mt-10 space-x-4">
+<div className="text-center mt-10 space-x-4">
   <button
     type="button"
     onClick={handleClearForm}
-    className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-3 rounded-md shadow text-md font-semibold"
+    className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-3 rounded-md shadow text-md font-semibold"
   >
     Clear Form
   </button>
@@ -2396,7 +2493,7 @@ return (
   <button
     type="button"
     onClick={handleSubmit}
-    className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md shadow text-md font-semibold"
+    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md shadow text-md font-semibold"
   >
     Submit
   </button>
