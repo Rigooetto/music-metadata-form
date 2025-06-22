@@ -1,67 +1,251 @@
 import React, { useEffect, useState } from 'react';
+import { getAuth } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 import axios from 'axios';
 
-const ReportGenerator = () => {
-  const [tracks, setTracks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const REPORT_OPTIONS = [
+  'All Reports',
+  'MLC',
+  'Music Reports',
+  'HFA',
+  'Sound Exchange',
+  'RegDig',
+];
 
-  const endpoint = '/api/generar-tracks'; // Se llama a la ruta interna de Vercel
+export default function ReportGenerator() {
+  const [tracks, setTracks] = useState([]);
+  const [selectedTracks, setSelectedTracks] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
+  const [reportType, setReportType] = useState('All Reports');
+  const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
+
+  const endpoint = '/api/generar-tracks';
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
+
       try {
-        const res = await axios.post(endpoint, {
-          reportType: 'MLC',
-        });
+        const typeToSend = reportType === 'All Reports' ? 'MLC' : reportType;
+        const res = await axios.post(endpoint, { reportType: typeToSend });
 
-        console.log('🎯 Datos recibidos:', res.data);
+        const receivedTracks = Array.isArray(res.data) ? res.data : [];
 
-        const receivedTracks = res.data?.tracks || [];
+        // Selecciona la columna de reporte correcta
+        const reportColumn =
+          reportType === 'All Reports'
+            ? 'Reportado MLC'
+            : `Reportado ${reportType}`;
 
-        if (!Array.isArray(receivedTracks)) {
-          throw new Error('Formato de tracks inválido');
-        }
-
-        // Filtro para evitar mostrar los que ya fueron reportados
         const filtered = receivedTracks.filter(
-          (t) => !t['Reportado MLC'] || t['Reportado MLC'].trim() === ''
+          (t) => !t[reportColumn] || t[reportColumn].trim() === ''
         );
 
         setTracks(filtered);
+        setSelectedTracks([]);
+        setSelectAll(false);
       } catch (err) {
-        console.error('❌ Error al cargar datos:', err);
-        setError(err.message || 'Error desconocido');
+        console.error('Error:', err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [reportType]);
 
-  if (loading) return <p>🔄 Generando reporte, espera...</p>;
-  if (error) return <p>❌ Error: {error}</p>;
+  const toggleTrack = (index) => {
+    if (selectedTracks.includes(index)) {
+      setSelectedTracks(selectedTracks.filter((i) => i !== index));
+      setSelectAll(false);
+    } else {
+      setSelectedTracks([...selectedTracks, index]);
+    }
+  };
+
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedTracks([]);
+      setSelectAll(false);
+    } else {
+      setSelectedTracks(tracks.map((_, index) => index));
+      setSelectAll(true);
+    }
+  };
+
+
+const handleGenerate = async () => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  if (!user) {
+    alert("Inicia sesión primero");
+    return;
+  }
+
+  const email = user.email || "";
+  let name = "Usuario"; // Valor por defecto
+
+  // 🔥 Obtenemos nombre desde Firestore
+  try {
+    const db = getFirestore();
+    const userDocRef = doc(db, "users", user.uid);
+    const userSnapshot = await getDoc(userDocRef);
+
+    if (userSnapshot.exists()) {
+      const userData = userSnapshot.data();
+      if (userData.name) {
+        name = userData.name;
+      }
+    }
+  } catch (err) {
+    console.warn("⚠️ No se pudo obtener el nombre desde Firestore:", err);
+  }
+
+  const tracksToReport = selectedTracks.map((i) => tracks[i]);
+  setGenerating(true);
+
+  const reportTypesToGenerate =
+    reportType === '' ? ['MLC', 'Music Reports', 'ESong', 'SoundExchange'] : [reportType];
+
+  try {
+    for (const type of reportTypesToGenerate) {
+      const response = await axios.post(
+        'https://rigoletto.app.n8n.cloud/webhook/reportGeneratorWebhook',
+        {
+          user: { name, email },
+          reportType: type,
+          tracks: tracksToReport,
+        }
+      );
+      console.log(`✅ Reporte ${type} generado exitosamente:`, response.data);
+    }
+
+    alert(
+      `✅ Reporte${reportTypesToGenerate.length > 1 ? 's' : ''} generado${
+        reportTypesToGenerate.length > 1 ? 's' : ''
+      } exitosamente`
+    );
+  } catch (error) {
+    console.error('❌ Error al generar el reporte:', error);
+    alert('❌ Ocurrió un error al generar el reporte');
+  } finally {
+    setGenerating(false);
+  }
+};
 
   return (
-    <div className="transition-colors duration-300 ease-in-out bg-white text-black transition-colors duration-300 ease-in-out dark:bg-gray-900 dark:text-white border transition-colors duration-300 ease-in-out dark:border transition-colors duration-300 ease-in-out-gray-700 p-4">
-      <h2 className="transition-colors duration-300 ease-in-out bg-white text-black transition-colors duration-300 ease-in-out dark:bg-gray-900 dark:text-white border transition-colors duration-300 ease-in-out dark:border transition-colors duration-300 ease-in-out-gray-700 text-xl font-semibold mb-4">🎧 Tracks a reportar</h2>
+    <div className="p-6">
+      <div className="flex items-center gap-4 mb-6">
+        <select
+          className="border p-2 rounded"
+          value={reportType}
+          onChange={(e) => setReportType(e.target.value)}
+        >
+          {REPORT_OPTIONS.map((opt) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
+          ))}
+        </select>
 
-      {tracks.length === 0 ? (
+        <button
+  className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 disabled:opacity-50"
+  disabled={selectedTracks.length === 0 || generating}
+  onClick={handleGenerate}
+>
+  {generating ? (
+    <>
+      <svg
+        className="animate-spin h-5 w-5 text-white"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        ></circle>
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+        ></path>
+      </svg>
+      Generating...
+    </>
+  ) : (
+    <>
+      {reportType === ''
+        ? 'Generate All Reports'
+        : `Generate ${reportType} Report`}
+    </>
+  )}
+</button>
+      </div>
+
+      {loading ? (
+        <p>Loading...</p>
+      ) : tracks.length === 0 ? (
         <p>No hay tracks para mostrar.</p>
       ) : (
-        <ul className="transition-colors duration-300 ease-in-out bg-white text-black transition-colors duration-300 ease-in-out dark:bg-gray-900 dark:text-white border transition-colors duration-300 ease-in-out dark:border transition-colors duration-300 ease-in-out-gray-700 space-y-2">
-          {tracks.map((track, index) => (
-            <li key={index} className="transition-colors duration-300 ease-in-out bg-white text-black transition-colors duration-300 ease-in-out dark:bg-gray-900 dark:text-white border transition-colors duration-300 ease-in-out dark:border transition-colors duration-300 ease-in-out-gray-700 border transition-colors duration-300 ease-in-out p-3 rounded bg-gray-100 shadow-sm">
-              <strong>{track['Primary Title'] || 'Sin título'}</strong><br />
-              ISRC: {track.ISRC || 'N/A'}<br />
-              UPC: {track.UPC || 'N/A'}
-            </li>
-          ))}
-        </ul>
+        <table className="w-full text-sm text-left border border-gray-200">
+          <thead className="bg-gray-100 font-semibold">
+            <tr>
+              <th className="p-3">
+                <input
+                  type="checkbox"
+                  checked={selectAll}
+                  onChange={handleSelectAll}
+                />
+              </th>
+              <th className="p-3">Track Title</th>
+              <th className="p-3">Artist</th>
+              <th className="p-3">UPC</th>
+              <th className="p-3">ISRC</th>
+              <th className="p-3">Composers</th>
+              <th className="p-3">Release Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tracks.map((track, index) => (
+              <tr key={index} className="border-t hover:bg-gray-50">
+                <td className="p-3">
+                  <input
+                    type="checkbox"
+                    checked={selectedTracks.includes(index)}
+                    onChange={() => toggleTrack(index)}
+                  />
+                </td>
+                <td className="p-3">{track['Primary Title'] || 'Sin título'}</td>
+                <td className="p-3">{track['Track Artist Name'] || 'N/A'}</td>
+                <td className="p-3">{track.UPC || 'N/A'}</td>
+                <td className="p-3">{track.ISRC || 'N/A'}</td>
+                <td className="p-3 whitespace-pre-line">
+                  {Array.isArray(track.Composers)
+                    ? track.Composers.map((c) => `${c['First Name']} ${c['Last Name']}`).join('\n')
+                    : typeof track.Composers === 'string'
+                    ? (() => {
+                        try {
+                          const parsed = JSON.parse(track.Composers);
+                          return parsed.map((c) => `${c['First Name']} ${c['Last Name']}`).join('\n');
+                        } catch {
+                          return 'N/A';
+                        }
+                      })()
+                    : 'N/A'}
+                </td>
+                <td className="p-3">{track['Digital Release Date'] || 'N/A'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );
-};
-
-export default ReportGenerator;
+}
