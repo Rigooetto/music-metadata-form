@@ -2120,7 +2120,7 @@ if (Array.isArray(composerData)) {
     disabled={isLocked}
     value={track.recDate || ""}
     onChange={(e) => handleTrackChange(i, "recDate", e.target.value)}
-    className="p-2 h-12 border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    className="p-2 h-12 bg-[#0f172a] border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
   />
 </div>
   {renderInput("Recording Engineer", track.recEng, (e) => handleTrackChange(i, "recEng", e.target.value))}
