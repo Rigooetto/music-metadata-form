@@ -1543,80 +1543,307 @@ function handleAlbumTitleChange(e) {
 
 
            
-           <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 grid grid-cols-1 md:grid-cols-2 gap-6">
-  {/* Primary Title */}
-  <div className="relative flex flex-col">
-    <label className="text-sm font-medium text-gray-200 mb-1">Primary Title</label>
-    <input
-      disabled={isLocked}
-      type="text"
-      value={track.primaryTitle || ""}
-      onChange={(e) => {
-        const value = e.target.value;
-        handleTrackChange(i, "primaryTitle", value);
+            <div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        if (value.length >= 1) {
-          const matches = catalogDB.filter((entry) =>
-            entry?.["Primary Title"]?.toLowerCase()?.startsWith(value.toLowerCase())
-          );
-          setTrackSuggestions(matches);
-          setHighlightedTrackIndex(0);
-        } else {
-          setTrackSuggestions([]);
-          setHighlightedTrackIndex(-1);
-        }
-      }}
-      onKeyDown={(e) => {
-        if (trackSuggestions.length > 0) {
-          if (e.key === "ArrowDown") {
-            e.preventDefault();
-            setHighlightedTrackIndex((prev) =>
-              prev < trackSuggestions.length - 1 ? prev + 1 : 0
-            );
-          } else if (e.key === "ArrowUp") {
-            e.preventDefault();
-            setHighlightedTrackIndex((prev) =>
-              prev > 0 ? prev - 1 : trackSuggestions.length - 1
-            );
-          } else if (e.key === "Enter") {
-            e.preventDefault();
-            const entry = trackSuggestions[highlightedTrackIndex];
-            if (entry) {
-              handleAutoFillFromEntry(i, entry);
-              setTrackSuggestions([]);
-              setHighlightedTrackIndex(-1);
-            }
-          }
-        }
-      }}
-      onBlur={() => setTimeout(() => setTrackSuggestions([]), 150)}
-      placeholder="Start typing primary title"
-      className="p-2 bg-[#0f172a] text-white border border-blue-700 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
+{/* Primary Title */}
+<div className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 relative flex flex-col">
+  <label className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium text-gray-700 mb-1">Primary Title</label>
+<input
+   disabled={isLocked}type="text"
+  value={track.primaryTitle || ""}
+  onChange={(e) => {
+    const value = e.target.value;
+    handleTrackChange(i, "primaryTitle", value);
 
-    {trackSuggestions.length > 0 && (
-      <ul className="absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
-        {trackSuggestions.map((entry, idx) => (
-          <li
-            key={idx}
-            className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
-              idx === highlightedTrackIndex
-                ? "bg-blue-800 text-white font-semibold"
-                : "hover:bg-blue-700"
-            }`}
-            onMouseDown={() => {
-              handleAutoFillFromEntry(i, entry);
-              setTrackSuggestions([]);
-              setHighlightedTrackIndex(-1);
-            }}
-          >
-            {entry["Primary Title"] || "Untitled"}
-          </li>
-        ))}
-      </ul>
-    )}
-  </div>
+    if (value.length >= 1) {
+      const matches = catalogDB.filter((entry) =>
+        entry?.["Primary Title"]?.toLowerCase?.().startsWith(String(value || "").toLowerCase())
+      );
+      setTrackSuggestions(matches);
+      setHighlightedTrackIndex(0); // Reset highlight
+    } else {
+      setTrackSuggestions([]);
+      setHighlightedTrackIndex(-1);
+    }
+  }}
+  onKeyDown={(e) => {
+    if (trackSuggestions.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setHighlightedTrackIndex((prev) =>
+          prev < trackSuggestions.length - 1 ? prev + 1 : 0
+        );
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setHighlightedTrackIndex((prev) =>
+          prev > 0 ? prev - 1 : trackSuggestions.length - 1
+        );
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        const entry = trackSuggestions[highlightedTrackIndex];
+console.log("🧩 Selected catalog entry:", entry);
+
+if (entry) {
+  // Basic track info
+  handleTrackChange(i, "primaryTitle", entry["Primary Title"] || "");
+let parsedTrackArtists = [];
+
+try {
+  if (Array.isArray(entry["Track Artist Name"])) {
+    parsedTrackArtists = entry["Track Artist Name"];
+  } else {
+    parsedTrackArtists = JSON.parse(entry["Track Artist Name"]);
+  }
+} catch {
+  // Fallback to individual fields
+  for (let k = 0; k <= 8; k++) {
+    const key = k === 0 ? "Track Artist Name" : `Track Artist Name ${k}`;
+    const value = entry[key];
+    if (value && value.trim()) {
+      parsedTrackArtists.push(value.trim());
+    }
+  }
+}
+
+if (parsedTrackArtists.length === 0) parsedTrackArtists.push("");
+
+// ✅ Now set it properly
+handleTrackChange(i, "trackArtistNames", parsedTrackArtists);
+  handleTrackChange(i, "trackNumber", entry["Track Number"] || "");
+  handleTrackChange(i, "recordingTitle", entry["Recording Title"] || "");
+  handleTrackChange(i, "akaTitle", entry["AKA Title"] || "");
+  handleTrackChange(i, "akaTypeCode", entry["AKA Type Code (MLC)"] || "");
+  handleTrackChange(i, "countryRelease", entry["Country of Release"] || "");
+  handleTrackChange(i, "basisClaim",  entry["Basis of Claim"] || "");
+  handleTrackChange(i, "percentClaim", entry["Percentage Date"] || "");
+  handleTrackChange(i, "collectionEnd", entry["Collection Rights End Claim"] || "");
+  handleTrackChange(i, "nonUSRights", entry["Non-US Collection Rights"] || "");
+  handleTrackChange(i, "genre", entry["Genre"] || "");
+  handleTrackChange(i, "recEng", entry["Recording Engineer"] || "");
+  handleTrackChange(i, "producer", entry["Producer"] || "");
+  handleTrackChange(i, "execProducer", entry["Executive Producer"] || "");    
+ // Recording Date
+const rawRecDate = entry["Recording Date"];
+const formattedRecDate = rawRecDate
+  ? new Date(rawRecDate).toISOString().split("T")[0]
+  : "";
+handleTrackChange(i, "recDate", formattedRecDate);
+
+  handleTrackChange(i, "isrc", entry["ISRC"] || "");
+  handleTrackChange(i, "iswc", entry["ISWC"] || "");
+  handleTrackChange(i, "duration", normalizeDuration(entry["Duration"]) || "");
+  handleTrackChange(i, "trackLabel", entry["Track Label"] || "");
+  handleTrackChange(i, "trackPLine", entry["Track P Line"] || "");
+
+
+
+
+  // 🎯 Parse composerData
+  let composerData = entry.Composers;
+  if (typeof composerData === "string") {
+    try {
+      composerData = JSON.parse(composerData);
+    } catch (err) {
+      console.error("❌ Failed to parse composerData:", err);
+      composerData = [];
+    }
+  }
+
+  // 🎯 Parse publisherData
+let publisherData = entry.Publishers;
+if (typeof publisherData === "string") {
+  try {
+    publisherData = JSON.parse(publisherData);
+  } catch (err) {
+    console.error("❌ Failed to parse publisherData:", err);
+    publisherData = [];
+  }
+}
+  // ✅ Merge composer and publisher into one per composer slot
+  if (Array.isArray(composerData)) {
+    const merged = composerData.map((composer, idx) => {
+      const publisher = Array.isArray(publisherData) ? publisherData[idx] || {} : {};
+const admin = Array.isArray(publisherData)
+  ? publisherData.find(p => p["Publisher Admin"]) || {}
+  : {};
+
+return {
+  firstName: composer["First Name"] || "",
+  middleName: composer["Middle Name"] || "",
+  lastName: composer["Last Name"] || "",
+  ipi: composer["IPI"] || "",
+  split: composer["Split"] || "",
+  pro: composer["PRO"] || "",
+  roleCode: composer["Role Code"] || "",
+  composeraddress: composer["Address"] || "",
+  composercity: composer["City"] || "",
+  composerstate: composer["State"] || "",
+  composerzip: composer["Zip"] || "",
+  publisher: publisher["Publisher"] || "N/A",
+  publisherIPI: publisher["Publisher IPI"] || "N/A",
+  publisherPRO: publisher["Publisher PRO"] || "N/A",
+  pubadmin: admin["Publisher Admin"] || "N/A",
+  pubadminIPI: admin["Publisher Admin IPI"] || "N/A",
+  pubadminShare: admin["Publisher Admin Collection Share"] || "0"
+};
+    });
+
+    const updated = [...tracks];
+    updated[i].composers = merged;
+    setTracks(updated);
+
+toast.success("🎼 Composer & Publisher Info Loaded", {
+  style: {
+    borderRadius: '8px',
+    background: '#1f2937',
+    color: '#fff',
+  },
+});
+
+  } else {
+    console.warn("⚠️ No valid composers found for selected track.");
+  }
+
+  setTrackSuggestions([]);
+  setHighlightedTrackIndex(-1);
+}
+      }
+    }
+  }}
+  onBlur={() => setTimeout(() => setTrackSuggestions([]), 150)}
+  placeholder="Start typing primary title"
+  className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+/>
+
+  {trackSuggestions.length > 0 && (
+    <ul className="bg-[#0f172a] text-white border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 absolute z-10 mt-1 bg-[#1e293b] border border-blue-700 text-white rounded-md w-full shadow-xl max-h-48 overflow-auto">
+      {trackSuggestions.map((entry, idx) => (
+        <li
+          key={idx}
+          className={`p-2 px-3 cursor-pointer transition-colors duration-150 ${
+  idx === highlightedTrackIndex
+    ? "bg-blue-800 text-white font-semibold"
+    : "hover:bg-blue-700"
+}`}
+          onMouseDown={() => {
+  handleTrackChange(i, "primaryTitle", entry["Primary Title"] || "");
+let parsedTrackArtists = [];
+
+try {
+  if (Array.isArray(entry["Track Artist Name"])) {
+    parsedTrackArtists = entry["Track Artist Name"];
+  } else {
+    parsedTrackArtists = JSON.parse(entry["Track Artist Name"]);
+  }
+} catch {
+  // Fallback to individual fields
+  for (let k = 0; k <= 8; k++) {
+    const key = k === 0 ? "Track Artist Name" : `Track Artist Name ${k}`;
+    const value = entry[key];
+    if (value && value.trim()) {
+      parsedTrackArtists.push(value.trim());
+    }
+  }
+}
+
+if (parsedTrackArtists.length === 0) parsedTrackArtists.push("");
+
+// ✅ Now set it properly
+handleTrackChange(i, "trackArtistNames", parsedTrackArtists);
+  handleTrackChange(i, "trackNumber", entry["Track Number"] || "");
+  handleTrackChange(i, "recordingTitle", entry["Recording Title"] || "");
+  handleTrackChange(i, "akaTitle", entry["AKA Title"] || "");
+  handleTrackChange(i, "akaTypeCode", entry["AKA Type Code (MLC)"] || "");
+  handleTrackChange(i, "countryRelease", entry["Country of Release"] || "");
+  handleTrackChange(i, "basisClaim",  entry["Basis of Claim"] || "");
+  handleTrackChange(i, "percentClaim", entry["Percentage Claimed"] || "");
+  handleTrackChange(i, "collectionEnd", entry["Collection Rights End Date"] || "");
+  handleTrackChange(i, "nonUSRights", entry["Non-US Collection Rights"] || "");
+  handleTrackChange(i, "genre", entry["Genre"] || "");
+  handleTrackChange(i, "recDate", entry["Recording Date"] || "");
+  handleTrackChange(i, "recEng", entry["Recording Engineer"] || "");
+  handleTrackChange(i, "producer", entry["Producer"] || "");
+  handleTrackChange(i, "execProducer", entry["Executive Producer"] || "");  
+  handleTrackChange(i, "isrc", entry["ISRC"] || "");
+  handleTrackChange(i, "iswc", entry["ISWC"] || "");
+  handleTrackChange(i, "duration", normalizeDuration(entry["Duration"]) || "");
+  handleTrackChange(i, "trackLabel", entry["Track Label"] || "");
+  handleTrackChange(i, "trackPLine", entry["Track P Line"] || "");
+
+let publisherData = entry.Publishers;
+if (typeof publisherData === "string") {
+  try {
+    publisherData = JSON.parse(publisherData);
+  } catch (err) {
+    console.error("❌ Failed to parse publisherData:", err);
+    publisherData = [];
+  }
+}
+// Log full entry to debug
+console.log("Selected catalog entry:", entry);
+
+// 🎯 Add composer data if available
+let composerData = entry.Composers;
+
+// Parse if stringified
+if (typeof composerData === "string") {
+  try {
+    composerData = JSON.parse(composerData);
+  } catch (err) {
+    console.error("❌ Failed to parse composerData:", err);
+    composerData = [];
+  }
+}
+
+if (Array.isArray(composerData)) {
+  // Pull publisher + admin objects from publisherData
+  const publisherInfo = Array.isArray(publisherData)
+    ? publisherData.find(p => p["Publisher"])
+    : {};
+  const adminInfo = Array.isArray(publisherData)
+    ? publisherData.find(p => p["Publisher Admin"])
+    : {};
+
+ const composers = composerData.map((c) => ({
+  firstName: c["First Name"] || "",
+  middleName: c["Middle Name"] || "",
+  lastName: c["Last Name"] || "",
+  ipi: c["IPI"] || "",
+  pro: c["PRO"] || "",
+  roleCode: c["Role Code"] || "",
+  split: c["Split"] || "",
+  composeraddress: c["Address"] || "",
+  composercity: c["City"] || "",
+  composerstate: c["State"] || "",
+  composerzip: c["Zip"] || "",
+  publisher: c["Publisher"] || "",
+  publisherIPI: c["Publisher IPI"] || "",
+  publisherPRO: c["Publisher PRO"] || "",
+  pubadmin: c["Publisher Admin"] || "",
+  pubadminIPI: c["Publisher Admin IPI"] || "",
+  pubadminShare: c["Publisher Admin Collection Share"] || "",
+}));
+
+  const updated = [...tracks];
+  updated[i].composers = composers;
+  setTracks(updated);
+} else {
+  console.warn("⚠️ No valid composers found for selected track.");
+}
+
+  setTrackSuggestions([]);
+  setHighlightedTrackIndex(-1);
+}}
+        >
+          {entry["Primary Title"]} – {Array.isArray(entry["Track Artist Name"])
+      ? entry["Track Artist Name"].join(", ")
+      : entry["Track Artist Name"] || "Unknown Artist"}
+        </li>
+      ))}
+    </ul>
+  )}
 </div>
+
 
 
 {/* Track Artist(s) with Search */}
