@@ -1843,7 +1843,7 @@ if (Array.isArray(composerData)) {
     </ul>
   )}
 </div>
-
+</div>
 
 
 {/* Track Artist(s) with Search */}
