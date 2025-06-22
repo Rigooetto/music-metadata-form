@@ -1249,7 +1249,7 @@ const handleAlbumArtistChange = (index, value) => {
   
 
 
-
+         // MAIN RETURN
 
 
   return (
@@ -1276,6 +1276,10 @@ const handleAlbumArtistChange = (index, value) => {
               </select>
             
             </div>
+
+
+
+        
             <div className="relative flex flex-col">
   <label className="text-sm font-medium text-gray-200 mb-1">UPC</label>
   <input
@@ -1320,22 +1324,22 @@ const handleAlbumArtistChange = (index, value) => {
   />
 
   {upcSuggestions.length > 0 && (
-    <ul className="absolute z-10 mt-12 bg-[#1e293b] border border-blue-700 rounded-md w-full shadow-xl max-h-48 overflow-auto text-white">
+    <ul className="absolute z-10 mt-16 bg-[#1e293b] border border-blue-700 rounded-md w-full shadow-xl max-h-48 overflow-auto text-blue">
       {upcSuggestions.map((sugg, idx) => (
         <li
           key={idx}
-          className={`p-2 hover:bg-blue-100 cursor-pointer ${
-            highlightedUpcIndex === idx ? "bg-blue-100" : ""
+          className={`p-2 hover:bg-blue-600 cursor-pointer ${
+            highlightedUpcIndex === idx ? "bg-blue-600" : ""
           }`}
           onMouseDown={() => handleUpcSuggestionClick(sugg)}
         >
-          {sugg["UPC"]} — {sugg["Album Title"] || "Sin título"}
+          {sugg["UPC"]} — {sugg["Album Title"] || "No Title"}
         </li>
       ))}
     </ul>
   )}
 </div>
-
+          
 <div className="flex flex-col">
   <label className="text-sm font-medium text-gray-200 mb-1">{albumArtistLabel}(s)</label>
 {Array.isArray(releaseInfo.albumArtist) &&
@@ -1388,7 +1392,7 @@ const handleAlbumArtistChange = (index, value) => {
           }
         }}
         onBlur={() => setTimeout(() => setArtistSuggestions([]), 150)}
-        className="p-2 bg-[#0f172a] border border-blue-700 rounded-md w-full"
+        className="p-2  bg-[#0f172a]  border border-blue-700 rounded-md w-full"
       />
 
       {/* Trashcan to remove artist */}
@@ -1414,12 +1418,12 @@ const handleAlbumArtistChange = (index, value) => {
     {/* Suggestions Dropdown */}
     {activeArtistInputIndex === `album-${idx}` &&
       artistSuggestions.length > 0 && (
-        <ul className="absolute z-10 bg-[#0f172a] border border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+        <ul className="p-2 z-10 bg-[#0f172a] text-white border border-blue-700 rounded-md w-full  max-h-48 overflow-auto">
           {artistSuggestions.map((name, i) => (
             <li
               key={i}
-              className={`p-2 cursor-pointer ${
-                highlightedArtistIndex === i ? "bg-blue-100" : ""
+              className={`p-2 cursor-pointer border-blue-700 ${
+                highlightedArtistIndex === i ? "bg-blue-700" : ""
               }`}
               onMouseDown={() => {
                 handleAlbumArtistChange(idx, name);
@@ -1450,7 +1454,7 @@ const handleAlbumArtistChange = (index, value) => {
      disabled={isLocked}type="date"
     value={releaseInfo.releaseDate || ""}
     onChange={(e) => handleReleaseInfoChange("releaseDate", e.target.value)}
-    className="p-2 h-12 bg-[#0f172a] border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    className="p-2 h-12 bg-[#0f172a] border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
   />
 </div>
             
@@ -1492,12 +1496,12 @@ const handleAlbumArtistChange = (index, value) => {
   />
 
   {albumSuggestions.length > 0 && (
-    <ul className="absolute z-10 mt-12 bg-[#1e293b] border border-blue-700 rounded-md w-full shadow-xl max-h-48 overflow-auto text-white">
+    <ul className="absolute z-10 mt-16 bg-[#1e293b] border border-blue-700 rounded-md w-full shadow-xl max-h-48 overflow-auto text-white">
       {albumSuggestions.map((sugg, idx) => (
         <li
           key={idx}
           className={`p-2 cursor-pointer ${
-            highlightedAlbumIndex === idx ? "bg-blue-100" : "hover:bg-blue-50"
+            highlightedAlbumIndex === idx ? "bg-blue-600" : "hover:bg-blue-600"
           }`}
           onMouseDown={() => handleAlbumSuggestionClick(sugg)}
           onMouseEnter={() => setHighlightedAlbumIndex(idx)} // 👈 esto permite resaltar con el mouse
@@ -1686,8 +1690,9 @@ const rawRecDate = entry["Recording Date"];
 const formattedRecDate = rawRecDate
   ? new Date(rawRecDate).toISOString().split("T")[0]
   : "";
-handleTrackChange(i, "recDate", formattedRecDate);
 
+
+  handleTrackChange(i, "recDate", formattedRecDate);
   handleTrackChange(i, "isrc", entry["ISRC"] || "");
   handleTrackChange(i, "iswc", entry["ISWC"] || "");
   handleTrackChange(i, "duration", normalizeDuration(entry["Duration"]) || "");
@@ -1775,12 +1780,12 @@ toast.success("🎼 Composer & Publisher Info Loaded", {
 />
 
   {trackSuggestions.length > 0 && (
-    <ul className="absolute z-10 mt-10 bg-[#0f172a] border border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+    <ul className="absolute z-10 mt-16 bg-[#0f172a] border border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto">
       {trackSuggestions.map((entry, idx) => (
         <li
           key={idx}
           className={`p-2 cursor-pointer ${
-            idx === highlightedTrackIndex ? "bg-blue-100" : "hover:bg-blue-50"
+            idx === highlightedTrackIndex ? "bg-blue-500" : "hover:bg-blue-500"
           }`}
           onMouseDown={() => {
   handleTrackChange(i, "primaryTitle", entry["Primary Title"] || "");
@@ -1806,7 +1811,7 @@ try {
 if (parsedTrackArtists.length === 0) parsedTrackArtists.push("");
 
 // ✅ Now set it properly
-handleTrackChange(i, "trackArtistNames", parsedTrackArtists);
+  handleTrackChange(i, "trackArtistNames", parsedTrackArtists);
   handleTrackChange(i, "trackNumber", entry["Track Number"] || "");
   handleTrackChange(i, "recordingTitle", entry["Recording Title"] || "");
   handleTrackChange(i, "akaTitle", entry["AKA Title"] || "");
@@ -1984,12 +1989,12 @@ if (Array.isArray(composerData)) {
     {/* Suggestions Dropdown */}
     {activeArtistInputIndex === `${i}-${artistIndex}` &&
       artistSuggestions.length > 0 && (
-        <ul className="absolute z-10 mt-1 bg-[#0f172a] border border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+        <ul className=" z-10  bg-[#0f172a] border border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto">
           {artistSuggestions.map((name, idx) => (
             <li
               key={idx}
               className={`p-2 cursor-pointer ${
-                idx === highlightedArtistIndex ? "bg-blue-100" : ""
+                idx === highlightedArtistIndex ? "bg-blue-600" : ""
               }`}
               onMouseDown={() => {
                 handleTrackArtistChange(i, artistIndex, name);
