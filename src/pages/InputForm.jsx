@@ -1388,7 +1388,7 @@ const handleAlbumArtistChange = (index, value) => {
           }
         }}
         onBlur={() => setTimeout(() => setArtistSuggestions([]), 150)}
-        className="p-2 border border-gray-300 rounded-md w-full"
+        className="p-2 border border-blue-700 rounded-md w-full"
       />
 
       {/* Trashcan to remove artist */}
@@ -1414,7 +1414,7 @@ const handleAlbumArtistChange = (index, value) => {
     {/* Suggestions Dropdown */}
     {activeArtistInputIndex === `album-${idx}` &&
       artistSuggestions.length > 0 && (
-        <ul className="absolute z-10 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+        <ul className="absolute z-10 bg-[#0f172a] border border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto">
           {artistSuggestions.map((name, i) => (
             <li
               key={i}
@@ -1450,7 +1450,7 @@ const handleAlbumArtistChange = (index, value) => {
      disabled={isLocked}type="date"
     value={releaseInfo.releaseDate || ""}
     onChange={(e) => handleReleaseInfoChange("releaseDate", e.target.value)}
-    className="p-2 h-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    className="p-2 h-12 border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
   />
 </div>
             
@@ -1488,7 +1488,7 @@ const handleAlbumArtistChange = (index, value) => {
     }}
     onBlur={() => setTimeout(() => setAlbumSuggestions([]), 200)}
     placeholder="Search by album title"
-    className="p-2 border border-gray-300 rounded-md w-full"
+    className="p-2 border border-blue-700 rounded-md w-full"
   />
 
   {albumSuggestions.length > 0 && (
@@ -1538,7 +1538,7 @@ const handleAlbumArtistChange = (index, value) => {
     value={releaseInfo.distributor || ""}
     onChange={(e) => handleReleaseInfoChange("distributor", e.target.value)}
     placeholder="Enter Distributor"
-    className="p-2 h-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    className="p-2 h-12 border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
   />
 
   </div>
@@ -1548,7 +1548,7 @@ const handleAlbumArtistChange = (index, value) => {
      disabled={isLocked}type="file"
     accept="image/*"
     onChange={(e) => handleReleaseInfoChange("coverArt", e.target.files[0])}
-    className="p-2 h-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    className="p-2 h-12 border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
   />
   {releaseInfo.coverArtPreview && (
     <img
@@ -1562,7 +1562,7 @@ const handleAlbumArtistChange = (index, value) => {
         </section>
 
         {tracks.map((track, i) => (
-          <details key={i} open={!track.collapsed} ref={(el) => (trackRefs.current[i] = el)} className="mb-6 border rounded-xl p-4 bg-gray-50">
+          <details key={i} open={!track.collapsed} ref={(el) => (trackRefs.current[i] = el)} className="mb-6 border rounded-xl p-4 bg-[#0f172a]">
             <summary
   className="cursor-pointer font-semibold text-blue-700 mb-4 flex items-center justify-between"
   onClick={(e) => {
@@ -1579,7 +1579,7 @@ const handleAlbumArtistChange = (index, value) => {
   <span>
     Track {i + 1} Information
     {tracks[i]?.primaryTitle && (
-      <span className="text-gray-500 italic text-sm ml-2">
+      <span className="text-gray-400 italic text-sm ml-2">
         – “{tracks[i].primaryTitle}”
       </span>
     )}
@@ -1775,7 +1775,7 @@ toast.success("🎼 Composer & Publisher Info Loaded", {
 />
 
   {trackSuggestions.length > 0 && (
-    <ul className="absolute z-10 mt-10 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+    <ul className="absolute z-10 mt-10 bg-[#0f172a] border border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto">
       {trackSuggestions.map((entry, idx) => (
         <li
           key={idx}
@@ -1959,7 +1959,7 @@ if (Array.isArray(composerData)) {
           }
         }}
         onBlur={() => setTimeout(() => setArtistSuggestions([]), 150)}
-        className="p-2 border border-gray-300 rounded-md w-full"
+        className="p-2 border border-blue-700 rounded-md w-full"
       />
 
       {/* Remove button */}
@@ -1984,7 +1984,7 @@ if (Array.isArray(composerData)) {
     {/* Suggestions Dropdown */}
     {activeArtistInputIndex === `${i}-${artistIndex}` &&
       artistSuggestions.length > 0 && (
-        <ul className="absolute z-10 mt-1 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+        <ul className="absolute z-10 mt-1 bg-[#0f172a] border border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto">
           {artistSuggestions.map((name, idx) => (
             <li
               key={idx}
@@ -2120,7 +2120,7 @@ if (Array.isArray(composerData)) {
     disabled={isLocked}
     value={track.recDate || ""}
     onChange={(e) => handleTrackChange(i, "recDate", e.target.value)}
-    className="p-2 h-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+    className="p-2 h-12 border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
   />
 </div>
   {renderInput("Recording Engineer", track.recEng, (e) => handleTrackChange(i, "recEng", e.target.value))}
@@ -2143,7 +2143,7 @@ if (Array.isArray(composerData)) {
           
     
             <div className="mt-6 border-t pt-4">
-              <h3 className="text-lg font-semibold text-gray-700 mb-4">Composers</h3>
+              <h3 className="text-lg font-semibold text-gray-300 mb-4">Composers</h3>
               {track.composers.map((composer, j) => {
                 const key = `${i}-${j}`;
 const removeComposer = (trackIndex, composerIndex) => {
@@ -2156,7 +2156,7 @@ const removeComposer = (trackIndex, composerIndex) => {
 
 
   return (
-                  <div key={key} ref={(el) => (composerRefs.current[key] = el)} className="mb-6 pb-4 border-b border-gray-300">
+                  <div key={key} ref={(el) => (composerRefs.current[key] = el)} className="mb-6 pb-4 border-b border-blue-700">
                     <div className="flex items-center justify-between mb-2">
   <h4 className="font-semibold text-blue-600">Composer {j + 1}</h4>
   <button
@@ -2220,7 +2220,7 @@ const removeComposer = (trackIndex, composerIndex) => {
     activeInput.composerIndex === j &&
     activeInput.field === "firstName" &&
     suggestions.length > 0 && (
-      <ul className="absolute z-10 mt-10 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+      <ul className="absolute z-10 mt-10 bg-[#0f172a] border border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto">
   {suggestions.map((sugg, idx) => (
     <li
       key={idx}
@@ -2296,7 +2296,7 @@ const removeComposer = (trackIndex, composerIndex) => {
   activeInput.composerIndex === j &&
   activeInput.field === "lastName" &&
   suggestions.length > 0 && (
-    <ul className="absolute z-10 mt-10 bg-white border border-gray-300 rounded-md w-full shadow-lg max-h-48 overflow-auto">
+    <ul className="absolute z-10 mt-10 bg-[#0f172a] border border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto">
       {suggestions.map((sugg, idx) => (
         <li
           key={idx}
@@ -2378,7 +2378,7 @@ const removeComposer = (trackIndex, composerIndex) => {
 {activePublisherField?.trackIndex === i &&
   activePublisherField?.composerIndex === j &&
   publisherSuggestions.length > 0 && (
-    <div className="absolute top-full left-0 w-full z-10 bg-white border border-gray-300 rounded-md shadow-md max-h-48 overflow-y-auto">
+    <div className="absolute top-full left-0 w-full z-10 bg-[#0f172a] border border-blue-700 rounded-md shadow-md max-h-48 overflow-y-auto">
       {publisherSuggestions.map((s, idx) => (
         <div
           key={idx}
@@ -2440,7 +2440,7 @@ const removeComposer = (trackIndex, composerIndex) => {
   {activeAdminField?.trackIndex === i &&
     activeAdminField?.composerIndex === j &&
     adminSuggestions.length > 0 && (
-      <div className="absolute top-full left-0 w-full z-10 bg-white border border-gray-300 rounded-md shadow-md max-h-48 overflow-y-auto">
+      <div className="absolute top-full left-0 w-full z-10 bg-[#0f172a] border border-blue-700 rounded-md shadow-md max-h-48 overflow-y-auto">
         {adminSuggestions.map((s, idx) => (
           <div
             key={idx}
@@ -2485,7 +2485,7 @@ const removeComposer = (trackIndex, composerIndex) => {
   <button
     type="button"
     onClick={handleClearForm}
-    className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-3 rounded-md shadow text-md font-semibold"
+    className="bg-gray-200 hover:bg-gray-300 text-gray-200 px-6 py-3 rounded-md shadow text-md font-semibold"
   >
     Clear Form
   </button>
