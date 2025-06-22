@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* theme.css */
+
+:root {
+  --bg: #ffffff;
+  --bg-card: #f8fafc;
+  --text: #000000;
+  --text-muted: #374151;
+  --accent: #2563eb;
+  --border: #000000;
+  --input-bg: #ffffff;
+  --focus-ring: #2563eb;
+}
+
+.dark {
+  --bg: #0f172a;
+  --bg-card: #111827;
+  --text: #ffffff;
+  --text-muted: #d1d5db;
+  --accent: #60a5fa;
+  --border: #4b5563;
+  --input-bg: #1e293b;
+  --focus-ring: #60a5fa;
+}
