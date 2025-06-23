@@ -5,14 +5,14 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        inter: ['Inter', 'system-ui', 'sans-serif'],
-        ibm: ['"IBM Plex Sans"', 'system-ui', 'sans-serif'],
-        display: ['"Playfair Display"', 'serif'],
+        inter: ['Inter', 'sans-serif'],
+        ibm: ['"IBM Plex Sans"', 'sans-serif'],
       },
       fontSize: {
-      'huge': ['5rem', '1'],
-      'tiny': ['0.625rem', '1.25rem'],
+        huge: ['5rem', '1'],
+        tiny: ['0.625rem', '1.25rem'],
+      },
     },
   },
   plugins: [],
-};
+}
