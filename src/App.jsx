@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AdminDashboard from './pages/AdminDashboard';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import InputForm from './pages/InputForm';
 import ReportGenerator from './pages/ReportGenerator';
 import Sidebar from './Sidebar';
@@ -40,7 +40,6 @@ export default function App() {
           </button>
         </div>
         <Routes>
-          <Route path="*" element={<Navigate to="/login" />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/not-approved" element={<NotApprovedPage />} />

@@ -1225,7 +1225,7 @@ const handleAlbumArtistChange = (index, value) => {
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+          className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
         />
       </div>
     );
@@ -1254,28 +1254,29 @@ const handleAlbumArtistChange = (index, value) => {
 
   return (
   <div className="bg-[#f9fafb] dark:bg-[#0f172a] min-h-screen px-4 py-8 md:px-10 transition-colors duration-300 ease-in-out">
-    <div className="max-w-6xl mx-auto bg-white dark:bg-[#111827] border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-900 shadow-2xl rounded-xl p-8 text-black dark:text-white transition-colors duration-300 ease-in-out">
+    <div className="max-w-6xl mx-auto bg-white dark:bg-[#111827] border border-black dark:border-gray-600 dark:border-blue-900 shadow-2xl rounded-xl p-8 text-black dark:text-white transition-colors duration-300 ease-in-out">
       <h1 className="text-3xl font-bold mb-8 text-center text-blue-600 dark:text-blue-400 transition-colors duration-300 ease-in-out">
         Music Catalog Data Entry
       </h1>
 
-        <section className="mb-10  pb-6 transition-colors duration-300 ease-in-out">
+        <section className="mb-10 pb-6 transition-colors duration-300 ease-in-out">
   <h2 className="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400 transition-colors duration-300 ease-in-out">Release Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 transition-colors duration-300 ease-in-out">
             <div className="flex flex-col transition-colors duration-300 ease-in-out">
-              <label className="text-sm font-medium text-gray-200 mb-1 transition-colors duration-300 ease-in-out">Type of Release</label>
-              <select
-                className="p-2 h-11 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
-                value={releaseInfo.typeOfRelease || ""}
-                onChange={(e) => handleReleaseInfoChange("typeOfRelease", e.target.value)}
-              >
-                <option value="" disabled>Select type</option>
-                <option value="Single">Single</option>
-                <option value="Album">Album</option>
-                <option value="EP">EP</option>
-              </select>
-            
-            </div>
+  <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">
+    Type of Release
+  </label>
+  <select
+    className="p-2 h-11 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] transition-colors duration-300 ease-in-out"
+    value={releaseInfo.typeOfRelease || ""}
+    onChange={(e) => handleReleaseInfoChange("typeOfRelease", e.target.value)}
+  >
+    <option value="" disabled>Select type</option>
+    <option value="Single">Single</option>
+    <option value="Album">Album</option>
+    <option value="EP">EP</option>
+  </select>
+</div>
 
 
 
@@ -1320,11 +1321,11 @@ const handleAlbumArtistChange = (index, value) => {
     }}
     onBlur={() => setTimeout(() => setUpcSuggestions([]), 200)}
     placeholder="Buscar por UPC"
-    className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+    className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
   />
 
   {upcSuggestions.length > 0 && (
-    <ul className="absolute z-10 mt-16 bg-[#1e293b] border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md w-full shadow-xl max-h-48 overflow-auto text-blue transition-colors duration-300 ease-in-out">
+    <ul className="absolute z-10 mt-16 bg-[#1e293b] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md w-full shadow-xl max-h-48 overflow-auto text-blue transition-colors duration-300 ease-in-out">
       {upcSuggestions.map((sugg, idx) => (
         <li
           key={idx}
@@ -1392,7 +1393,7 @@ const handleAlbumArtistChange = (index, value) => {
           }
         }}
         onBlur={() => setTimeout(() => setArtistSuggestions([]), 150)}
-        className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md w-full transition-colors duration-300 ease-in-out"
+        className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md w-full transition-colors duration-300 ease-in-out"
       />
 
       {/* Trashcan to remove artist */}
@@ -1418,7 +1419,7 @@ const handleAlbumArtistChange = (index, value) => {
     {/* Suggestions Dropdown */}
     {activeArtistInputIndex === `album-${idx}` &&
       artistSuggestions.length > 0 && (
-        <ul className="p-2 z-10 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md w-full max-h-48 overflow-auto transition-colors duration-300 ease-in-out">
+        <ul className="p-2 z-10 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md w-full max-h-48 overflow-auto transition-colors duration-300 ease-in-out">
           {artistSuggestions.map((name, i) => (
             <li
               key={i}
@@ -1454,7 +1455,7 @@ const handleAlbumArtistChange = (index, value) => {
      disabled={isLocked}type="date"
     value={releaseInfo.releaseDate || ""}
     onChange={(e) => handleReleaseInfoChange("releaseDate", e.target.value)}
-    className="p-2 h-12 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+    className="p-2 h-12 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
   />
 </div>
             
@@ -1492,11 +1493,11 @@ const handleAlbumArtistChange = (index, value) => {
     }}
     onBlur={() => setTimeout(() => setAlbumSuggestions([]), 200)}
     placeholder="Search by album title"
-    className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md w-full transition-colors duration-300 ease-in-out"
+    className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md w-full transition-colors duration-300 ease-in-out"
   />
 
   {albumSuggestions.length > 0 && (
-    <ul className="absolute z-10 mt-16 bg-[#1e293b] border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md w-full shadow-xl max-h-48 overflow-auto text-black dark:text-white transition-colors duration-300 ease-in-out">
+    <ul className="absolute z-10 mt-16 bg-[#1e293b] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md w-full shadow-xl max-h-48 overflow-auto text-black dark:text-white transition-colors duration-300 ease-in-out">
       {albumSuggestions.map((sugg, idx) => (
         <li
           key={idx}
@@ -1528,7 +1529,7 @@ const handleAlbumArtistChange = (index, value) => {
         }
       }}
       placeholder="Enter number of tracks"
-      className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+      className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
     />
   </div>
 
@@ -1542,7 +1543,7 @@ const handleAlbumArtistChange = (index, value) => {
     value={releaseInfo.distributor || ""}
     onChange={(e) => handleReleaseInfoChange("distributor", e.target.value)}
     placeholder="Enter Distributor"
-    className="p-2 h-12 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+    className="p-2 h-12 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors duration-300 ease-in-out"
   />
 
   </div>
@@ -1552,7 +1553,7 @@ const handleAlbumArtistChange = (index, value) => {
      disabled={isLocked}type="file"
     accept="image/*"
     onChange={(e) => handleReleaseInfoChange("coverArt", e.target.files[0])}
-    className="p-2 h-12 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+    className="p-2 h-12 border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors duration-300 ease-in-out"
   />
   {releaseInfo.coverArtPreview && (
     <img
@@ -1566,7 +1567,7 @@ const handleAlbumArtistChange = (index, value) => {
         </section>
 
         {tracks.map((track, i) => (
-          <details key={i} open={!track.collapsed} ref={(el) => (trackRefs.current[i] = el)} className="mb-6 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 rounded-xl p-4 bg-[#f9fafb] dark:bg-[#0f172a] transition-colors duration-300 ease-in-out">
+          <details key={i} open={!track.collapsed} ref={(el) => (trackRefs.current[i] = el)} className="mb-6 border border-black dark:border-gray-600 rounded-xl p-4 bg-[#f9fafb] dark:bg-[#0f172a] transition-colors duration-300 ease-in-out">
             <summary
   className="cursor-pointer font-semibold text-blue-700 mb-4 flex items-center justify-between transition-colors duration-300 ease-in-out"
   onClick={(e) => {
@@ -1776,11 +1777,11 @@ toast.success("🎼 Composer & Publisher Info Loaded", {
   }}
   onBlur={() => setTimeout(() => setTrackSuggestions([]), 150)}
   placeholder="Start typing primary title"
-  className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+  className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
 />
 
   {trackSuggestions.length > 0 && (
-    <ul className="absolute z-10 mt-16 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto transition-colors duration-300 ease-in-out">
+    <ul className="absolute z-10 mt-16 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto transition-colors duration-300 ease-in-out">
       {trackSuggestions.map((entry, idx) => (
         <li
           key={idx}
@@ -1964,7 +1965,7 @@ if (Array.isArray(composerData)) {
           }
         }}
         onBlur={() => setTimeout(() => setArtistSuggestions([]), 150)}
-        className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md w-full transition-colors duration-300 ease-in-out"
+        className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md w-full transition-colors duration-300 ease-in-out"
       />
 
       {/* Remove button */}
@@ -1989,7 +1990,7 @@ if (Array.isArray(composerData)) {
     {/* Suggestions Dropdown */}
     {activeArtistInputIndex === `${i}-${artistIndex}` &&
       artistSuggestions.length > 0 && (
-        <ul className="z-10 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto transition-colors duration-300 ease-in-out">
+        <ul className="z-10 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto transition-colors duration-300 ease-in-out">
           {artistSuggestions.map((name, idx) => (
             <li
               key={idx}
@@ -2043,7 +2044,7 @@ if (Array.isArray(composerData)) {
         handleTrackChange(i, "isrc", formatted);
       }}
       placeholder="AA-AAA-AA-12345"
-      className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+      className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
     />
   </div>
 
@@ -2071,7 +2072,7 @@ if (Array.isArray(composerData)) {
         handleTrackChange(i, "iswc", formatted);
       }}
       placeholder="T-123456789-0"
-      className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+      className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
     />
   </div>
 
@@ -2102,7 +2103,7 @@ if (Array.isArray(composerData)) {
       handleTrackChange(i, "duration", formatted);
     }}
     placeholder="mm:ss"
-    className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+    className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
   />
 </div>
 {renderInput("Track label", track.trackLabel, (e) => {
@@ -2125,7 +2126,7 @@ if (Array.isArray(composerData)) {
     disabled={isLocked}
     value={track.recDate || ""}
     onChange={(e) => handleTrackChange(i, "recDate", e.target.value)}
-    className="p-2 h-12 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+    className="p-2 h-12 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors duration-300 ease-in-out"
   />
 </div>
   {renderInput("Recording Engineer", track.recEng, (e) => handleTrackChange(i, "recEng", e.target.value))}
@@ -2141,7 +2142,7 @@ if (Array.isArray(composerData)) {
        disabled={isLocked}type="file"
       accept="audio/*"
       onChange={(e) => handleTrackChange(i, "audioFile", e.target.files[0])}
-      className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+      className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
     />
   </div>
 </div>
@@ -2161,7 +2162,7 @@ const removeComposer = (trackIndex, composerIndex) => {
 
 
   return (
-                  <div key={key} ref={(el) => (composerRefs.current[key] = el)} className="mb-6 pb-4  transition-colors duration-300 ease-in-out">
+                  <div key={key} ref={(el) => (composerRefs.current[key] = el)} className="mb-6 pb-4 transition-colors duration-300 ease-in-out">
                     <div className="flex items-center justify-between mb-2 transition-colors duration-300 ease-in-out">
   <h4 className="font-semibold text-blue-600 transition-colors duration-300 ease-in-out">Composer {j + 1}</h4>
   <button
@@ -2216,7 +2217,7 @@ const removeComposer = (trackIndex, composerIndex) => {
   }}
   onBlur={() => setTimeout(() => setSuggestions([]), 200)}
   placeholder="Start typing first name"
-  className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+  className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
 />
 
   {/* 👇 Composer name suggestion dropdown */}
@@ -2225,7 +2226,7 @@ const removeComposer = (trackIndex, composerIndex) => {
     activeInput.composerIndex === j &&
     activeInput.field === "firstName" &&
     suggestions.length > 0 && (
-      <ul className="absolute z-10 mt-10 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto transition-colors duration-300 ease-in-out">
+      <ul className="absolute z-10 mt-10 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto transition-colors duration-300 ease-in-out">
   {suggestions.map((sugg, idx) => (
     <li
       key={idx}
@@ -2294,14 +2295,14 @@ const removeComposer = (trackIndex, composerIndex) => {
   }}
   onBlur={() => setTimeout(() => setSuggestions([]), 200)}
   placeholder="Start typing last name"
-  className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+  className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
 />
 {activeInput &&
   activeInput.trackIndex === i &&
   activeInput.composerIndex === j &&
   activeInput.field === "lastName" &&
   suggestions.length > 0 && (
-    <ul className="absolute z-10 mt-10 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto transition-colors duration-300 ease-in-out">
+    <ul className="absolute z-10 mt-10 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto transition-colors duration-300 ease-in-out">
       {suggestions.map((sugg, idx) => (
         <li
           key={idx}
@@ -2377,13 +2378,13 @@ const removeComposer = (trackIndex, composerIndex) => {
     }
   }}
   onBlur={() => setTimeout(() => setPublisherSuggestions([]), 200)}
-  className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+  className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
 />
 
 {activePublisherField?.trackIndex === i &&
   activePublisherField?.composerIndex === j &&
   publisherSuggestions.length > 0 && (
-    <div className="absolute top-full left-0 w-full z-10 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md shadow-md max-h-48 overflow-y-auto transition-colors duration-300 ease-in-out">
+    <div className="absolute top-full left-0 w-full z-10 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md shadow-md max-h-48 overflow-y-auto transition-colors duration-300 ease-in-out">
       {publisherSuggestions.map((s, idx) => (
         <div
           key={idx}
@@ -2439,13 +2440,13 @@ const removeComposer = (trackIndex, composerIndex) => {
     onFocus={() => {
       setActiveAdminField({ trackIndex: i, composerIndex: j });
     }}
-    className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+    className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
   />
 
   {activeAdminField?.trackIndex === i &&
     activeAdminField?.composerIndex === j &&
     adminSuggestions.length > 0 && (
-      <div className="absolute top-full left-0 w-full z-10 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 border border-black dark:border-gray-600 border border-black dark:border-gray-600 dark:border-gray-600 dark:border-blue-700 rounded-md shadow-md max-h-48 overflow-y-auto transition-colors duration-300 ease-in-out">
+      <div className="absolute top-full left-0 w-full z-10 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md shadow-md max-h-48 overflow-y-auto transition-colors duration-300 ease-in-out">
         {adminSuggestions.map((s, idx) => (
           <div
             key={idx}
