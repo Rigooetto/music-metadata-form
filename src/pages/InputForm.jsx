@@ -1219,15 +1219,18 @@ const handleAlbumArtistChange = (index, value) => {
   return (
 
       <div className="flex flex-col transition-colors duration-300 ease-in-out">
-        <label className="text-sm font-medium text-gray-200 mb-1 transition-colors duration-300 ease-in-out">{label}</label>
-        <input
-           disabled={isLocked}type="text"
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder}
-          className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
-        />
-      </div>
+  <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">
+    {label}
+  </label>
+  <input
+    disabled={isLocked}
+    type="text"
+    value={value}
+    onChange={onChange}
+    placeholder={placeholder}
+    className="p-2 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] transition-colors duration-300 ease-in-out"
+  />
+</div>
     );
   }
 
@@ -1253,14 +1256,16 @@ const handleAlbumArtistChange = (index, value) => {
 
 
   return (
-  <div className="bg-[#f9fafb] dark:bg-[#0f172a] min-h-screen px-4 py-8 md:px-10 transition-colors duration-300 ease-in-out">
-    <div className="max-w-6xl mx-auto bg-white dark:bg-[#111827] border border-black dark:border-gray-600 dark:border-blue-900 shadow-2xl rounded-xl p-8 text-black dark:text-white transition-colors duration-300 ease-in-out">
-      <h1 className="text-3xl font-bold mb-8 text-center text-blue-600 dark:text-blue-400 transition-colors duration-300 ease-in-out">
+  <div className="bg-[var(--input-bg)] min-h-screen px-4 py-8 md:px-10 transition-colors duration-300 ease-in-out">
+    <div className="max-w-6xl mx-auto bg-[var(--bg-card)] border border-[var(--border)] shadow-2xl rounded-xl p-8 text-[var(--text)] transition-colors duration-300 ease-in-out">
+      <h1 className="text-3xl font-bold mb-8 text-center text-[var(--accent)] transition-colors duration-300 ease-in-out">
         Music Catalog Data Entry
       </h1>
 
         <section className="mb-10 pb-6 transition-colors duration-300 ease-in-out">
-  <h2 className="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400 transition-colors duration-300 ease-in-out">Release Information</h2>
+  <h2 className="text-xl font-semibold mb-4 text-[var(--accent)] transition-colors duration-300 ease-in-out">
+  Release Information
+</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 transition-colors duration-300 ease-in-out">
             <div className="flex flex-col transition-colors duration-300 ease-in-out">
   <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">
@@ -1282,7 +1287,7 @@ const handleAlbumArtistChange = (index, value) => {
 
         
             <div className="relative flex flex-col transition-colors duration-300 ease-in-out">
-  <label className="text-sm font-medium text-gray-200 mb-1 transition-colors duration-300 ease-in-out">UPC</label>
+  <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">UPC</label>
   <input
     disabled={isLocked}
     type="text"
@@ -1320,29 +1325,31 @@ const handleAlbumArtistChange = (index, value) => {
       }
     }}
     onBlur={() => setTimeout(() => setUpcSuggestions([]), 200)}
-    placeholder="Buscar por UPC"
-    className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
-  />
+    placeholder="Search by UPC"
+    className="p-2 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] transition-colors duration-300 ease-in-out"
+/>
 
-  {upcSuggestions.length > 0 && (
-    <ul className="absolute z-10 mt-16 bg-[#1e293b] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md w-full shadow-xl max-h-48 overflow-auto text-blue transition-colors duration-300 ease-in-out">
-      {upcSuggestions.map((sugg, idx) => (
-        <li
-          key={idx}
-          className={`p-2 hover:bg-blue-600 cursor-pointer ${
-            highlightedUpcIndex === idx ? "bg-blue-600" : ""
-          }`}
-          onMouseDown={() => handleUpcSuggestionClick(sugg)}
-        >
-          {sugg["UPC"]} — {sugg["Album Title"] || "No Title"}
-        </li>
-      ))}
-    </ul>
-  )}
+{upcSuggestions.length > 0 && (
+  <ul className="absolute z-10 mt-16 bg-[var(--input-bg)] border border-[var(--border)] rounded-md w-full shadow-xl max-h-48 overflow-auto text-[var(--text)] transition-colors duration-300 ease-in-out">
+    {upcSuggestions.map((sugg, idx) => (
+      <li
+        key={idx}
+        className={`p-2 cursor-pointer transition-colors duration-300 ease-in-out ${
+          highlightedUpcIndex === idx
+            ? "bg-[var(--accent)] text-white"
+            : "hover:bg-[var(--accent)] hover:text-white"
+        }`}
+        onMouseDown={() => handleUpcSuggestionClick(sugg)}
+      >
+        {sugg["UPC"]} — {sugg["Album Title"] || "No Title"}
+      </li>
+    ))}
+  </ul>
+)}
 </div>
           
 <div className="flex flex-col transition-colors duration-300 ease-in-out">
-  <label className="text-sm font-medium text-gray-200 mb-1 transition-colors duration-300 ease-in-out">{albumArtistLabel}(s)</label>
+  <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">{albumArtistLabel}(s)</label>
 {Array.isArray(releaseInfo.albumArtist) &&
   releaseInfo.albumArtist.map((artist, idx) => (
   <React.Fragment key={idx}>
@@ -1393,7 +1400,7 @@ const handleAlbumArtistChange = (index, value) => {
           }
         }}
         onBlur={() => setTimeout(() => setArtistSuggestions([]), 150)}
-        className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md w-full transition-colors duration-300 ease-in-out"
+      className="p-2 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md w-full transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)]"
       />
 
       {/* Trashcan to remove artist */}
@@ -1408,7 +1415,7 @@ const handleAlbumArtistChange = (index, value) => {
               albumArtist: updated,
             }));
           }}
-          className="ml-2 text-red-500 hover:text-red-700 text-lg transition-colors duration-300 ease-in-out"
+          className="ml-2 text-[var(--accent)] hover:text-[var(--focus-ring)] text-lg transition-colors duration-300 ease-in-out"
           title="Remove Artist"
         >
           🗑️
@@ -1419,12 +1426,12 @@ const handleAlbumArtistChange = (index, value) => {
     {/* Suggestions Dropdown */}
     {activeArtistInputIndex === `album-${idx}` &&
       artistSuggestions.length > 0 && (
-        <ul className="p-2 z-10 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md w-full max-h-48 overflow-auto transition-colors duration-300 ease-in-out">
+        <ul className="p-2 z-10 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md w-full max-h-48 overflow-auto transition-colors duration-300 ease-in-out">
           {artistSuggestions.map((name, i) => (
             <li
               key={i}
-              className={`p-2 cursor-pointer border-blue-700 ${
-                highlightedArtistIndex === i ? "bg-blue-700" : ""
+              className={`p-2 cursor-pointer border-[var(--border)] ${
+                highlightedArtistIndex === i ? "bg-[var(--accent)] text-white" : ""
               }`}
               onMouseDown={() => {
                 handleAlbumArtistChange(idx, name);
@@ -1441,7 +1448,7 @@ const handleAlbumArtistChange = (index, value) => {
 ))}
   <button
     type="button"
-    className="text-blue-600 hover:text-blue-800 text-sm mt-1 self-start transition-colors duration-300 ease-in-out"
+    className="text-[var(--accent)] hover:opacity-80 text-sm mt-1 self-start transition-colors duration-300 ease-in-out"
     onClick={addAlbumArtist}
   >
     + Add Another Artist
@@ -1450,17 +1457,17 @@ const handleAlbumArtistChange = (index, value) => {
 
 
 <div className="flex flex-col transition-colors duration-300 ease-in-out">
-  <label className="text-sm font-medium text-gray-200 mb-1 transition-colors duration-300 ease-in-out">Digital Release Date</label>
+  <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">Digital Release Date</label>
   <input
      disabled={isLocked}type="date"
     value={releaseInfo.releaseDate || ""}
     onChange={(e) => handleReleaseInfoChange("releaseDate", e.target.value)}
-    className="p-2 h-12 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+    className="p-2 h-12 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] transition-colors duration-300 ease-in-out"
   />
 </div>
             
 <div className="relative flex flex-col transition-colors duration-300 ease-in-out">
-  <label className="text-sm font-medium text-gray-200 mb-1 transition-colors duration-300 ease-in-out">Album Title</label>
+  <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">Album Title</label>
   <input
     disabled={isLocked}
     type="text"
@@ -1493,16 +1500,18 @@ const handleAlbumArtistChange = (index, value) => {
     }}
     onBlur={() => setTimeout(() => setAlbumSuggestions([]), 200)}
     placeholder="Search by album title"
-    className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md w-full transition-colors duration-300 ease-in-out"
+    className="p-2 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md w-full transition-colors duration-300 ease-in-out"
   />
 
   {albumSuggestions.length > 0 && (
-    <ul className="absolute z-10 mt-16 bg-[#1e293b] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md w-full shadow-xl max-h-48 overflow-auto text-black dark:text-white transition-colors duration-300 ease-in-out">
+    <ul className="absolute z-10 mt-16 bg-[var(--input-bg)] border border-[var(--border)] rounded-md w-full shadow-xl max-h-48 overflow-auto text-[var(--text)] transition-colors duration-300 ease-in-out">
       {albumSuggestions.map((sugg, idx) => (
         <li
           key={idx}
           className={`p-2 cursor-pointer ${
-            highlightedAlbumIndex === idx ? "bg-blue-600" : "hover:bg-blue-600"
+            highlightedAlbumIndex === idx
+  ? "bg-[var(--accent)] text-white"
+  : "hover:bg-[var(--accent)] hover:text-white"
           }`}
           onMouseDown={() => handleAlbumSuggestionClick(sugg)}
           onMouseEnter={() => setHighlightedAlbumIndex(idx)} // 👈 esto permite resaltar con el mouse
@@ -1516,7 +1525,7 @@ const handleAlbumArtistChange = (index, value) => {
      
 
   <div className="flex flex-col transition-colors duration-300 ease-in-out">
-    <label className="text-sm font-medium text-gray-200 mb-1 transition-colors duration-300 ease-in-out"># of Tracks</label>
+    <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out"># of Tracks</label>
     <input
        disabled={isLocked}type="number"
       min="1"
@@ -1529,7 +1538,7 @@ const handleAlbumArtistChange = (index, value) => {
         }
       }}
       placeholder="Enter number of tracks"
-      className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+      className="p-2 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] transition-colors duration-300 ease-in-out"
     />
   </div>
 
@@ -1537,23 +1546,23 @@ const handleAlbumArtistChange = (index, value) => {
 
 
            <div className="flex flex-col transition-colors duration-300 ease-in-out">
-  <label className="text-sm font-medium text-gray-200 mb-1 transition-colors duration-300 ease-in-out">Distributor</label>
+  <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">Distributor</label>
   <input
      disabled={isLocked}type="text"
     value={releaseInfo.distributor || ""}
     onChange={(e) => handleReleaseInfoChange("distributor", e.target.value)}
     placeholder="Enter Distributor"
-    className="p-2 h-12 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+    className="p-2 h-12 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] transition-colors duration-300 ease-in-out"
   />
 
   </div>
            <div className="flex flex-col transition-colors duration-300 ease-in-out">
-  <label className="text-sm font-medium text-gray-200 mb-1 transition-colors duration-300 ease-in-out">Upload Cover Art</label>
+  <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">Upload Cover Art</label>
   <input
      disabled={isLocked}type="file"
     accept="image/*"
     onChange={(e) => handleReleaseInfoChange("coverArt", e.target.files[0])}
-    className="p-2 h-12 border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+    className="p-2 h-12 border border-[var(--border)] dark:border-[var(--border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] transition-colors duration-300 ease-in-out"
   />
   {releaseInfo.coverArtPreview && (
     <img
@@ -1567,9 +1576,14 @@ const handleAlbumArtistChange = (index, value) => {
         </section>
 
         {tracks.map((track, i) => (
-          <details key={i} open={!track.collapsed} ref={(el) => (trackRefs.current[i] = el)} className="mb-6 border border-black dark:border-gray-600 rounded-xl p-4 bg-[#f9fafb] dark:bg-[#0f172a] transition-colors duration-300 ease-in-out">
+          <details
+  key={i}
+  open={!track.collapsed}
+  ref={(el) => (trackRefs.current[i] = el)}
+  className="mb-6 border border-[var(--border)] rounded-xl p-4 bg-[var(--details-bg)] transition-colors duration-300 ease-in-out"
+>
             <summary
-  className="cursor-pointer font-semibold text-blue-700 mb-4 flex items-center justify-between transition-colors duration-300 ease-in-out"
+  className="cursor-pointer font-semibold text-[var(--accent)] mb-4 flex items-center justify-between transition-colors duration-300 ease-in-out"
   onClick={(e) => {
     e.preventDefault();
     const updated = [...tracks];
@@ -1584,14 +1598,14 @@ const handleAlbumArtistChange = (index, value) => {
   <span>
     Track {i + 1} Information
     {tracks[i]?.primaryTitle && (
-      <span className="text-gray-400 italic text-sm ml-2 transition-colors duration-300 ease-in-out">
+      <span className="italic text-sm ml-2 text-[var(--text-muted)] transition-colors duration-300 ease-in-out">
         – “{tracks[i].primaryTitle}”
       </span>
     )}
   </span>
 
   <span
-    className="text-gray-400 hover:text-red-600 text-xl ml-4 cursor-pointer transition-colors duration-300 ease-in-out"
+    className="text-[var(--text-muted)] hover:text-[var(--accent)] text-xl ml-4 cursor-pointer transition-colors duration-300 ease-in-out"
     title="Delete Track"
     onClick={(e) => {
       e.stopPropagation();
@@ -1611,7 +1625,7 @@ const handleAlbumArtistChange = (index, value) => {
 
 {/* Primary Title */}
 <div className="relative flex flex-col transition-colors duration-300 ease-in-out">
-  <label className="text-sm font-medium text-gray-200 mb-1 transition-colors duration-300 ease-in-out">Primary Title</label>
+  <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">Primary Title</label>
 <input
    disabled={isLocked}type="text"
   value={track.primaryTitle || ""}
@@ -1777,16 +1791,18 @@ toast.success("🎼 Composer & Publisher Info Loaded", {
   }}
   onBlur={() => setTimeout(() => setTrackSuggestions([]), 150)}
   placeholder="Start typing primary title"
-  className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+  className="p-2 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] transition-colors duration-300 ease-in-out"
 />
 
   {trackSuggestions.length > 0 && (
-    <ul className="absolute z-10 mt-16 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto transition-colors duration-300 ease-in-out">
+    <ul className="absolute z-10 mt-16 bg-[var(--input-bg)] border border-[var(--border)] rounded-md w-full shadow-lg max-h-48 overflow-auto transition-colors duration-300 ease-in-out">
       {trackSuggestions.map((entry, idx) => (
         <li
           key={idx}
           className={`p-2 cursor-pointer ${
-            idx === highlightedTrackIndex ? "bg-blue-500" : "hover:bg-blue-500"
+            idx === highlightedTrackIndex
+  ? "bg-[var(--accent)]"
+  : "hover:bg-[var(--accent)]"
           }`}
           onMouseDown={() => {
   handleTrackChange(i, "primaryTitle", entry["Primary Title"] || "");
@@ -1911,7 +1927,7 @@ if (Array.isArray(composerData)) {
 
 {/* Track Artist(s) with Search */}
 <div className="flex flex-col mb-4 transition-colors duration-300 ease-in-out">
-  <label className="text-sm font-medium text-gray-200 mb-1 transition-colors duration-300 ease-in-out">
+  <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">
     Track Artist(s)
   </label>
 
@@ -1965,7 +1981,7 @@ if (Array.isArray(composerData)) {
           }
         }}
         onBlur={() => setTimeout(() => setArtistSuggestions([]), 150)}
-        className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md w-full transition-colors duration-300 ease-in-out"
+        className="p-2 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md w-full transition-colors duration-300 ease-in-out"
       />
 
       {/* Remove button */}
@@ -1979,7 +1995,7 @@ if (Array.isArray(composerData)) {
             updatedTracks[i].trackArtistNames = updated;
             setTracks(updatedTracks);
           }}
-          className="ml-2 text-red-500 hover:text-red-700 text-lg transition-colors duration-300 ease-in-out"
+          className="ml-2 text-[var(--accent)] hover:text-[var(--focus-ring)] text-lg transition-colors duration-300 ease-in-out"
           title="Remove Artist"
         >
           🗑️
@@ -1990,12 +2006,12 @@ if (Array.isArray(composerData)) {
     {/* Suggestions Dropdown */}
     {activeArtistInputIndex === `${i}-${artistIndex}` &&
       artistSuggestions.length > 0 && (
-        <ul className="z-10 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto transition-colors duration-300 ease-in-out">
+        <ul className="z-10 bg-[var(--input-bg)] border border-[var(--border)] rounded-md w-full shadow-lg max-h-48 overflow-auto text-[var(--text)] transition-colors duration-300 ease-in-out">
           {artistSuggestions.map((name, idx) => (
             <li
               key={idx}
               className={`p-2 cursor-pointer ${
-                idx === highlightedArtistIndex ? "bg-blue-600" : ""
+                idx === highlightedArtistIndex ? "bg-[var(--highlight)]" : "hover:bg-[var(--highlight)]"
               }`}
               onMouseDown={() => {
                 handleTrackArtistChange(i, artistIndex, name);
@@ -2014,7 +2030,7 @@ if (Array.isArray(composerData)) {
   <button
     type="button"
     onClick={() => addTrackArtist(i)}
-    className="text-blue-600 hover:text-blue-800 text-sm mt-1 self-start transition-colors duration-300 ease-in-out"
+    className="text-[var(--accent)] hover:text-[var(--focus-ring)] text-sm mt-1 self-start transition-colors duration-300 ease-in-out"
   >
     + Add Another Artist
   </button>
@@ -2029,7 +2045,7 @@ if (Array.isArray(composerData)) {
 
   {/* ISRC */}
   <div className="flex flex-col transition-colors duration-300 ease-in-out">
-    <label className="text-sm font-medium text-gray-200 mb-1 transition-colors duration-300 ease-in-out">ISRC</label>
+    <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">ISRC</label>
     <input
        disabled={isLocked}type="text"
       value={track.isrc || ""}
@@ -2044,13 +2060,13 @@ if (Array.isArray(composerData)) {
         handleTrackChange(i, "isrc", formatted);
       }}
       placeholder="AA-AAA-AA-12345"
-      className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+      className="p-2 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] transition-colors duration-300 ease-in-out"
     />
   </div>
 
   {/* ISWC */}
   <div className="flex flex-col transition-colors duration-300 ease-in-out">
-    <label className="text-sm font-medium text-gray-200 mb-1 transition-colors duration-300 ease-in-out">ISWC</label>
+    <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">ISWC</label>
     <input
        disabled={isLocked}type="text"
       value={track.iswc || ""}
@@ -2072,14 +2088,14 @@ if (Array.isArray(composerData)) {
         handleTrackChange(i, "iswc", formatted);
       }}
       placeholder="T-123456789-0"
-      className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+      className="p-2 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] transition-colors duration-300 ease-in-out"
     />
   </div>
 
   {renderInput("Track number", track.trackNumber, (e) => handleTrackChange(i, "trackNumber", e.target.value))}
 
 <div className="flex flex-col transition-colors duration-300 ease-in-out">
-  <label className="text-sm font-medium text-gray-200 mb-1 transition-colors duration-300 ease-in-out">Duration</label>
+  <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">Duration</label>
   <input
     disabled={isLocked}
     type="text"
@@ -2103,7 +2119,7 @@ if (Array.isArray(composerData)) {
       handleTrackChange(i, "duration", formatted);
     }}
     placeholder="mm:ss"
-    className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+    className="p-2 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] transition-colors duration-300 ease-in-out"
   />
 </div>
 {renderInput("Track label", track.trackLabel, (e) => {
@@ -2120,13 +2136,13 @@ if (Array.isArray(composerData)) {
   {renderInput("Non-US Collection Rights", track.nonUSRights, (e) => handleTrackChange(i, "nonUSRights", e.target.value))}
   {renderInput("Genre", track.genre, (e) => handleTrackChange(i, "genre", e.target.value))}
 <div className="flex flex-col transition-colors duration-300 ease-in-out">
-  <label className="text-sm font-medium text-gray-200 mb-1 transition-colors duration-300 ease-in-out">Recording Date</label>
+  <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">Recording Date</label>
   <input
     type="date"
     disabled={isLocked}
     value={track.recDate || ""}
     onChange={(e) => handleTrackChange(i, "recDate", e.target.value)}
-    className="p-2 h-12 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+    className="p-2 h-12 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] transition-colors duration-300 ease-in-out"
   />
 </div>
   {renderInput("Recording Engineer", track.recEng, (e) => handleTrackChange(i, "recEng", e.target.value))}
@@ -2137,19 +2153,21 @@ if (Array.isArray(composerData)) {
 
   {/* Audio Upload */}
   <div className="flex flex-col transition-colors duration-300 ease-in-out">
-    <label className="text-sm font-medium text-gray-200 mb-1 transition-colors duration-300 ease-in-out">Audio File</label>
+    <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">Audio File</label>
     <input
        disabled={isLocked}type="file"
       accept="audio/*"
       onChange={(e) => handleTrackChange(i, "audioFile", e.target.files[0])}
-      className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+      className="p-2 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] transition-colors duration-300 ease-in-out"
     />
   </div>
 </div>
           
     
             <div className="mt-6 pt-4 transition-colors duration-300 ease-in-out">
-              <h3 className="text-lg font-semibold text-gray-300 mb-4 transition-colors duration-300 ease-in-out">Composers</h3>
+              <h3 className="text-lg font-semibold text-[var(--text-muted)] mb-4 transition-colors duration-300 ease-in-out">
+  Composers
+</h3>
               {track.composers.map((composer, j) => {
                 const key = `${i}-${j}`;
 const removeComposer = (trackIndex, composerIndex) => {
@@ -2164,11 +2182,13 @@ const removeComposer = (trackIndex, composerIndex) => {
   return (
                   <div key={key} ref={(el) => (composerRefs.current[key] = el)} className="mb-6 pb-4 transition-colors duration-300 ease-in-out">
                     <div className="flex items-center justify-between mb-2 transition-colors duration-300 ease-in-out">
-  <h4 className="font-semibold text-blue-600 transition-colors duration-300 ease-in-out">Composer {j + 1}</h4>
+  <h4 className="font-semibold text-[var(--accent)] transition-colors duration-300 ease-in-out">
+  Composer {j + 1}
+</h4>
   <button
     title="Remove Composer"
     onClick={() => removeComposer(i, j)}
-    className="text-gray-400 hover:text-red-600 text-xl transition-colors duration-300 ease-in-out"
+    className="text-[var(--text-muted)] hover:text-[var(--accent)] text-xl transition-colors duration-300 ease-in-out"
   >
     🗑️
   </button>
@@ -2177,7 +2197,7 @@ const removeComposer = (trackIndex, composerIndex) => {
                      {/* Composer First Name */}
 {/* Composer First Name */}
 <div className="relative flex flex-col transition-colors duration-300 ease-in-out">
-  <label className="text-sm font-medium text-gray-200 mb-1 transition-colors duration-300 ease-in-out">First Name</label>
+  <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">First Name</label>
 <input
    disabled={isLocked}type="text"
   value={composer.firstName || ""}
@@ -2217,7 +2237,7 @@ const removeComposer = (trackIndex, composerIndex) => {
   }}
   onBlur={() => setTimeout(() => setSuggestions([]), 200)}
   placeholder="Start typing first name"
-  className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+  className="p-2 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] transition-colors duration-300 ease-in-out"
 />
 
   {/* 👇 Composer name suggestion dropdown */}
@@ -2226,13 +2246,15 @@ const removeComposer = (trackIndex, composerIndex) => {
     activeInput.composerIndex === j &&
     activeInput.field === "firstName" &&
     suggestions.length > 0 && (
-      <ul className="absolute z-10 mt-10 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto transition-colors duration-300 ease-in-out">
+      <ul className="absolute z-10 mt-10 bg-[var(--input-bg)] border border-[var(--border)] rounded-md w-full shadow-lg max-h-48 overflow-auto transition-colors duration-300 ease-in-out">
   {suggestions.map((sugg, idx) => (
     <li
       key={idx}
-      className={`p-2 cursor-pointer hover:bg-blue-100 ${
-        idx === highlightedIndex ? "bg-blue-100 font-medium" : ""
-      }`}
+className={`p-2 cursor-pointer transition-colors duration-200 ${
+  idx === highlightedIndex
+    ? "bg-[var(--accent)] text-white font-medium"
+    : "hover:bg-[var(--accent)] hover:text-white"
+}`}
       onMouseDown={() => {
         const updated = [...tracks];
         updated[i].composers[j] = {
@@ -2255,7 +2277,7 @@ const removeComposer = (trackIndex, composerIndex) => {
 
 {/* Composer Last Name */}
 <div className="relative flex flex-col transition-colors duration-300 ease-in-out">
-  <label className="text-sm font-medium text-gray-200 mb-1 transition-colors duration-300 ease-in-out">Last Name(s)</label>
+  <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">Last Name(s)</label>
   <input
    disabled={isLocked}type="text"
   value={composer.lastName || ""}
@@ -2295,34 +2317,36 @@ const removeComposer = (trackIndex, composerIndex) => {
   }}
   onBlur={() => setTimeout(() => setSuggestions([]), 200)}
   placeholder="Start typing last name"
-  className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+  className="p-2 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] transition-colors duration-300 ease-in-out"
 />
 {activeInput &&
   activeInput.trackIndex === i &&
   activeInput.composerIndex === j &&
   activeInput.field === "lastName" &&
   suggestions.length > 0 && (
-    <ul className="absolute z-10 mt-10 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md w-full shadow-lg max-h-48 overflow-auto transition-colors duration-300 ease-in-out">
-      {suggestions.map((sugg, idx) => (
-        <li
-          key={idx}
-          className={`p-2 hover:bg-blue-100 cursor-pointer ${
-            highlightedIndex === idx ? "bg-blue-100" : ""
-          }`}
-          onMouseDown={() => {
-            const updated = [...tracks];
-            updated[i].composers[j] = {
-              ...updated[i].composers[j],
-              ...sugg,
-            };
-            setTracks(updated);
-            setSuggestions([]);
-          }}
-        >
-           {sugg.firstName} {sugg.middleName} {sugg.lastName}
-        </li>
-      ))}
-    </ul>
+   <ul className="absolute z-10 mt-10 bg-[var(--input-bg)] border border-[var(--border)] rounded-md w-full shadow-lg max-h-48 overflow-auto transition-colors duration-300 ease-in-out">
+  {suggestions.map((sugg, idx) => (
+    <li
+      key={idx}
+      className={`p-2 cursor-pointer transition-colors duration-200 ease-in-out ${
+        highlightedIndex === idx
+          ? "bg-[var(--accent)] text-[var(--bg)]"
+          : "hover:bg-[var(--accent)] hover:text-[var(--bg)]"
+      }`}
+      onMouseDown={() => {
+        const updated = [...tracks];
+        updated[i].composers[j] = {
+          ...updated[i].composers[j],
+          ...sugg,
+        };
+        setTracks(updated);
+        setSuggestions([]);
+      }}
+    >
+      {sugg.firstName} {sugg.middleName} {sugg.lastName}
+    </li>
+  ))}
+</ul>
 )}
 
 </div>                     
@@ -2348,7 +2372,7 @@ const removeComposer = (trackIndex, composerIndex) => {
 
 
 <div className="flex flex-col relative transition-colors duration-300 ease-in-out">
-  <label className="text-sm font-medium text-gray-200 mb-1 transition-colors duration-300 ease-in-out">Publisher</label>
+  <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">Publisher</label>
     <input
    disabled={isLocked}type="text"
   value={composer.publisher || ""}
@@ -2378,25 +2402,27 @@ const removeComposer = (trackIndex, composerIndex) => {
     }
   }}
   onBlur={() => setTimeout(() => setPublisherSuggestions([]), 200)}
-  className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+  className="p-2 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] transition-colors duration-300 ease-in-out"
 />
 
 {activePublisherField?.trackIndex === i &&
   activePublisherField?.composerIndex === j &&
   publisherSuggestions.length > 0 && (
-    <div className="absolute top-full left-0 w-full z-10 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md shadow-md max-h-48 overflow-y-auto transition-colors duration-300 ease-in-out">
-      {publisherSuggestions.map((s, idx) => (
-        <div
-          key={idx}
-          onMouseDown={() => handlePublisherSuggestionClick(s, i, j)}
-          className={`px-3 py-2 cursor-pointer ${
-            idx === highlightedIndex ? "bg-blue-100" : "hover:bg-blue-50"
-          }`}
-        >
-          {s.publisher}
-        </div>
-      ))}
+    <div className="absolute top-full left-0 w-full z-10 bg-[var(--input-bg)] border border-[var(--border)] rounded-md shadow-md max-h-48 overflow-y-auto transition-colors duration-300 ease-in-out">
+  {publisherSuggestions.map((s, idx) => (
+    <div
+      key={idx}
+      onMouseDown={() => handlePublisherSuggestionClick(s, i, j)}
+      className={`px-3 py-2 cursor-pointer transition-colors duration-300 ease-in-out ${
+        idx === highlightedIndex
+          ? "bg-[var(--accent)] text-[var(--bg)]"
+          : "hover:bg-[var(--bg-card)]"
+      }`}
+    >
+      {s.publisher}
     </div>
+  ))}
+</div>
 )}
 </div>
 
@@ -2408,7 +2434,7 @@ const removeComposer = (trackIndex, composerIndex) => {
 
                       
 <div className="flex flex-col relative transition-colors duration-300 ease-in-out">
-  <label className="text-sm font-medium text-gray-200 mb-1 transition-colors duration-300 ease-in-out">Publisher Admin</label>
+  <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">Publisher Admin</label>
   <input
     disabled={isLocked}
     type="text"
@@ -2440,25 +2466,27 @@ const removeComposer = (trackIndex, composerIndex) => {
     onFocus={() => {
       setActiveAdminField({ trackIndex: i, composerIndex: j });
     }}
-    className="p-2 bg-[#f9fafb] dark:bg-[#0f172a] text-black dark:text-white border border-black dark:border-gray-600 dark:border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300 ease-in-out"
+    className="p-2 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] transition-colors duration-300 ease-in-out"
   />
 
   {activeAdminField?.trackIndex === i &&
     activeAdminField?.composerIndex === j &&
     adminSuggestions.length > 0 && (
-      <div className="absolute top-full left-0 w-full z-10 bg-[#f9fafb] dark:bg-[#0f172a] border border-black dark:border-gray-600 dark:border-blue-700 rounded-md shadow-md max-h-48 overflow-y-auto transition-colors duration-300 ease-in-out">
-        {adminSuggestions.map((s, idx) => (
-          <div
-            key={idx}
-            onMouseDown={() => handleAdminSuggestionClick(s, i, j)}
-            className={`px-3 py-2 cursor-pointer ${
-              idx === highlightedAdminIndex ? "bg-blue-100" : "hover:bg-blue-50"
-            }`}
-          >
-            {s.publisheradmin}
-          </div>
-        ))}
-      </div>
+      <div className="absolute top-full left-0 w-full z-10 bg-[var(--input-bg)] border border-[var(--border)] rounded-md shadow-md max-h-48 overflow-y-auto transition-colors duration-300 ease-in-out">
+  {adminSuggestions.map((s, idx) => (
+    <div
+      key={idx}
+      onMouseDown={() => handleAdminSuggestionClick(s, i, j)}
+      className={`px-3 py-2 cursor-pointer ${
+        idx === highlightedAdminIndex
+          ? "bg-[var(--accent)] text-[var(--bg)]"
+          : "hover:bg-[var(--accent)] hover:text-[var(--bg)]"
+      }`}
+    >
+      {s.publisheradmin}
+    </div>
+  ))}
+</div>
     )}
 </div>
 
@@ -2472,26 +2500,33 @@ const removeComposer = (trackIndex, composerIndex) => {
 
                 );
               })}
-              <button type="button" onClick={() => addComposer(i)} className="text-blue-600 hover:text-blue-800 text-sm font-medium mt-2 transition-colors duration-300 ease-in-out">
-                + Add Composer
-              </button>
+              <button
+  type="button"
+  onClick={() => addComposer(i)}
+  className="text-[var(--accent)] hover:text-[var(--text-muted)] text-sm font-medium mt-2 transition-colors duration-300 ease-in-out"
+>
+  Add Composer
+</button>
             </div>
           </details>
         ))}
 
         {releaseInfo.typeOfRelease !== "Single" || tracks.length < 1 ? (
           <div className="text-center mt-10 transition-colors duration-300 ease-in-out">
-            <button className="bg-green-600 hover:bg-green-700 text-black dark:text-white px-6 py-3 rounded-md shadow text-lg font-semibold transition-colors duration-300 ease-in-out" onClick={addTrack}>
-              + Add Another Track
-            </button>
-          </div>
+  <button
+    className="bg-[var(--accent)] hover:brightness-110 text-[var(--text)] px-6 py-3 rounded-md shadow text-lg font-semibold transition-colors duration-300 ease-in-out"
+    onClick={addTrack}
+  >
+    + Add Another Track
+  </button>
+</div>
         ) : null}
       </div>
 <div className="text-center mt-10 space-x-4 transition-colors duration-300 ease-in-out">
   <button
     type="button"
     onClick={handleClearForm}
-    className="bg-gray-200 hover:bg-gray-300 text-gray-900 px-6 py-3 rounded-md shadow text-md font-semibold transition-colors duration-300 ease-in-out"
+    className="bg-[var(--bg-card)] hover:brightness-110 text-[var(--text)] px-6 py-3 rounded-md shadow text-md font-semibold transition-colors duration-300 ease-in-out"
   >
     Clear Form
   </button>
@@ -2499,7 +2534,7 @@ const removeComposer = (trackIndex, composerIndex) => {
   <button
     type="button"
     onClick={handleSubmit}
-    className="bg-blue-600 hover:bg-blue-700 text-black dark:text-white px-6 py-3 rounded-md shadow text-md font-semibold transition-colors duration-300 ease-in-out"
+    className="bg-[var(--accent)] hover:brightness-110 text-[var(--text)] px-6 py-3 rounded-md shadow text-md font-semibold transition-colors duration-300 ease-in-out"
   >
     Submit
   </button>

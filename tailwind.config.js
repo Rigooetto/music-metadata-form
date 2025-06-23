@@ -3,7 +3,16 @@ module.exports = {
   darkMode: 'class', // NOT 'media'
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        inter: ['Inter', 'system-ui', 'sans-serif'],
+        ibm: ['"IBM Plex Sans"', 'system-ui', 'sans-serif'],
+        display: ['"Playfair Display"', 'serif'],
+      },
+      fontSize: {
+      'huge': ['5rem', '1'],
+      'tiny': ['0.625rem', '1.25rem'],
+    },
   },
   plugins: [],
-}
+};
