@@ -136,8 +136,8 @@ const handleGenerate = async () => {
 };
 
   return (
-    <div className="transition-colors duration-300 ease-in-out bg-white text-black transition-colors duration-300 ease-in-out dark:bg-gray-900 dark:text-white border transition-colors duration-300 ease-in-out dark:border transition-colors duration-300 ease-in-out-gray-700 p-4">
-      <h2 className="transition-colors duration-300 ease-in-out bg-white text-black transition-colors duration-300 ease-in-out dark:bg-gray-900 dark:text-white border transition-colors duration-300 ease-in-out dark:border transition-colors duration-300 ease-in-out-gray-700 text-xl font-semibold mb-4">🎧 Tracks a reportar</h2>
+    <div className="transition-colors duration-300 ease-in-out bg-white text-black dark:bg-gray-900 dark:text-white border dark:border ease-in-out-gray-700 p-4">
+      <h2 className="transition-colors duration-300 ease-in-out bg-white text-black dark:bg-gray-900 dark:text-white border dark:border ease-in-out-gray-700 text-xl font-semibold mb-4">🎧 Tracks a reportar</h2>
         <select
           className="border p-2 rounded"
           value={reportType}
