@@ -28,14 +28,14 @@ export default function UserApproval() {
   };
 
   const renderUser = (user, actionLabel, action) => (
-    <div key={user.id} className="flex justify-between items-center bg-white shadow p-4 rounded mb-2">
+    <div key={user.id} className="flex justify-between items-center bg-[--bg] shadow p-4 rounded mb-2">
       <div>
         <div className="font-semibold">{user.name}</div>
         <div className="text-sm text-gray-600">{user.email}</div>
       </div>
       <button
         onClick={() => updateApproval(user.id, action)}
-        className={`px-4 py-1 rounded text-white ${action ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}`}
+        className={`px-4 py-1 rounded text-[--text] dark:text-white ${action ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}`}
       >
         {actionLabel}
       </button>

@@ -45,7 +45,7 @@ export default function Sidebar() {
       <a
         href={href}
         className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all ${
-          isActive ? `${highlight} bg-blue-500 font-semibold` : 'text-gray-300 hover:bg-[#2a2e39] hover:text-white'
+          isActive ? `${highlight} bg-blue-500 font-semibold` : 'text-gray-300 hover:bg-[#2a2e39] hover:text-[--text] dark:text-white'
         }`}
       >
         <Icon className="w-5 h-5" />
@@ -57,12 +57,12 @@ export default function Sidebar() {
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className={`hidden md:flex ${expanded ? 'w-64' : 'w-20'} bg-[#1c1f26] text-white flex-col justify-between min-h-screen px-4 py-6 rounded-r-2xl shadow-xl transition-all duration-300`}>
+      <aside className={`hidden md:flex ${expanded ? 'w-64' : 'w-20'} bg-[#1c1f26] text-[--text] dark:text-white flex-col justify-between min-h-screen px-4 py-6 rounded-r-2xl shadow-xl transition-all duration-300`}>
         <div>
           {/* Toggle Button */}
           <button
             onClick={() => setExpanded(!expanded)}
-            className="mb-6 text-blue-400 hover:text-white transition-colors focus:outline-none"
+            className="mb-6 text-blue-400 hover:text-[--text] dark:text-white transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-[--focus-ring]"
           >
             {expanded ? <ChevronLeft size={24} /> : <Menu size={24} />}
           </button>
@@ -93,7 +93,7 @@ export default function Sidebar() {
 
         <div className="space-y-2">
           {expanded && <div className="text-gray-400 text-sm">{displayName}</div>}
-          <button onClick={handleLogout} className="flex items-center gap-2 text-blue-400 hover:text-white transition">
+          <button onClick={handleLogout} className="flex items-center gap-2 text-blue-400 hover:text-[--text] dark:text-white transition">
             <LogOut size={18} />
             {expanded && <span>Logout</span>}
           </button>
@@ -101,7 +101,7 @@ export default function Sidebar() {
       </aside>
 
       {/* Mobile BottomNav */}
-      <div className="fixed bottom-0 w-full bg-white border-t shadow-md flex justify-around py-2 md:hidden z-50">
+      <div className="fixed bottom-0 w-full bg-[--bg] border-t shadow-md flex justify-around py-2 md:hidden z-50">
         <NavIcon
           icon={<ClipboardList size={20} />}
           label="Input"
@@ -142,9 +142,9 @@ function NavIcon({ icon, label, href = '#', center = false, onClick, active = fa
       onClick={onClick}
       className={`flex flex-col items-center justify-center transition-all ${
         center
-          ? 'bg-blue-600 text-white w-12 h-12 rounded-full -mt-6 shadow-lg'
+          ? 'bg-[--accent] text-[--text] dark:text-white w-12 h-12 rounded-full -mt-6 shadow-lg'
           : 'text-xs text-gray-600'
-      } ${active && !center ? 'text-blue-600 font-semibold' : ''}`}
+      } ${active && !center ? 'text-[--accent] font-semibold' : ''}`}
     >
       {icon}
       {!center && label && <span className="text-[10px] mt-0.5">{label}</span>}
