@@ -56,6 +56,13 @@ export default function LoginPage() {
         >
           Sign In
         </button>
+         {/* Agrega este bloque justo aquí */}
+  <p className="text-center mt-4">
+    Don't have an account?{' '}
+    <a href="/register" className="text-blue-600 hover:underline">
+      Register
+    </a>
+  </p>
       </form>
     </div>
   );
