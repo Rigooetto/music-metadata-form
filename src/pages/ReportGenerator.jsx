@@ -135,60 +135,62 @@ const handleGenerate = async () => {
   }
 };
 
-  return (
-    <div className="transition-colors duration-300 ease-in-out bg-white text-black dark:bg-gray-900 dark:text-white border dark:border-gray-700 p-4">
-      <h2 className="transition-colors duration-300 ease-in-out bg-white text-black dark:bg-gray-900 dark:text-white border dark:border-gray-700 text-xl font-semibold mb-4">
-  🎧 Tracks a reportar
-</h2>
-        <select
-          className="border p-2 rounded"
-          value={reportType}
-          onChange={(e) => setReportType(e.target.value)}
-        >
-          {REPORT_OPTIONS.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
-        </select>
+ return (
+  <div className="transition-colors duration-300 ease-in-out bg-white text-black dark:bg-gray-900 dark:text-white border dark:border-gray-700 p-4">
+    <h2 className="text-xl font-semibold mb-4">🎧 Tracks a reportar</h2>
 
-        <button
-  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ease-in-out"
-  disabled={selectedTracks.length === 0 || generating}
-  onClick={handleGenerate}
->
-  {generating ? (
-    <>
-      <svg
-        className="animate-spin h-5 w-5 text-white"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
+    {/* Dropdown + Button Row */}
+    <div className="flex flex-wrap md:flex-nowrap justify-between items-center gap-4 mb-4">
+      <select
+        className="border border-[--border] bg-[--input-bg] text-[--text] p-2 rounded w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-[--focus-ring] transition-colors duration-200"
+        value={reportType}
+        onChange={(e) => setReportType(e.target.value)}
       >
-        <circle
-          className="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          strokeWidth="4"
-        ></circle>
-        <path
-          className="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-        ></path>
-      </svg>
-      Generating...
-    </>
-  ) : (
-    <>
-      {reportType === ''
-        ? 'Generate All Reports'
-        : `Generate ${reportType} Report`}
-    </>
-  )}
-</button>
+        {REPORT_OPTIONS.map((opt) => (
+          <option key={opt} value={opt}>
+            {opt}
+          </option>
+        ))}
+      </select>
+
+      <button
+        className="bg-[--accent] text-[--bg] dark:text-white hover:bg-opacity-90 px-4 py-2 rounded-md font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 ease-in-out shadow-sm focus:outline-none focus:ring-2 focus:ring-[--focus-ring]"
+        disabled={selectedTracks.length === 0 || generating}
+        onClick={handleGenerate}
+      >
+        {generating ? (
+          <>
+            <svg
+              className="animate-spin h-5 w-5 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+              />
+            </svg>
+            Generating...
+          </>
+        ) : (
+          <>
+            {reportType === ''
+              ? 'Generate All Reports'
+              : `Generate ${reportType} Report`}
+          </>
+        )}
+      </button>
+    </div>
       
 
       {loading ? (
@@ -196,57 +198,60 @@ const handleGenerate = async () => {
       ) : tracks.length === 0 ? (
         <p>No hay tracks para mostrar.</p>
       ) : (
-        <table className="w-full text-sm text-left border border-gray-200">
-          <thead className="bg-gray-100 font-semibold">
-            <tr>
-              <th className="p-3">
-                <input
-                  type="checkbox"
-                  checked={selectAll}
-                  onChange={handleSelectAll}
-                />
-              </th>
-              <th className="p-3">Track Title</th>
-              <th className="p-3">Artist</th>
-              <th className="p-3">UPC</th>
-              <th className="p-3">ISRC</th>
-              <th className="p-3">Composers</th>
-              <th className="p-3">Release Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tracks.map((track, index) => (
-              <tr key={index} className="border-t hover:bg-gray-50">
-                <td className="p-3">
-                  <input
-                    type="checkbox"
-                    checked={selectedTracks.includes(index)}
-                    onChange={() => toggleTrack(index)}
-                  />
-                </td>
-                <td className="p-3">{track['Primary Title'] || 'Sin título'}</td>
-                <td className="p-3">{track['Track Artist Name'] || 'N/A'}</td>
-                <td className="p-3">{track.UPC || 'N/A'}</td>
-                <td className="p-3">{track.ISRC || 'N/A'}</td>
-                <td className="p-3 whitespace-pre-line">
-                  {Array.isArray(track.Composers)
-                    ? track.Composers.map((c) => `${c['First Name']} ${c['Last Name']}`).join('\n')
-                    : typeof track.Composers === 'string'
-                    ? (() => {
-                        try {
-                          const parsed = JSON.parse(track.Composers);
-                          return parsed.map((c) => `${c['First Name']} ${c['Last Name']}`).join('\n');
-                        } catch {
-                          return 'N/A';
-                        }
-                      })()
-                    : 'N/A'}
-                </td>
-                <td className="p-3">{track['Digital Release Date'] || 'N/A'}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <table className="w-full text-sm text-left border border-[--border] bg-[--bg-card] text-[--text]">
+  <thead className="bg-[--highlight] text-[--text]">
+    <tr>
+      <th className="p-3">
+        <input
+          type="checkbox"
+          checked={selectAll}
+          onChange={handleSelectAll}
+        />
+      </th>
+      <th className="p-3">Track Title</th>
+      <th className="p-3">Artist</th>
+      <th className="p-3">UPC</th>
+      <th className="p-3">ISRC</th>
+      <th className="p-3">Composers</th>
+      <th className="p-3">Release Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {tracks.map((track, index) => (
+      <tr
+        key={index}
+        className="border-t border-[--border] hover:bg-[--details-bg] transition-colors"
+      >
+        <td className="p-3">
+          <input
+            type="checkbox"
+            checked={selectedTracks.includes(index)}
+            onChange={() => toggleTrack(index)}
+          />
+        </td>
+        <td className="p-3">{track['Primary Title'] || 'Sin título'}</td>
+        <td className="p-3">{track['Track Artist Name'] || 'N/A'}</td>
+        <td className="p-3">{track.UPC || 'N/A'}</td>
+        <td className="p-3">{track.ISRC || 'N/A'}</td>
+        <td className="p-3 whitespace-pre-line">
+          {Array.isArray(track.Composers)
+            ? track.Composers.map((c) => `${c['First Name']} ${c['Last Name']}`).join('\n')
+            : typeof track.Composers === 'string'
+            ? (() => {
+                try {
+                  const parsed = JSON.parse(track.Composers);
+                  return parsed.map((c) => `${c['First Name']} ${c['Last Name']}`).join('\n');
+                } catch {
+                  return 'N/A';
+                }
+              })()
+            : 'N/A'}
+        </td>
+        <td className="p-3">{track['Digital Release Date'] || 'N/A'}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
       )}
     </div>
   );
