@@ -136,8 +136,10 @@ const handleGenerate = async () => {
 };
 
   return (
-    <div className="transition-colors duration-300 ease-in-out bg-white text-black dark:bg-gray-900 dark:text-white border dark:border ease-in-out-gray-700 p-4">
-      <h2 className="transition-colors duration-300 ease-in-out bg-white text-black dark:bg-gray-900 dark:text-white border dark:border ease-in-out-gray-700 text-xl font-semibold mb-4">🎧 Tracks a reportar</h2>
+    <div className="transition-colors duration-300 ease-in-out bg-white text-black dark:bg-gray-900 dark:text-white border dark:border-gray-700 p-4">
+      <h2 className="transition-colors duration-300 ease-in-out bg-white text-black dark:bg-gray-900 dark:text-white border dark:border-gray-700 text-xl font-semibold mb-4">
+  🎧 Tracks a reportar
+</h2>
         <select
           className="border p-2 rounded"
           value={reportType}
@@ -151,7 +153,7 @@ const handleGenerate = async () => {
         </select>
 
         <button
-  className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 disabled:opacity-50"
+  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ease-in-out"
   disabled={selectedTracks.length === 0 || generating}
   onClick={handleGenerate}
 >
