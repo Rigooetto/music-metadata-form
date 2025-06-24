@@ -84,8 +84,8 @@ export default function Sidebar() {
             <div className="mt-6">
               {expanded && <h3 className="text-xs uppercase text-gray-400 tracking-wide mb-2">Admin</h3>}
               <nav className="space-y-2">
-                {navLink('/admin', 'User Approval', UserCircle, 'text-yellow-400')}
-                {navLink('/admin-dashboard', 'Admin Dashboard', LayoutDashboard, 'text-yellow-400')}
+                {navLink('/user-approval', 'User Approval', UserCircle, 'text-yellow-400')}
+{navLink('/admin', 'Admin Dashboard', LayoutDashboard, 'text-yellow-400')}
               </nav>
             </div>
           )}

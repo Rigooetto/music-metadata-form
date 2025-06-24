@@ -12,6 +12,10 @@ export default function PrivateRoute({ children }) {
   useEffect(() => {
     const checkApproval = async () => {
       if (user) {
+
+console.log('Authenticated UID:', user.uid); // 👈 Verifica que sea MZ5OAFIf...
+
+
         try {
           const userDoc = await getDoc(doc(db, 'users', user.uid));
           if (userDoc.exists()) {
