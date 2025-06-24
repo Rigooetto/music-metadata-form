@@ -1,4 +1,4 @@
-@import '/fonts/fonts.css'; /* Self-hosted fonts */
+@import '@fontsource/inter/variable.css'; /* Usando npm package */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -37,16 +37,16 @@
    ------------------------- */
 @layer base {
   body {
-    @apply font-inter;
+    @apply font-sans;
     color: var(--text);
     background-color: var(--bg);
   }
 
   input, textarea, select {
-    @apply font-inter;
+    @apply font-sans;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-inter;
+    @apply font-sans;
   }
 }
