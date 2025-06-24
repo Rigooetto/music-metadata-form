@@ -69,7 +69,7 @@ export default function Sidebar() {
 
           {/* Logo (conditionally rendered) */}
           {expanded && (
-            <div className="flex items-center gap-3 mb-8 text-blue-400 text-lg font-semibold">
+            <div className="flex items-center gap-3 mb-8 text-blue-400 text-lg font-sans">
               <ShieldCheck className="w-6 h-6" />
               LabelMind.ai
             </div>
