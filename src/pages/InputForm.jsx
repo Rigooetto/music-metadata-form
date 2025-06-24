@@ -1258,7 +1258,7 @@ const handleAlbumArtistChange = (index, value) => {
   return (
   <div className="bg-[var(--input-bg)] min-h-screen px-4 py-8 md:px-10 transition-colors duration-300 ease-in-out">
     <div className="max-w-6xl mx-auto bg-[var(--bg-card)] border border-[var(--border)] shadow-2xl rounded-xl p-8 text-[var(--text)] transition-colors duration-300 ease-in-out">
-      <h1 className="font-sans text-3xl mb-8 text-center text-[var(--accent)] transition-colors duration-300 ease-in-out">
+      <h1 className="font-Inter text-3xl mb-8 text-center text-[var(--accent)] transition-colors duration-300 ease-in-out">
         Music Catalog Data Entry
       </h1>
 
