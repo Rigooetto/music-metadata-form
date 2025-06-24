@@ -1467,7 +1467,7 @@ const handleAlbumArtistChange = (index, value) => {
 </div>
             
 <div className="relative flex flex-col transition-colors duration-300 ease-in-out">
-  <label className="text-sm font-medium text-[var(--text-muted)] mb-1 transition-colors duration-300 ease-in-out">Album Title</label>
+  <label className="text-sm font-medium text-[var(--text-muted)] mb-1">Album Title</label>
   <input
     disabled={isLocked}
     type="text"
@@ -1476,7 +1476,7 @@ const handleAlbumArtistChange = (index, value) => {
       const value = e.target.value;
       handleReleaseInfoChange("albumTitle", value);
       setAlbumSearch(value);
-      setHighlightedAlbumIndex(0); // 👈 reinicia selección al escribir
+      setHighlightedAlbumIndex(0);
     }}
     onKeyDown={(e) => {
       if (albumSuggestions.length > 0) {
@@ -1492,29 +1492,28 @@ const handleAlbumArtistChange = (index, value) => {
           );
         } else if (e.key === "Enter") {
           e.preventDefault();
-          if (highlightedAlbumIndex >= 0) {
-            handleAlbumSuggestionClick(albumSuggestions[highlightedAlbumIndex]);
-          }
+          const selected = albumSuggestions[highlightedAlbumIndex] || albumSuggestions[0];
+          if (selected) handleAlbumSuggestionClick(selected);
         }
       }
     }}
-    onBlur={() => setTimeout(() => setAlbumSuggestions([]), 200)}
+    onBlur={() => setTimeout(() => setAlbumSuggestions([]), 300)}
     placeholder="Search by album title"
-    className="p-2 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md w-full transition-colors duration-300 ease-in-out"
+    className="p-2 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md w-full"
   />
 
   {albumSuggestions.length > 0 && (
-    <ul className="absolute z-10 mt-16 bg-[var(--input-bg)] border border-[var(--border)] rounded-md w-full shadow-xl max-h-48 overflow-auto text-[var(--text)] transition-colors duration-300 ease-in-out">
+    <ul className="absolute z-10 top-full mt-1 bg-[var(--input-bg)] border border-[var(--border)] rounded-md w-full shadow-xl max-h-48 overflow-auto text-[var(--text)]">
       {albumSuggestions.map((sugg, idx) => (
         <li
           key={idx}
           className={`p-2 cursor-pointer ${
             highlightedAlbumIndex === idx
-  ? "bg-[var(--accent)] text-white"
-  : "hover:bg-[var(--accent)] hover:text-white"
+              ? "bg-[var(--accent)] text-white"
+              : "hover:bg-[var(--accent)] hover:text-white"
           }`}
           onMouseDown={() => handleAlbumSuggestionClick(sugg)}
-          onMouseEnter={() => setHighlightedAlbumIndex(idx)} // 👈 esto permite resaltar con el mouse
+          onMouseEnter={() => setHighlightedAlbumIndex(idx)}
         >
           {sugg["Album Title"] || "Unknown Album"} — {sugg["Album Artist"] || "Unknown Artist"}
         </li>

@@ -4,7 +4,7 @@ import { getFirestore, doc, getDoc } from "firebase/firestore";
 import axios from 'axios';
 
 const REPORT_OPTIONS = [
-  'All Reports',
+  'All',
   'MLC',
   'Music Reports',
   'HFA',
@@ -16,7 +16,7 @@ export default function ReportGenerator() {
   const [tracks, setTracks] = useState([]);
   const [selectedTracks, setSelectedTracks] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
-  const [reportType, setReportType] = useState('All Reports');
+  const [reportType, setReportType] = useState('All');
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
 
@@ -27,14 +27,14 @@ export default function ReportGenerator() {
       setLoading(true);
 
       try {
-        const typeToSend = reportType === 'All Reports' ? 'MLC' : reportType;
+        const typeToSend = reportType === 'All' ? 'MLC' : reportType;
         const res = await axios.post(endpoint, { reportType: typeToSend });
 
         const receivedTracks = Array.isArray(res.data) ? res.data : [];
 
         // Selecciona la columna de reporte correcta
         const reportColumn =
-          reportType === 'All Reports'
+          reportType === 'All'
             ? 'Reportado MLC'
             : `Reportado ${reportType}`;
 
@@ -185,8 +185,8 @@ const handleGenerate = async () => {
         ) : (
           <>
             {reportType === ''
-              ? 'Generate All Reports'
-              : `Generate ${reportType} Report`}
+              ? 'Generate All'
+              : `Generate ${reportType} Reports`}
           </>
         )}
       </button>
@@ -233,6 +233,8 @@ const handleGenerate = async () => {
         <td className="p-3">{track['Track Artist Name'] || 'N/A'}</td>
         <td className="p-3">{track.UPC || 'N/A'}</td>
         <td className="p-3">{track.ISRC || 'N/A'}</td>
+        <td className="p-3">{track.PRO || 'N/A'}</td>
+        <td className="p-3">{track.IPI || 'N/A'}</td>
         <td className="p-3 whitespace-pre-line">
           {Array.isArray(track.Composers)
             ? track.Composers.map((c) => `${c['First Name']} ${c['Last Name']}-${c['PRO']}-${c['IPI']}`).join('\n')

@@ -20,16 +20,16 @@
 }
 
 .dark {
-  --bg: #0f172a;
-  --bg-card: #1e293b;
-  --text: #e2e8f0;
-  --text-muted: #94a3b8;
-  --accent: #3b82f6;
-  --border: #334155;
-  --input-bg: #1e293b;
+  --bg: #303235;         /* Background */
+  --bg-card: #222a36;    /* form card */
+  --text: #f9f6f6;       /* Input Text */
+  --text-muted: #f9f6f6; /* Label Text */
+  --accent: #4075c6;     /* Title Text */
+  --border: #323b4d;
+  --input-bg: #222a36;
   --focus-ring: #60a5fa;
-  --highlight: #1d4ed8;
-  --details-bg: #1e2f45;
+  --highlight: #3865a9;
+  --details-bg: #202a36;
 }
 
 /* -------------------------

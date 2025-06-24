@@ -28,7 +28,7 @@ export default function App() {
   }, [darkMode]);
 
   return (
-    <div className="flex h-screen bg-[var(--bg)] text-[var(--text)] transition-colors duration-300 ease-in-out">
+    <div className="flex h-screen bg-[var(--bg)] text-[var(--text)] font-sans transition-colors duration-300 ease-in-out">
       <Sidebar />
       <main className="flex-1 p-6 overflow-auto">
         <div className="flex justify-end mb-4">
