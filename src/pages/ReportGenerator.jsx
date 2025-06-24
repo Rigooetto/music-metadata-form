@@ -235,7 +235,7 @@ const handleGenerate = async () => {
         <td className="p-3">{track.ISRC || 'N/A'}</td>
         <td className="p-3 whitespace-pre-line">
           {Array.isArray(track.Composers)
-            ? track.Composers.map((c) => `${c['First Name']} ${c['Last Name']}`).join('\n')
+            ? track.Composers.map((c) => `${c['First Name']} ${c['Last Name']}-${c['PRO']}-${c['IPI']}`).join('\n')
             : typeof track.Composers === 'string'
             ? (() => {
                 try {
