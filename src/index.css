@@ -1,4 +1,4 @@
-@import '@fontsource/inter/variable.css'; /* Usando npm package */
+@import url('/fonts/fonts.css');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
