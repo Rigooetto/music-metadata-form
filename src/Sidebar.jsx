@@ -136,9 +136,12 @@ export default function Sidebar() {
         />
         <NavIcon
           icon={<User size={20} />}
-          label="User"
-          active={activeTab === 'user'}
-          onClick={() => setActiveTab('user')}
+          label="Admin"
+          active={activeTab === 'input'}
+          onClick={() => {
+            setActiveTab('input');
+             navigate('/user-approval');
+          }}
         />
       </div>
     </>
