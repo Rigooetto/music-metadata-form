@@ -112,6 +112,15 @@ export default function Sidebar() {
           }}
         />
         <NavIcon
+          icon={<FileText size={20} />}
+          label="Reports"
+          active={activeTab === 'input'}
+          onClick={() => {
+            setActiveTab('input');
+            navigate('/reports');
+          }}
+        />
+        <NavIcon
           icon={<Plus size={24} />}
           center
           onClick={() => {
