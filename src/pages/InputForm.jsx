@@ -1796,6 +1796,20 @@ toast.success("🎼 Composer & Publisher Info Loaded", {
   className="p-2 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] transition-colors duration-300 ease-in-out"
 />
 
+{/* Registered (PRO) Toggle */}
+<div className="mt-2 flex items-center gap-3">
+  <label className="text-sm text-[var(--text-muted)]">Registered (PRO)</label>
+  <input
+    type="checkbox"
+    className="w-5 h-5 accent-[var(--accent)]"
+    checked={track.registeredPRO || false}
+    onChange={(e) =>
+      handleTrackChange(i, "registeredPRO", e.target.checked)
+    }
+  />
+</div>
+
+
   {trackSuggestions.length > 0 && (
     <ul className="absolute z-10 mt-16 bg-[var(--input-bg)] border border-[var(--border)] rounded-md w-full shadow-lg max-h-48 overflow-auto transition-colors duration-300 ease-in-out">
       {trackSuggestions.map((entry, idx) => (
