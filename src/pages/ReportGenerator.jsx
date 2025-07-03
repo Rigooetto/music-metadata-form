@@ -61,6 +61,27 @@ export default function ReportGenerator() {
     }
   };
 
+const handleToggleReportedPRO = async (index) => {
+  const updatedTracks = [...tracks];
+  const currentValue = updatedTracks[index]['Reported PRO'] === true || updatedTracks[index]['Reported PRO'] === 'true';
+  const newValue = !currentValue;
+
+  updatedTracks[index]['Reported PRO'] = newValue;
+  setTracks(updatedTracks);
+
+  try {
+    await axios.post('/api/update-reported-pro', {
+      isrc: updatedTracks[index].ISRC,
+      value: newValue,
+    });
+    console.log('✅ Reported PRO updated');
+  } catch (error) {
+    console.error('❌ Failed to update Reported PRO:', error);
+    alert('❌ Error updating Reported PRO on CatalogDB');
+  }
+};
+
+
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedTracks([]);
@@ -128,6 +149,9 @@ export default function ReportGenerator() {
     } finally {
       setGenerating(false);
     }
+
+
+    
   };
 
   return (
@@ -211,6 +235,7 @@ export default function ReportGenerator() {
       <th className="p-3">ISRC</th>
       <th className="p-3">Duration</th>
       <th className="p-3">Release Date</th>
+      <th className="p-3">Reported (PRO)</th>
     </tr>
   </thead>
   <tbody>
@@ -259,6 +284,13 @@ export default function ReportGenerator() {
           <td className="p-3">{track.ISRC || 'N/A'}</td>
           <td className="p-3">{track['Duration'] || 'N/A'}</td>
           <td className="p-3">{track['Digital Release Date'] || 'N/A'}</td>
+          <td className="p-3">
+  <input
+    type="checkbox"
+    checked={track['Reported PRO'] === true || track['Reported PRO'] === 'true'}
+    onChange={() => handleToggleReportedPRO(index)}
+  />
+</td>
         </tr>
       );
     })}
