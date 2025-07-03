@@ -193,75 +193,77 @@ export default function ReportGenerator() {
         <p>No hay tracks para mostrar.</p>
       ) : (
         <table className="w-full text-sm text-left border border-[--border] bg-[--bg-card] text-[--text]">
-          <thead className="bg-[--highlight] text-[--text]">
-            <tr>
-              <th className="p-3">
-                <input
-                  type="checkbox"
-                  checked={selectAll}
-                  onChange={handleSelectAll}
-                />
-              </th>
-              <th className="p-3">Track Title</th>
-              <th className="p-3">Album Title</th>
-              <th className="p-3">Artist</th>
-              <th className="p-3">Composers</th>
-              <th className="p-3">PRO</th>
-              <th className="p-3">IPI</th>
-              <th className="p-3">ISRC</th>
-              <th className="p-3">Duration</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tracks.map((track, index) => {
-              let composers = [];
-              if (Array.isArray(track.Composers)) {
-                composers = track.Composers;
-              } else if (typeof track.Composers === 'string') {
-                try {
-                  composers = JSON.parse(track.Composers);
-                } catch (e) {
-                  composers = [];
-                }
-              }
+  <thead className="bg-[--highlight] text-[--text]">
+    <tr>
+      <th className="p-3">
+        <input
+          type="checkbox"
+          checked={selectAll}
+          onChange={handleSelectAll}
+        />
+      </th>
+      <th className="p-3">Track Title</th>
+      <th className="p-3">Album Title</th>
+      <th className="p-3">Artist</th>
+      <th className="p-3">Composers</th>
+      <th className="p-3">PRO</th>
+      <th className="p-3">IPI</th>
+      <th className="p-3">ISRC</th>
+      <th className="p-3">Duration</th>
+      <th className="p-3">Release Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {tracks.map((track, index) => {
+      let composers = [];
+      if (Array.isArray(track.Composers)) {
+        composers = track.Composers;
+      } else if (typeof track.Composers === 'string') {
+        try {
+          composers = JSON.parse(track.Composers);
+        } catch (e) {
+          composers = [];
+        }
+      }
 
-              return (
-                <tr
-                  key={index}
-                  className="border-t border-[--border] hover:bg-[--details-bg] transition-colors"
-                >
-                  <td className="p-3">
-                    <input
-                      type="checkbox"
-                      checked={selectedTracks.includes(index)}
-                      onChange={() => toggleTrack(index)}
-                    />
-                  </td>
-                  <td className="p-3">{track['Primary Title'] || 'Sin título'}</td>
-                  <td className="p-3">{track['Album Title'] || 'N/A'}</td>
-                  <td className="p-3">{track['Track Artist Name'] || 'N/A'}</td>
-                  <td className="p-3 whitespace-pre-line">
-                    {composers.length > 0
-                      ? composers.map((c) => `${c['First Name']} ${c['Last Name']}`).join('\n')
-                      : 'N/A'}
-                  </td>
-                  <td className="p-3 whitespace-pre-line">
-                    {composers.length > 0
-                      ? composers.map((c) => c['PRO'] || 'N/A').join('\n')
-                      : 'N/A'}
-                  </td>
-                  <td className="p-3 whitespace-pre-line">
-                    {composers.length > 0
-                      ? composers.map((c) => c['IPI'] || 'N/A').join('\n')
-                      : 'N/A'}
-                  </td>
-                  <td className="p-3">{track.ISRC || 'N/A'}</td>
-                  <td className="p-3">{track['Duration'] || 'N/A'}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      return (
+        <tr
+          key={index}
+          className="border-t border-[--border] hover:bg-[--details-bg] transition-colors"
+        >
+          <td className="p-3">
+            <input
+              type="checkbox"
+              checked={selectedTracks.includes(index)}
+              onChange={() => toggleTrack(index)}
+            />
+          </td>
+          <td className="p-3">{track['Primary Title'] || 'Sin título'}</td>
+          <td className="p-3">{track['Album Title'] || 'N/A'}</td>
+          <td className="p-3">{track['Track Artist Name'] || 'N/A'}</td>
+          <td className="p-3 whitespace-pre-line">
+            {composers.length > 0
+              ? composers.map((c) => `${c['First Name']} ${c['Last Name']}`).join('\n')
+              : 'N/A'}
+          </td>
+          <td className="p-3 whitespace-pre-line">
+            {composers.length > 0
+              ? composers.map((c) => c['PRO'] || 'N/A').join('\n')
+              : 'N/A'}
+          </td>
+          <td className="p-3 whitespace-pre-line">
+            {composers.length > 0
+              ? composers.map((c) => c['IPI'] || 'N/A').join('\n')
+              : 'N/A'}
+          </td>
+          <td className="p-3">{track.ISRC || 'N/A'}</td>
+          <td className="p-3">{track['Duration'] || 'N/A'}</td>
+          <td className="p-3">{track['Digital Release Date'] || 'N/A'}</td>
+        </tr>
+      );
+    })}
+  </tbody>
+</table>
       )}
     </div>
   );
