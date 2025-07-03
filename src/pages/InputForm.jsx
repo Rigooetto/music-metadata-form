@@ -495,6 +495,7 @@ if (trackArtists.length === 0) trackArtists.push("");
 
 return {
   primaryTitle: entry["Primary Title"] || "",
+  registeredPRO: entry["Registered (PRO)"] === true,
   trackArtistNames: trackArtists,
   trackNumber: entry["Track Number"] || "",
   recordingTitle: entry["Recording Title"] || "",
