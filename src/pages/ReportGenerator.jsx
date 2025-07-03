@@ -25,14 +25,11 @@ export default function ReportGenerator() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-
       try {
         const typeToSend = reportType === 'All' ? 'MLC' : reportType;
         const res = await axios.post(endpoint, { reportType: typeToSend });
-
         const receivedTracks = Array.isArray(res.data) ? res.data : [];
 
-        // Selecciona la columna de reporte correcta
         const reportColumn =
           reportType === 'All'
             ? 'Reportado MLC'
@@ -74,124 +71,121 @@ export default function ReportGenerator() {
     }
   };
 
+  const handleGenerate = async () => {
+    const auth = getAuth();
+    const user = auth.currentUser;
 
-const handleGenerate = async () => {
-  const auth = getAuth();
-  const user = auth.currentUser;
-
-  if (!user) {
-    alert("Inicia sesión primero");
-    return;
-  }
-
-  const email = user.email || "";
-  let name = "Usuario"; // Valor por defecto
-
-  // 🔥 Obtenemos nombre desde Firestore
-  try {
-    const db = getFirestore();
-    const userDocRef = doc(db, "users", user.uid);
-    const userSnapshot = await getDoc(userDocRef);
-
-    if (userSnapshot.exists()) {
-      const userData = userSnapshot.data();
-      if (userData.name) {
-        name = userData.name;
-      }
+    if (!user) {
+      alert("Inicia sesión primero");
+      return;
     }
-  } catch (err) {
-    console.warn("⚠️ No se pudo obtener el nombre desde Firestore:", err);
-  }
 
-  const tracksToReport = selectedTracks.map((i) => tracks[i]);
-  setGenerating(true);
+    const email = user.email || "";
+    let name = "Usuario";
 
-  const reportTypesToGenerate =
-    reportType === '' ? ['MLC', 'Music Reports', 'ESong', 'SoundExchange'] : [reportType];
+    try {
+      const db = getFirestore();
+      const userDocRef = doc(db, "users", user.uid);
+      const userSnapshot = await getDoc(userDocRef);
 
-  try {
-    for (const type of reportTypesToGenerate) {
-      const response = await axios.post(
-        'https://rigoletto.app.n8n.cloud/webhook/reportGeneratorWebhook',
-        {
-          user: { name, email },
-          reportType: type,
-          tracks: tracksToReport,
+      if (userSnapshot.exists()) {
+        const userData = userSnapshot.data();
+        if (userData.name) {
+          name = userData.name;
         }
-      );
-      console.log(`✅ Reporte ${type} generado exitosamente:`, response.data);
+      }
+    } catch (err) {
+      console.warn("⚠️ No se pudo obtener el nombre desde Firestore:", err);
     }
 
-    alert(
-      `✅ Reporte${reportTypesToGenerate.length > 1 ? 's' : ''} generado${
-        reportTypesToGenerate.length > 1 ? 's' : ''
-      } exitosamente`
-    );
-  } catch (error) {
-    console.error('❌ Error al generar el reporte:', error);
-    alert('❌ Ocurrió un error al generar el reporte');
-  } finally {
-    setGenerating(false);
-  }
-};
+    const tracksToReport = selectedTracks.map((i) => tracks[i]);
+    setGenerating(true);
 
- return (
-  <div className="transition-colors duration-300 ease-in-out bg-white text-black dark:bg-gray-900 dark:text-white border dark:border-gray-700 p-4">
-    <h2 className="text-xl font-semibold mb-4">🎧 Tracks a reportar</h2>
+    const reportTypesToGenerate =
+      reportType === '' ? ['MLC', 'Music Reports', 'ESong', 'SoundExchange'] : [reportType];
 
-    {/* Dropdown + Button Row */}
-    <div className="flex flex-wrap md:flex-nowrap justify-between items-center gap-4 mb-4">
-      <select
-        className="border border-[--border] bg-[--input-bg] text-[--text] p-2 rounded w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-[--focus-ring] transition-colors duration-200"
-        value={reportType}
-        onChange={(e) => setReportType(e.target.value)}
-      >
-        {REPORT_OPTIONS.map((opt) => (
-          <option key={opt} value={opt}>
-            {opt}
-          </option>
-        ))}
-      </select>
+    try {
+      for (const type of reportTypesToGenerate) {
+        const response = await axios.post(
+          'https://rigoletto.app.n8n.cloud/webhook/reportGeneratorWebhook',
+          {
+            user: { name, email },
+            reportType: type,
+            tracks: tracksToReport,
+          }
+        );
+        console.log(`✅ Reporte ${type} generado exitosamente:`, response.data);
+      }
 
-      <button
-        className="bg-[--accent] text-[--bg] dark:text-white hover:bg-opacity-90 px-4 py-2 rounded-md font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 ease-in-out shadow-sm focus:outline-none focus:ring-2 focus:ring-[--focus-ring]"
-        disabled={selectedTracks.length === 0 || generating}
-        onClick={handleGenerate}
-      >
-        {generating ? (
-          <>
-            <svg
-              className="animate-spin h-5 w-5 text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-              />
-            </svg>
-            Generating...
-          </>
-        ) : (
-          <>
-            {reportType === ''
-              ? 'Generate All'
-              : `Generate ${reportType} Reports`}
-          </>
-        )}
-      </button>
-    </div>
-      
+      alert(
+        `✅ Reporte${reportTypesToGenerate.length > 1 ? 's' : ''} generado${
+          reportTypesToGenerate.length > 1 ? 's' : ''
+        } exitosamente`
+      );
+    } catch (error) {
+      console.error('❌ Error al generar el reporte:', error);
+      alert('❌ Ocurrió un error al generar el reporte');
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  return (
+    <div className="transition-colors duration-300 ease-in-out bg-white text-black dark:bg-gray-900 dark:text-white border dark:border-gray-700 p-4">
+      <h2 className="text-xl font-semibold mb-4">🎧 Tracks a reportar</h2>
+
+      {/* Dropdown + Button Row */}
+      <div className="flex flex-wrap md:flex-nowrap justify-between items-center gap-4 mb-4">
+        <select
+          className="border border-[--border] bg-[--input-bg] text-[--text] p-2 rounded w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-[--focus-ring] transition-colors duration-200"
+          value={reportType}
+          onChange={(e) => setReportType(e.target.value)}
+        >
+          {REPORT_OPTIONS.map((opt) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
+          ))}
+        </select>
+
+        <button
+          className="bg-[--accent] text-[--bg] dark:text-white hover:bg-opacity-90 px-4 py-2 rounded-md font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 ease-in-out shadow-sm focus:outline-none focus:ring-2 focus:ring-[--focus-ring]"
+          disabled={selectedTracks.length === 0 || generating}
+          onClick={handleGenerate}
+        >
+          {generating ? (
+            <>
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                />
+              </svg>
+              Generating...
+            </>
+          ) : (
+            <>
+              {reportType === ''
+                ? 'Generate All'
+                : `Generate ${reportType} Reports`}
+            </>
+          )}
+        </button>
+      </div>
 
       {loading ? (
         <p>Loading...</p>
@@ -199,60 +193,75 @@ const handleGenerate = async () => {
         <p>No hay tracks para mostrar.</p>
       ) : (
         <table className="w-full text-sm text-left border border-[--border] bg-[--bg-card] text-[--text]">
-  <thead className="bg-[--highlight] text-[--text]">
-    <tr>
-      <th className="p-3">
-        <input
-          type="checkbox"
-          checked={selectAll}
-          onChange={handleSelectAll}
-        />
-      </th>
-      <th className="p-3">Track Title</th>
-      <th className="p-3">Artist</th>
-      <th className="p-3">UPC</th>
-      <th className="p-3">ISRC</th>
-      <th className="p-3">Composers</th>
-      <th className="p-3">Release Date</th>
-    </tr>
-  </thead>
-  <tbody>
-    {tracks.map((track, index) => (
-      <tr
-        key={index}
-        className="border-t border-[--border] hover:bg-[--details-bg] transition-colors"
-      >
-        <td className="p-3">
-          <input
-            type="checkbox"
-            checked={selectedTracks.includes(index)}
-            onChange={() => toggleTrack(index)}
-          />
-        </td>
-        <td className="p-3">{track['Primary Title'] || 'Sin título'}</td>
-        <td className="p-3">{track['Track Artist Name'] || 'N/A'}</td>
-        <td className="p-3">{track.UPC || 'N/A'}</td>
-        <td className="p-3">{track.ISRC || 'N/A'}</td>
-
-        <td className="p-3 whitespace-pre-line">
-          {Array.isArray(track.Composers)
-            ? track.Composers.map((c) => `${c['First Name']} ${c['Last Name']}-${c['PRO']}-${c['IPI']}`).join('\n')
-            : typeof track.Composers === 'string'
-            ? (() => {
+          <thead className="bg-[--highlight] text-[--text]">
+            <tr>
+              <th className="p-3">
+                <input
+                  type="checkbox"
+                  checked={selectAll}
+                  onChange={handleSelectAll}
+                />
+              </th>
+              <th className="p-3">Track Title</th>
+              <th className="p-3">Album Title</th>
+              <th className="p-3">Artist</th>
+              <th className="p-3">Composers</th>
+              <th className="p-3">PRO</th>
+              <th className="p-3">IPI</th>
+              <th className="p-3">ISRC</th>
+              <th className="p-3">Duration</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tracks.map((track, index) => {
+              let composers = [];
+              if (Array.isArray(track.Composers)) {
+                composers = track.Composers;
+              } else if (typeof track.Composers === 'string') {
                 try {
-                  const parsed = JSON.parse(track.Composers);
-                  return parsed.map((c) => `${c['First Name']} ${c['Last Name']}`).join('\n');
-                } catch {
-                  return 'N/A';
+                  composers = JSON.parse(track.Composers);
+                } catch (e) {
+                  composers = [];
                 }
-              })()
-            : 'N/A'}
-        </td>
-        <td className="p-3">{track['Digital Release Date'] || 'N/A'}</td>
-      </tr>
-    ))}
-  </tbody>
-</table>
+              }
+
+              return (
+                <tr
+                  key={index}
+                  className="border-t border-[--border] hover:bg-[--details-bg] transition-colors"
+                >
+                  <td className="p-3">
+                    <input
+                      type="checkbox"
+                      checked={selectedTracks.includes(index)}
+                      onChange={() => toggleTrack(index)}
+                    />
+                  </td>
+                  <td className="p-3">{track['Primary Title'] || 'Sin título'}</td>
+                  <td className="p-3">{track['Album Title'] || 'N/A'}</td>
+                  <td className="p-3">{track['Track Artist Name'] || 'N/A'}</td>
+                  <td className="p-3 whitespace-pre-line">
+                    {composers.length > 0
+                      ? composers.map((c) => `${c['First Name']} ${c['Last Name']}`).join('\n')
+                      : 'N/A'}
+                  </td>
+                  <td className="p-3 whitespace-pre-line">
+                    {composers.length > 0
+                      ? composers.map((c) => c['PRO'] || 'N/A').join('\n')
+                      : 'N/A'}
+                  </td>
+                  <td className="p-3 whitespace-pre-line">
+                    {composers.length > 0
+                      ? composers.map((c) => c['IPI'] || 'N/A').join('\n')
+                      : 'N/A'}
+                  </td>
+                  <td className="p-3">{track.ISRC || 'N/A'}</td>
+                  <td className="p-3">{track['Duration'] || 'N/A'}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       )}
     </div>
   );
