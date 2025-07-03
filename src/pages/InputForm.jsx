@@ -883,6 +883,7 @@ useEffect(() => {
 }, [tracks.length]);
 function createEmptyTrack() {
   return {
+    registeredPRO: false,
     trackNumber: "",
     primaryTitle: "",
     recordingTitle: "",
