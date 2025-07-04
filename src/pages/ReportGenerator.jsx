@@ -28,18 +28,24 @@ export default function ReportGenerator() {
       try {
         const typeToSend = reportType === 'All' ? 'MLC' : reportType;
         const res = await axios.post(endpoint, { reportType: typeToSend });
-        const receivedTracks = Array.isArray(res.data) ? res.data : [];
+const receivedTracks = Array.isArray(res.data) ? res.data : [];
 
-        const reportColumn =
-          reportType === 'All'
-            ? 'Reportado MLC'
-            : `Reportado ${reportType}`;
+// ✅ Normalize "Registered PRO" to be a true/false boolean
+const normalizedTracks = receivedTracks.map(track => ({
+  ...track,
+  ['Registered PRO']: track['Registered PRO'] === true || track['Registered PRO'] === 'true',
+}));
 
-        const filtered = receivedTracks.filter(
-          (t) => !t[reportColumn] || t[reportColumn].trim() === ''
-        );
+const reportColumn =
+  reportType === 'All'
+    ? 'Reportado MLC'
+    : `Reportado ${reportType}`;
 
-        setTracks(filtered);
+const filtered = normalizedTracks.filter(
+  (t) => !t[reportColumn] || t[reportColumn].trim() === ''
+);
+
+setTracks(filtered);
         setSelectedTracks([]);
         setSelectAll(false);
       } catch (err) {
