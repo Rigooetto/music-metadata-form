@@ -285,16 +285,21 @@ const handleToggleReportedPRO = async (index) => {
           <td className="p-3">{track['Duration'] || 'N/A'}</td>
           <td className="p-3">{track['Digital Release Date'] || 'N/A'}</td>
           <td className="p-3">
+  <div className="flex items-center gap-2">
+  <span className="text-xs text-gray-500">No</span>
+  {/* Toggle Switch */}
   <label className="relative inline-flex items-center cursor-pointer">
-  <input
-    type="checkbox"
-    className="sr-only peer"
-    checked={track['Reported PRO'] === true || track['Reported PRO'] === 'true'}
-    onChange={() => handleToggleReportedPRO(index)}
-  />
-  <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-[--accent] transition-colors duration-300"></div>
-  <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform peer-checked:translate-x-5 transition-transform duration-300"></div>
-</label>
+    <input
+      type="checkbox"
+      className="sr-only peer"
+      checked={track['Reported PRO'] === true || track['Reported PRO'] === 'true'}
+      onChange={() => handleToggleReportedPRO(index)}
+    />
+    <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-[--accent] transition-colors duration-300"></div>
+    <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform peer-checked:translate-x-5 transition-transform duration-300"></div>
+  </label>
+  <span className="text-xs text-gray-500">Yes</span>
+</div>
 </td>
         </tr>
       );
