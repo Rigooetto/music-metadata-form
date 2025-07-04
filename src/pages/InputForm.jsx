@@ -194,6 +194,7 @@ const handleSubmit = async () => {
     releaseInfo,
     tracks: tracks.map(track => ({
       ...track,
+      registeredPRO: typeof track.registeredPRO === 'boolean' ? track.registeredPRO : false,
       composers: track.composers || [],
     })),
   };
