@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   try {
     const fetch = (await import('node-fetch')).default;
 
-    const response = await fetch('https://rigoletto.app.n8n.cloud/webhook/updateReportedPro', {
+    const response = await fetch('https://rigoletto.app.n8n.cloud/webhook/updateRegisteredPro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ isrc, registeredPro: value }),
