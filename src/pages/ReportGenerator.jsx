@@ -61,23 +61,39 @@ export default function ReportGenerator() {
     }
   };
 
-const handleToggleReportedPRO = async (index) => {
-  const updatedTracks = [...tracks];
-  const currentValue = updatedTracks[index]['Registered PRO'] === true || updatedTracks[index]['Registered PRO'] === 'true';
+const handleToggleRegisteredPRO = async (index) => {
+  const updatedTracks = [...tracks]; // Shallow copy of array
+  const updatedTrack = { ...updatedTracks[index] }; // Deep copy of item
+
+  const currentValue =
+    updatedTrack['Registered PRO'] === true ||
+    updatedTrack['Registered PRO'] === 'true';
+
   const newValue = !currentValue;
 
-  updatedTracks[index]['Registered PRO'] = newValue;
-  setTracks(updatedTracks);
+  updatedTrack['Registered PRO'] = newValue;
+  updatedTracks[index] = updatedTrack; // Replace the item in the array
+
+  setTracks(updatedTracks); // Set the new array
 
   try {
-    await axios.post('/api/update-reported-pro', {
-      isrc: updatedTracks[index].ISRC,
-      value: newValue,
+    const response = await fetch('https://rigoletto.app.n8n.cloud/webhook/updateRegisteredPro', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        isrc: updatedTrack.ISRC,
+        registeredPro: newValue,
+      }),
     });
-    console.log('✅ Reported PRO updated');
-  } catch (error) {
-    console.error('❌ Failed to update Reported PRO:', error);
-    alert('❌ Error updating Reported PRO on CatalogDB');
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+
+    console.log('✅ Registered PRO updated in Google Sheets');
+  } catch (err) {
+    console.error('❌ Error updating Registered PRO:', err);
+    alert('❌ Failed to update Registered PRO');
   }
 };
 
