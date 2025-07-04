@@ -63,10 +63,10 @@ export default function ReportGenerator() {
 
 const handleToggleReportedPRO = async (index) => {
   const updatedTracks = [...tracks];
-  const currentValue = updatedTracks[index]['Reported PRO'] === true || updatedTracks[index]['Reported PRO'] === 'true';
+  const currentValue = updatedTracks[index]['Registered PRO'] === true || updatedTracks[index]['Registered PRO'] === 'true';
   const newValue = !currentValue;
 
-  updatedTracks[index]['Reported PRO'] = newValue;
+  updatedTracks[index]['Registered PRO'] = newValue;
   setTracks(updatedTracks);
 
   try {
