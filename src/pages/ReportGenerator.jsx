@@ -285,11 +285,20 @@ const handleToggleReportedPRO = async (index) => {
           <td className="p-3">{track['Duration'] || 'N/A'}</td>
           <td className="p-3">{track['Digital Release Date'] || 'N/A'}</td>
           <td className="p-3">
-  <input
-    type="checkbox"
-    checked={track['Reported PRO'] === true || track['Reported PRO'] === 'true'}
-    onChange={() => handleToggleReportedPRO(index)}
-  />
+  <div className="flex items-center gap-2">
+    <span className="text-sm font-medium text-[var(--text-muted)]">No</span>
+    <label className="relative inline-flex items-center cursor-pointer">
+      <input
+        type="checkbox"
+        className="sr-only peer"
+        checked={track.registeredPRO || false}
+        onChange={(e) => handleTrackChange(i, "registeredPRO", e.target.checked)}
+      />
+      <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-[var(--focus-ring)] rounded-full peer peer-checked:bg-[var(--accent)] transition-colors"></div>
+      <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform transition-transform peer-checked:translate-x-5"></div>
+    </label>
+    <span className="text-sm font-medium text-[var(--text-muted)]">Yes</span>
+  </div>
 </td>
         </tr>
       );
