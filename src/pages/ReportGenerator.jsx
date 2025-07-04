@@ -76,7 +76,7 @@ const handleToggleRegisteredPRO = async (index) => {
   setTracks(updatedTracks);
 
   try {
-    const response = await fetch('https://rigoletto.app.n8n.cloud/webhook/updateRegisteredPro', {
+    const response = await fetch('https://rigoletto.app.n8n.cloud/webhook/updateReportedPro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
