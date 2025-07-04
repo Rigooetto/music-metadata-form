@@ -82,6 +82,13 @@ const handleToggleReportedPRO = async (index) => {
 };
 
 
+const handleTrackChange = (index, field, value) => {
+    const updated = [...tracks];
+    updated[index][field] = value;
+    setTracks(updated);
+  };
+
+
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedTracks([]);
