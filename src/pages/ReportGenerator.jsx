@@ -62,8 +62,8 @@ export default function ReportGenerator() {
   };
 
 const handleToggleRegisteredPRO = async (index) => {
-  const updatedTracks = [...tracks]; // Shallow copy of array
-  const updatedTrack = { ...updatedTracks[index] }; // Deep copy of item
+  const updatedTracks = [...tracks];
+  const updatedTrack = { ...updatedTracks[index] };
 
   const currentValue =
     updatedTrack['Registered PRO'] === true ||
@@ -72,9 +72,8 @@ const handleToggleRegisteredPRO = async (index) => {
   const newValue = !currentValue;
 
   updatedTrack['Registered PRO'] = newValue;
-  updatedTracks[index] = updatedTrack; // Replace the item in the array
-
-  setTracks(updatedTracks); // Set the new array
+  updatedTracks[index] = updatedTrack;
+  setTracks(updatedTracks);
 
   try {
     const response = await fetch('https://rigoletto.app.n8n.cloud/webhook/updateRegisteredPro', {
@@ -309,7 +308,7 @@ const handleToggleRegisteredPRO = async (index) => {
       type="checkbox"
       className="sr-only peer"
       checked={track['Reported PRO'] === true || track['Reported PRO'] === 'true'}
-      onChange={() => handleToggleReportedPRO(index)}
+      onChange={() => handleToggleRegisteredPRO(index)}
     />
     <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-[--accent] transition-colors duration-300"></div>
     <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform peer-checked:translate-x-5 transition-transform duration-300"></div>
