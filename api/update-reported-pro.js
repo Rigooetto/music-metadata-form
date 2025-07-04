@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     const response = await fetch('https://rigoletto.app.n8n.cloud/webhook/updateReportedPro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ isrc, reportedPro: value }),
+      body: JSON.stringify({ isrc, registeredPro: value }),
     });
 
     const text = await response.text();
