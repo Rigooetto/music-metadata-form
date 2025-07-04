@@ -62,26 +62,24 @@ export default function ReportGenerator() {
   };
 
 const handleToggleRegisteredPRO = async (index) => {
-  const updatedTracks = [...tracks];
-  const updatedTrack = { ...updatedTracks[index] };
+  const updatedTracks = [...tracks];                      // Shallow copy array
+  const updatedTrack = { ...updatedTracks[index] };       // Deep copy object
 
-  const currentValue =
-    updatedTrack['Registered PRO'] === true ||
-    updatedTrack['Registered PRO'] === 'true';
-
+  const currentRaw = updatedTrack['Registered PRO'];
+  const currentValue = currentRaw === true || currentRaw === 'true';
   const newValue = !currentValue;
 
-  updatedTrack['Registered PRO'] = newValue;
-  updatedTracks[index] = updatedTrack;
-  setTracks(updatedTracks);
+  updatedTrack['Registered PRO'] = newValue;              // ✅ Ensure it's a boolean
+  updatedTracks[index] = updatedTrack;                    // Replace modified item
+  setTracks(updatedTracks);                               // Trigger re-render
 
   try {
-    const response = await fetch('https://rigoletto.app.n8n.cloud/webhook/updateReportedPro', {
+    const response = await fetch('/api/update-registered-pro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         isrc: updatedTrack.ISRC,
-        registeredPro: newValue,
+        value: newValue,
       }),
     });
 
@@ -302,12 +300,11 @@ const handleToggleRegisteredPRO = async (index) => {
           <td className="p-3">
   <div className="flex items-center gap-2">
   <span className="text-xs text-gray-500">No</span>
-  {/* Toggle Switch */}
   <label className="relative inline-flex items-center cursor-pointer">
     <input
       type="checkbox"
       className="sr-only peer"
-      checked={track['Reported PRO'] === true || track['Reported PRO'] === 'true'}
+      checked={track['Registered PRO'] === true || track['Registered PRO'] === 'true'}
       onChange={() => handleToggleRegisteredPRO(index)}
     />
     <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-[--accent] transition-colors duration-300"></div>
